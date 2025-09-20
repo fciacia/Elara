@@ -64,6 +64,8 @@ class _MultimodalDocumentViewerState extends State<MultimodalDocumentViewer>
     );
   }
 
+  
+
   Widget _buildNormalView() {
     return Column(
       children: [

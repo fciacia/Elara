@@ -1,3 +1,4 @@
+  // ...imports remain unchanged...
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -28,7 +29,7 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
   
   // File upload state
   bool _isDragOver = false;
-  List<PlatformFile> _uploadedFiles = [];
+  final List<PlatformFile> _uploadedFiles = [];
   bool _isProcessing = false;
   String _processingStatus = '';
   
@@ -37,6 +38,14 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
   late AnimationController _panelAnimationController;
   late Animation<double> _panelAnimation;
   late TabController _patientTabController;
+
+  // Patient selection state
+  String? selectedPatient;
+  final List<Map<String, String>> patients = [
+    {'name': 'Emily Chen', 'id': 'P12345'},
+    {'name': 'John Doe', 'id': 'P67890'},
+    {'name': 'Alice Smith', 'id': 'P54321'},
+  ];
 
   @override
   void initState() {
@@ -74,6 +83,68 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
     _patientTabController = TabController(length: 4, vsync: this);
     
     _animationController!.forward();
+  }
+
+  // Helper method for better border colors in light/dark mode
+  Color _getBorderColor(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    if (isDark) {
+      return Theme.of(context).colorScheme.outline.withValues(alpha: 0.2);
+    } else {
+      return AppColors.borderLight.withValues(alpha: 0.8); // Better visibility in light mode
+    }
+  }
+
+  // Helper method for secondary text colors in light/dark mode
+  Color _getSecondaryTextColor(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    if (isDark) {
+      return Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6);
+    } else {
+      return AppColors.textMedium; // Better contrast for light mode
+    }
+  }
+
+  // Helper method for muted/placeholder colors in light/dark mode
+  Color _getMutedColor(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    if (isDark) {
+      return Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3);
+    } else {
+      return AppColors.textLight; // Better visibility than alpha 0.3 in light mode
+    }
+  }
+
+  // Helper method for input field fill color
+  Color _getInputFillColor(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    if (isDark) {
+      return Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.3);
+    } else {
+      return AppColors.surfaceVariantLight; // Solid color for better visibility in light mode
+    }
+  }
+
+  // Helper method for shadows - light mode should have minimal shadows
+  List<BoxShadow> _getBoxShadow(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    if (isDark) {
+      return [
+        BoxShadow(
+          color: Colors.black.withValues(alpha: 0.2),
+          blurRadius: 10,
+          offset: const Offset(0, 4),
+        ),
+      ];
+    } else {
+      return [
+        BoxShadow(
+          color: Colors.black.withValues(alpha: 0.08), // Much lighter shadow for light mode
+          blurRadius: 4,
+          offset: const Offset(0, 2),
+        ),
+      ];
+    }
   }
 
   @override
@@ -216,7 +287,7 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
         child: LayoutBuilder(
           builder: (context, constraints) {
             return Container(
-              color: Theme.of(context).colorScheme.background,
+              color: Theme.of(context).colorScheme.surface,
               child: Row(
                 children: [
                   // Left Sidebar - responsive width
@@ -266,13 +337,7 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
                           width: panelWidth,
                           height: double.infinity,
                           decoration: BoxDecoration(
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.1),
-                                blurRadius: 10,
-                                offset: const Offset(-2, 0),
-                              ),
-                            ],
+                            boxShadow: _getBoxShadow(context),
                           ),
                           child: _buildPatientContextPanel(),
                         ),
@@ -803,7 +868,7 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
             // File upload button
             Container(
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surfaceVariant,
+                color: Theme.of(context).colorScheme.surfaceContainerHighest,
                 borderRadius: BorderRadius.circular(20),
               ),
               child: IconButton(
@@ -828,16 +893,16 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
                         ? 'Ask about your uploaded documents...'
                         : 'Ask me anything about medical care...',
                     hintStyle: GoogleFonts.inter(
-                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4),
+                      color: _getSecondaryTextColor(context),
                       fontSize: 14,
                     ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(24),
-                      borderSide: BorderSide(color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.3)),
+                      borderSide: BorderSide(color: _getBorderColor(context)),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(24),
-                      borderSide: BorderSide(color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.3)),
+                      borderSide: BorderSide(color: _getBorderColor(context)),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(24),
@@ -845,7 +910,7 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
                     ),
                     contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     filled: true,
-                    fillColor: Theme.of(context).colorScheme.surfaceVariant.withValues(alpha: 0.3),
+                    fillColor: _getInputFillColor(context),
                     isDense: true,
                   ),
                   onSubmitted: (_) => _sendMessage(),
@@ -891,13 +956,7 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
                         width: 2,
                         strokeAlign: BorderSide.strokeAlignInside,
                       ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.1),
-                          blurRadius: 20,
-                          offset: const Offset(0, 8),
-                        ),
-                      ],
+                      boxShadow: _getBoxShadow(context),
                     ),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
@@ -1046,21 +1105,15 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
 
   Widget _buildProcessingOverlay() {
     return Container(
-      color: Colors.black.withValues(alpha: 0.3),
+      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5), // Better overlay contrast
       child: Center(
         child: Container(
           padding: const EdgeInsets.all(24),
           margin: const EdgeInsets.symmetric(horizontal: 40),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Theme.of(context).colorScheme.surface, // Use theme surface color
             borderRadius: BorderRadius.circular(16),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.1),
-                blurRadius: 20,
-                offset: const Offset(0, 8),
-              ),
-            ],
+            boxShadow: _getBoxShadow(context),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -1269,7 +1322,7 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
         controller: _patientTabController,
         isScrollable: false,
         labelColor: AppColors.primary,
-        unselectedLabelColor: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+        unselectedLabelColor: _getSecondaryTextColor(context),
         indicatorColor: AppColors.primary,
         labelStyle: Theme.of(context).textTheme.labelMedium?.copyWith(
           fontWeight: FontWeight.w600
@@ -1514,7 +1567,7 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.1)),
+        border: Border.all(color: _getBorderColor(context)),
       ),
       child: Row(
         children: [
@@ -1566,7 +1619,7 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.1)),
+        border: Border.all(color: _getBorderColor(context)),
       ),
       child: Row(
         children: [
@@ -1591,7 +1644,7 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
                 Text(
                   '$doctor • $timeAgo',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                    color: _getSecondaryTextColor(context),
                   ),
                 ),
               ],
@@ -1608,7 +1661,7 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.1)),
+        border: Border.all(color: _getBorderColor(context)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1616,18 +1669,26 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                title,
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: Theme.of(context).colorScheme.onSurface,
+              Flexible(
+                flex: 2,
+                child: Text(
+                  title,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
-              Text(
-                timestamp,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
-                  fontWeight: FontWeight.w500,
+              Flexible(
+                child: Text(
+                  timestamp,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                    fontWeight: FontWeight.w500,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.end,
                 ),
               ),
             ],
@@ -1644,21 +1705,27 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  Icon(
-                    Icons.person_outline,
-                    size: 16,
-                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    author,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              Flexible(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.person_outline,
+                      size: 16,
                       color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
                     ),
-                  ),
-                ],
+                    const SizedBox(width: 4),
+                    Flexible(
+                      child: Text(
+                        author,
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
               ),
               TextButton(
                 onPressed: () {},
@@ -1687,7 +1754,7 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.1),
+          color: _getBorderColor(context),
         ),
       ),
       child: Column(
@@ -1761,7 +1828,7 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.1),
+          color: _getBorderColor(context),
         ),
       ),
       child: Column(
@@ -1770,13 +1837,13 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
           Icon(
             MdiIcons.chartLine,
             size: 48,
-            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
+            color: _getMutedColor(context),
           ),
           const SizedBox(height: 12),
           Text(
             'Vital Trends Chart',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
+              color: _getSecondaryTextColor(context),
             ),
           ),
         ],
