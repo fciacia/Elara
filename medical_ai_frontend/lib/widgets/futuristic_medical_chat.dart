@@ -722,7 +722,6 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
           top: BorderSide(color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.2), width: 1),
         ),
       ),
-<<<<<<< HEAD
       child: IntrinsicHeight(
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.end,
@@ -738,48 +737,6 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
                 icon: Icon(Icons.attach_file, color: Theme.of(context).colorScheme.onSurfaceVariant, size: 20),
                 tooltip: 'Upload medical documents',
                 constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
-=======
-      child: Row(
-        children: [
-          // File upload button
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.grey[100],
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: IconButton(
-              onPressed: _pickFiles,
-              icon: Icon(Icons.attach_file, color: Colors.grey[600], size: 20),
-              tooltip: 'Upload medical documents',
-            ),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: TextField(
-              controller: _messageController,
-              decoration: InputDecoration(
-        hintText: _uploadedFiles.isNotEmpty 
-          ? 'Ask about your uploaded documents...'
-          : 'Ask me anything about medical care...',
-                hintStyle: GoogleFonts.inter(
-                  color: Colors.grey[400],
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(24),
-                  borderSide: BorderSide(color: Colors.grey.withValues(alpha: 0.3)),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(24),
-                  borderSide: BorderSide(color: Colors.grey.withValues(alpha: 0.3)),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(24),
-                  borderSide: BorderSide(color: Colors.blue[600]!, width: 2),
-                ),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                filled: true,
-                fillColor: Colors.grey[50],
->>>>>>> 81e06703e525be8f46ffa6a65372c94ba71beb32
               ),
             ),
             const SizedBox(width: 8),

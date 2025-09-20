@@ -26,7 +26,6 @@ class _MultimodalDocumentManagerState extends State<MultimodalDocumentManager>
   late AnimationController _animationController;
   late Animation<double> _pageTransitionFade;
   late Animation<Offset> _slideAnimation;
-  String _searchQuery = '';
   DocumentType? _selectedType;
   MedicalDocument? _selectedDocument;
 
@@ -370,9 +369,6 @@ class _MultimodalDocumentManagerState extends State<MultimodalDocumentManager>
         Expanded(
           child: TextField(
             onChanged: (value) {
-              setState(() {
-                _searchQuery = value;
-              });
               context.read<DocumentProvider>().setSearchQuery(value);
             },
             decoration: InputDecoration(

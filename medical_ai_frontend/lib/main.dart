@@ -61,9 +61,9 @@ class MedicalAIApp extends StatelessWidget {
     return ThemeData(
       useMaterial3: true,
       colorScheme: ColorScheme.fromSeed(
-        seedColor: AppColors.primary,
+        seedColor: AppColors.primary, // Now purple
         brightness: Brightness.light,
-        background: AppColors.backgroundLight,
+        background: AppColors.backgroundLight, // Purple-tinted light background
         surface: AppColors.surfaceLight,
         onBackground: AppColors.textDark,
         onSurface: AppColors.textDark,
@@ -114,12 +114,12 @@ class MedicalAIApp extends StatelessWidget {
     return ThemeData(
       useMaterial3: true,
       colorScheme: ColorScheme.fromSeed(
-        seedColor: AppColors.primary,
+        seedColor: AppColors.primary, // Now purple
         brightness: Brightness.dark,
-        background: AppColors.backgroundDark,
-        surface: AppColors.surfaceDark,
-        onBackground: AppColors.textDarkMode,
-        onSurface: AppColors.textDarkMode,
+        background: AppColors.backgroundDark, // Purple-tinted dark background
+        surface: AppColors.surfaceDark, // Dark purple surface
+        onBackground: AppColors.textDarkMode, // Purple-tinted text
+        onSurface: AppColors.textDarkMode, // Purple-tinted text
       ),
       textTheme: GoogleFonts.interTextTheme().apply(
         bodyColor: AppColors.textDarkMode,

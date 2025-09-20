@@ -6,8 +6,6 @@ import 'package:fl_chart/fl_chart.dart';
 
 import '../utils/app_colors.dart';
 import '../providers/auth_provider.dart' as auth;
-import '../providers/document_provider.dart';
-import '../providers/chat_provider.dart';
 
 class RoleAdaptiveDashboard extends StatefulWidget {
   const RoleAdaptiveDashboard({super.key});
@@ -272,8 +270,6 @@ class _RoleAdaptiveDashboardState extends State<RoleAdaptiveDashboard>
         return _buildDoctorDashboard();
       case auth.UserRole.admin:
         return _buildAdminDashboard();
-      default:
-        return _buildNurseDashboard();
     }
   }
 
@@ -403,67 +399,6 @@ class _RoleAdaptiveDashboardState extends State<RoleAdaptiveDashboard>
     );
   }
 
-  Widget _buildHealthMetricCard(String title, String value, String status, Color color, IconData icon) {
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: color.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Icon(icon, color: color, size: 20),
-                ),
-                const Spacer(),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: color.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Text(
-                    status,
-                    style: GoogleFonts.inter(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w600,
-                      color: color,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            Text(
-              title,
-              style: GoogleFonts.inter(
-                fontSize: 14,
-                color: AppColors.textMedium,
-              ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              value,
-              style: GoogleFonts.inter(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: AppColors.textDark,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   Widget _buildStatCard(String title, String value, String subtitle, Color color, IconData icon) {
     return Card(
       elevation: 2,
@@ -519,87 +454,6 @@ class _RoleAdaptiveDashboardState extends State<RoleAdaptiveDashboard>
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildMedicationReminder() {
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(MdiIcons.pill, color: Colors.blue, size: 20),
-                const SizedBox(width: 8),
-                Text(
-                  'Medication Reminder',
-                  style: GoogleFonts.inter(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.textDark,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            _buildMedicationItem('Metformin 500mg', 'Take with breakfast', '08:00 AM'),
-            _buildMedicationItem('Lisinopril 10mg', 'Take with dinner', '07:00 PM'),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildMedicationItem(String medication, String instruction, String time) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: Row(
-        children: [
-          Container(
-            width: 8,
-            height: 8,
-            decoration: const BoxDecoration(
-              color: Colors.blue,
-              shape: BoxShape.circle,
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  medication,
-                  style: GoogleFonts.inter(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: AppColors.textDark,
-                  ),
-                ),
-                Text(
-                  instruction,
-                  style: GoogleFonts.inter(
-                    fontSize: 12,
-                    color: AppColors.textMedium,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Text(
-            time,
-            style: GoogleFonts.inter(
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-              color: Colors.blue,
-            ),
-          ),
-        ],
       ),
     );
   }
@@ -982,8 +836,6 @@ class _RoleAdaptiveDashboardState extends State<RoleAdaptiveDashboard>
         return 'Good morning, Doctor';
       case auth.UserRole.admin:
         return 'System Overview';
-      default:
-        return 'Welcome to Medical AI';
     }
   }
 
@@ -995,8 +847,6 @@ class _RoleAdaptiveDashboardState extends State<RoleAdaptiveDashboard>
         return MdiIcons.doctor;
       case auth.UserRole.admin:
         return MdiIcons.shieldAccount;
-      default:
-        return MdiIcons.accountHeart;
     }
   }
 
@@ -1008,8 +858,6 @@ class _RoleAdaptiveDashboardState extends State<RoleAdaptiveDashboard>
         return 'Medical Doctor';
       case auth.UserRole.admin:
         return 'Administrator';
-      default:
-        return 'Registered Nurse';
     }
   }
 
@@ -1092,33 +940,6 @@ class _RoleAdaptiveDashboardState extends State<RoleAdaptiveDashboard>
           QuickAction(
             title: 'Settings',
             icon: MdiIcons.cog,
-            color: Colors.orange,
-            onTap: () {},
-          ),
-        ];
-      default:
-        return [
-          QuickAction(
-            title: 'Patient Care',
-            icon: MdiIcons.accountHeart,
-            color: Colors.blue,
-            onTap: () {},
-          ),
-          QuickAction(
-            title: 'Medications',
-            icon: MdiIcons.pill,
-            color: Colors.green,
-            onTap: () {},
-          ),
-          QuickAction(
-            title: 'Vital Signs',
-            icon: MdiIcons.heartPulse,
-            color: Colors.red,
-            onTap: () {},
-          ),
-          QuickAction(
-            title: 'Documentation',
-            icon: MdiIcons.fileDocument,
             color: Colors.orange,
             onTap: () {},
           ),

@@ -146,10 +146,10 @@ class _HomeScreenState extends State<HomeScreen> {
       constraints: const BoxConstraints(minHeight: 80),
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
+            color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
@@ -171,7 +171,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         style: GoogleFonts.inter(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
-                          color: AppColors.textDark,
+                          color: Theme.of(context).colorScheme.onSurface,
                         ),
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
@@ -218,7 +218,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         'Welcome back, ${authProvider.currentUser?.name ?? 'User'} • ${_getRoleDisplayName(authProvider.currentUser?.role)}',
                         style: GoogleFonts.inter(
                           fontSize: 14,
-                          color: AppColors.textMedium,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
@@ -239,8 +239,8 @@ class _HomeScreenState extends State<HomeScreen> {
               child: TextField(
                 decoration: InputDecoration(
                   hintText: 'Search patients, documents, or ask AI...',
-                  hintStyle: GoogleFonts.inter(fontSize: 14, color: AppColors.textMedium),
-                  prefixIcon: const Icon(
+                  hintStyle: GoogleFonts.inter(fontSize: 14, color: Theme.of(context).colorScheme.onSurfaceVariant),
+                  prefixIcon: Icon(
                     Icons.search,
                     size: 20,
                     color: AppColors.primary,
@@ -251,7 +251,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       Container(
                         width: 1,
                         height: 20,
-                        color: AppColors.border,
+                        color: Theme.of(context).colorScheme.outline,
                       ),
                       const SizedBox(width: 8),
                       Icon(
@@ -264,11 +264,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(20),
-                    borderSide: const BorderSide(color: AppColors.border),
+                    borderSide: BorderSide(color: Theme.of(context).colorScheme.outline),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(20),
-                    borderSide: const BorderSide(color: AppColors.border),
+                    borderSide: BorderSide(color: Theme.of(context).colorScheme.outline),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(20),
@@ -276,7 +276,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   contentPadding: const EdgeInsets.symmetric(horizontal: 16),
                   filled: true,
-                  fillColor: AppColors.background,
+                  fillColor: Theme.of(context).colorScheme.surfaceVariant.withValues(alpha: 0.3),
                 ),
               ),
             ),
@@ -299,7 +299,7 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 Icon(
                   Icons.notifications_outlined,
-                  color: AppColors.textMedium,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                   size: 24,
                 ),
                 Positioned(
@@ -352,14 +352,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 style: GoogleFonts.inter(
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
-                  color: AppColors.textDark,
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
               const SizedBox(width: 4),
-              const Icon(
+              Icon(
                 Icons.keyboard_arrow_down,
                 size: 16,
-                color: AppColors.textMedium,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
             ],
           ),

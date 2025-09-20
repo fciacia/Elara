@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 import '../utils/app_colors.dart';
 import '../providers/document_provider.dart';
-import '../providers/chat_provider.dart';
 
 class MultimodalDocumentViewer extends StatefulWidget {
   final MedicalDocument document;
@@ -23,11 +21,9 @@ class _MultimodalDocumentViewerState extends State<MultimodalDocumentViewer>
     with TickerProviderStateMixin {
   late TabController _tabController;
   late AnimationController _animationController;
-  late Animation<double> _fadeAnimation;
   
   bool _isFullscreen = false;
   double _zoomLevel = 1.0;
-  Offset _panOffset = Offset.zero;
   
   final List<DocumentAnnotation> _annotations = [];
   final TextEditingController _chatController = TextEditingController();
@@ -39,9 +35,6 @@ class _MultimodalDocumentViewerState extends State<MultimodalDocumentViewer>
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 800),
       vsync: this,
-    );
-    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
     );
     
     _animationController.forward();
@@ -306,7 +299,6 @@ class _MultimodalDocumentViewerState extends State<MultimodalDocumentViewer>
               onInteractionUpdate: (details) {
                 setState(() {
                   _zoomLevel = details.scale;
-                  _panOffset = details.focalPoint;
                 });
               },
               child: Container(
@@ -1134,7 +1126,6 @@ class _MultimodalDocumentViewerState extends State<MultimodalDocumentViewer>
   void _resetZoom() {
     setState(() {
       _zoomLevel = 1.0;
-      _panOffset = Offset.zero;
     });
   }
 
