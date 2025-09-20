@@ -12,6 +12,9 @@ import 'screens/auth/login_screen.dart';
 import 'screens/home/home_screen.dart';
 import 'utils/app_colors.dart';
 
+// import translations
+import 'utils/translations.dart';
+
 void main() {
   runApp(const MedicalAIApp());
 }
@@ -36,6 +39,12 @@ class MedicalAIApp extends StatelessWidget {
             theme: _buildLightTheme(),
             darkTheme: _buildDarkTheme(),
             themeMode: appProvider.isDarkMode ? ThemeMode.dark : ThemeMode.light,
+
+            // 🌍 Add translations
+            translations: AppTranslations(),
+            locale: const Locale('en'), // default language
+            fallbackLocale: const Locale('en'),
+
             initialRoute: '/splash',
             getPages: [
               GetPage(name: '/splash', page: () => const SplashScreen()),
