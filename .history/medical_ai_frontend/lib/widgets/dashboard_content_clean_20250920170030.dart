@@ -73,7 +73,6 @@ class _DashboardContentState extends State<DashboardContent> with TickerProvider
                   const SizedBox(height: 16),
                   // Quick Access Features Row
                   _buildQuickAccessRow(),
-                  const SizedBox(height: 32), // Increased spacing for better separation
                   // Main Content Grid
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -648,7 +647,7 @@ class _DashboardContentState extends State<DashboardContent> with TickerProvider
                     style: GoogleFonts.inter(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
-                      color: Theme.of(context).colorScheme.onSurface,
+                      color: AppColors.textDark,
                     ),
                   ),
                 ],

@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart'; // for kIsWeb
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -80,33 +79,17 @@ class _MultimodalDocumentManagerState extends State<MultimodalDocumentManager>
         allowMultiple: true,
         type: FileType.custom,
         allowedExtensions: ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx', 'txt'],
-        withData: true, // ensures bytes are loaded for web
       );
 
       if (result != null && result.files.isNotEmpty) {
-        if (kIsWeb) {
-          // On web, use bytes
-          final files = result.files.where((file) => file.bytes != null).toList();
-          final success = await context.read<DocumentProvider>().uploadDocumentsWeb(files);
-          if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  success 
-                    ? 'Documents uploaded successfully!' 
-                    : 'Failed to upload documents',
-                  style: GoogleFonts.inter(),
-                ),
-                backgroundColor: success ? Colors.green : Colors.red,
-                behavior: SnackBarBehavior.floating,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-              ),
-            );
-          }
-        } else {
-          // On mobile/desktop, use File
-          final files = result.files.where((file) => file.path != null).map((file) => File(file.path!)).toList();
+        final files = result.files
+            .where((file) => file.path != null)
+            .map((file) => File(file.path!))
+            .toList();
+
+        if (files.isNotEmpty) {
           final success = await context.read<DocumentProvider>().uploadDocuments(files);
+          
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -263,7 +246,7 @@ class _MultimodalDocumentManagerState extends State<MultimodalDocumentManager>
               style: GoogleFonts.inter(
                 fontSize: 28,
                 fontWeight: FontWeight.bold,
-                color: Theme.of(context).colorScheme.onSurface,
+                color: AppColors.textDark,
                 letterSpacing: -0.5,
               ),
             ),
@@ -274,7 +257,7 @@ class _MultimodalDocumentManagerState extends State<MultimodalDocumentManager>
           'AI-powered document analysis with advanced multimodal viewing capabilities',
           style: GoogleFonts.inter(
             fontSize: 16,
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
+            color: AppColors.textMedium,
             height: 1.5,
           ),
         ),
@@ -322,7 +305,7 @@ class _MultimodalDocumentManagerState extends State<MultimodalDocumentManager>
             style: GoogleFonts.inter(
               fontSize: 20,
               fontWeight: FontWeight.w600,
-              color: Theme.of(context).colorScheme.onSurface,
+              color: AppColors.textDark,
             ),
           ),
           const SizedBox(height: 8),
@@ -330,7 +313,7 @@ class _MultimodalDocumentManagerState extends State<MultimodalDocumentManager>
             'Experience advanced AI analysis with multimodal viewing',
             style: GoogleFonts.inter(
               fontSize: 14,
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
+              color: AppColors.textMedium,
             ),
           ),
           const SizedBox(height: 20),
@@ -377,15 +360,15 @@ class _MultimodalDocumentManagerState extends State<MultimodalDocumentManager>
             },
             decoration: InputDecoration(
               hintText: 'Search documents...',
-              hintStyle: GoogleFonts.inter(color: Theme.of(context).colorScheme.onSurfaceVariant),
-              prefixIcon: Icon(Icons.search, color: Theme.of(context).colorScheme.onSurfaceVariant),
+              hintStyle: GoogleFonts.inter(color: AppColors.textMedium),
+              prefixIcon: Icon(Icons.search, color: AppColors.textMedium),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide(color: Theme.of(context).colorScheme.outline),
+                borderSide: BorderSide(color: AppColors.border),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide(color: Theme.of(context).colorScheme.outline),
+                borderSide: BorderSide(color: AppColors.border),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
@@ -400,7 +383,7 @@ class _MultimodalDocumentManagerState extends State<MultimodalDocumentManager>
           value: _selectedType,
           hint: Text(
             'Filter by type',
-            style: GoogleFonts.inter(color: Theme.of(context).colorScheme.onSurfaceVariant),
+            style: GoogleFonts.inter(color: AppColors.textMedium),
           ),
           items: [
             DropdownMenuItem<DocumentType?>(
@@ -444,7 +427,7 @@ class _MultimodalDocumentManagerState extends State<MultimodalDocumentManager>
             Icon(
               MdiIcons.fileDocumentOutline,
               size: 64,
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
+              color: AppColors.textMedium,
             ),
             const SizedBox(height: 16),
             Text(
@@ -452,7 +435,7 @@ class _MultimodalDocumentManagerState extends State<MultimodalDocumentManager>
               style: GoogleFonts.inter(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                color: AppColors.textMedium,
               ),
             ),
             const SizedBox(height: 8),
@@ -460,7 +443,7 @@ class _MultimodalDocumentManagerState extends State<MultimodalDocumentManager>
               'Upload your first document to experience multimodal analysis',
               style: GoogleFonts.inter(
                 fontSize: 14,
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                color: AppColors.textMedium,
               ),
             ),
           ],
@@ -524,7 +507,7 @@ class _MultimodalDocumentManagerState extends State<MultimodalDocumentManager>
                         style: GoogleFonts.inter(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
-                          color: Theme.of(context).colorScheme.onSurface,
+                          color: AppColors.textDark,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -534,7 +517,7 @@ class _MultimodalDocumentManagerState extends State<MultimodalDocumentManager>
                         '${document.fileName} • ${_formatFileSize(document.fileSizeBytes)}',
                         style: GoogleFonts.inter(
                           fontSize: 14,
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                          color: AppColors.textMedium,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -544,7 +527,7 @@ class _MultimodalDocumentManagerState extends State<MultimodalDocumentManager>
                         _formatDate(document.uploadDate),
                         style: GoogleFonts.inter(
                           fontSize: 12,
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                          color: AppColors.textLight,
                         ),
                       ),
                     ],

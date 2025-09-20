@@ -48,11 +48,9 @@ class _SettingsPanelState extends State<SettingsPanel> with TickerProviderStateM
       opacity: _fadeAnimation,
       child: SlideTransition(
         position: _slideAnimation,
-        child: Container(
-          color: Theme.of(context).colorScheme.background,
-          child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: Column(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
@@ -165,7 +163,6 @@ class _SettingsPanelState extends State<SettingsPanel> with TickerProviderStateM
       ),
     ),
   ),
-),
 );
   }
 
@@ -396,7 +393,7 @@ class _SettingsPanelState extends State<SettingsPanel> with TickerProviderStateM
                     style: GoogleFonts.inter(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
-                      color: textColor ?? Theme.of(context).colorScheme.onSurface,
+                      color: textColor ?? AppColors.textDark,
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -404,7 +401,7 @@ class _SettingsPanelState extends State<SettingsPanel> with TickerProviderStateM
                     subtitle,
                     style: GoogleFonts.inter(
                       fontSize: 14,
-                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                      color: AppColors.textMedium,
                     ),
                   ),
                 ],
@@ -413,7 +410,7 @@ class _SettingsPanelState extends State<SettingsPanel> with TickerProviderStateM
             Icon(
               Icons.arrow_forward_ios,
               size: 16,
-              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4),
+              color: AppColors.textLight,
             ),
           ],
         ),
@@ -430,9 +427,9 @@ class _SettingsPanelState extends State<SettingsPanel> with TickerProviderStateM
           padding: const EdgeInsets.all(16),
           margin: const EdgeInsets.only(bottom: 16),
           decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surface,
+            color: AppColors.background,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.2)),
+            border: Border.all(color: AppColors.border),
           ),
           child: Row(
             children: [
@@ -464,7 +461,7 @@ class _SettingsPanelState extends State<SettingsPanel> with TickerProviderStateM
                       style: GoogleFonts.inter(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
-                        color: Theme.of(context).colorScheme.onSurface,
+                        color: AppColors.textDark,
                       ),
                     ),
                     const SizedBox(height: 4),
@@ -472,7 +469,7 @@ class _SettingsPanelState extends State<SettingsPanel> with TickerProviderStateM
                       user?.email ?? 'user@example.com',
                       style: GoogleFonts.inter(
                         fontSize: 14,
-                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                        color: AppColors.textMedium,
                       ),
                     ),
                     const SizedBox(height: 8),
@@ -498,9 +495,9 @@ class _SettingsPanelState extends State<SettingsPanel> with TickerProviderStateM
                 onPressed: () {
                   // TODO: Edit profile
                 },
-                icon: Icon(
+                icon: const Icon(
                   Icons.edit_outlined,
-                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                  color: AppColors.textMedium,
                 ),
               ),
             ],
