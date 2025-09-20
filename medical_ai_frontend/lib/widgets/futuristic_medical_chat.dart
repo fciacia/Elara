@@ -1,4 +1,4 @@
-  // ...imports remain unchanged...
+// ...imports remain unchanged...
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -32,6 +32,14 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
   List<PlatformFile> _uploadedFiles = [];
   bool _isProcessing = false;
   String _processingStatus = '';
+
+  // Patient selection state
+  String? selectedPatient;
+  final List<Map<String, String>> patients = [
+    {'name': 'Emily Chen', 'id': 'P12345'},
+    {'name': 'John Doe', 'id': 'P67890'},
+    {'name': 'Alice Smith', 'id': 'P54321'},
+  ];
 
   @override
   void initState() {

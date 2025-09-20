@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart' as auth;
 import '../providers/app_provider.dart';
 import '../utils/app_colors.dart';
+import 'background_layout.dart';
 
 class SettingsPanel extends StatefulWidget {
   const SettingsPanel({super.key});
@@ -44,129 +45,152 @@ class _SettingsPanelState extends State<SettingsPanel> with TickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
-    return FadeTransition(
-      opacity: _fadeAnimation,
-      child: SlideTransition(
-        position: _slideAnimation,
-        child: Container(
-          color: Theme.of(context).colorScheme.background,
-          child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Settings',
-            style: GoogleFonts.inter(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: Theme.of(context).colorScheme.onSurface,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'Customize your Medical AI experience',
-            style: GoogleFonts.inter(
-              fontSize: 16,
-              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
-            ),
-          ),
-          const SizedBox(height: 32),
-          Expanded(
-            child: SingleChildScrollView(
+    return Consumer<AppProvider>(
+      builder: (context, appProvider, child) {
+        final isDarkMode = appProvider.isDarkMode;
+        
+        Widget sidebar = const SizedBox.shrink(); // No sidebar for settings
+        Widget homeContent = FadeTransition(
+          opacity: _fadeAnimation,
+          child: SlideTransition(
+            position: _slideAnimation,
+            child: Padding(
+              padding: const EdgeInsets.all(24),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildSettingsSection(
-                    'Appearance',
-                    [
-                      _buildThemeToggle(),
-                      _buildLanguageSelector(),
-                    ],
+                  // Header with semi-transparent background for better readability
+                  Container(
+                    padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withValues(alpha: 0.3),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Settings',
+                          style: GoogleFonts.inter(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Customize your Medical AI experience',
+                          style: GoogleFonts.inter(
+                            fontSize: 16,
+                            color: Colors.white.withValues(alpha: 0.9),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                   const SizedBox(height: 32),
-                  _buildSettingsSection(
-                    'Notifications',
-                    [
-                      _buildSettingsTile(
-                        'Document Processing',
-                        'Get notified when documents are processed',
-                        Icons.notifications_outlined,
-                        true,
-                        (value) {},
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          _buildSettingsSection(
+                            'Appearance',
+                            [
+                              _buildThemeToggle(),
+                              _buildLanguageSelector(),
+                            ],
+                          ),
+                          const SizedBox(height: 32),
+                          _buildSettingsSection(
+                            'Notifications',
+                            [
+                              _buildSettingsTile(
+                                'Document Processing',
+                                'Get notified when documents are processed',
+                                Icons.notifications_outlined,
+                                true,
+                                (value) {},
+                              ),
+                              _buildSettingsTile(
+                                'AI Insights',
+                                'Receive AI-generated insights and alerts',
+                                Icons.lightbulb_outlined,
+                                true,
+                                (value) {},
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 32),
+                          _buildSettingsSection(
+                            'Privacy & Security',
+                            [
+                              _buildSettingsTile(
+                                'Data Encryption',
+                                'All data is encrypted end-to-end',
+                                Icons.security_outlined,
+                                true,
+                                null, // Non-toggleable
+                              ),
+                              _buildSettingsItem(
+                                'Privacy Policy',
+                                'Review our privacy practices',
+                                Icons.privacy_tip_outlined,
+                                () {},
+                              ),
+                              _buildSettingsItem(
+                                'Terms of Service',
+                                'Read our terms and conditions',
+                                Icons.description_outlined,
+                                () {},
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 32),
+                          _buildSettingsSection(
+                            'Account',
+                            [
+                              _buildAccountInfo(),
+                              _buildSettingsItem(
+                                'Export Data',
+                                'Download your data',
+                                Icons.download_outlined,
+                                () {},
+                              ),
+                              _buildSettingsItem(
+                                'Sign Out',
+                                'Sign out from your account',
+                                Icons.logout_outlined,
+                                () async {
+                                  final navigator = Navigator.of(context);
+                                  await context.read<auth.AuthProvider>().logout();
+                                  if (mounted) {
+                                    navigator.pushNamedAndRemoveUntil(
+                                      '/login',
+                                      (route) => false,
+                                    );
+                                  }
+                                },
+                                textColor: AppColors.accent,
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
-                      _buildSettingsTile(
-                        'AI Insights',
-                        'Receive AI-generated insights and alerts',
-                        Icons.lightbulb_outlined,
-                        true,
-                        (value) {},
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 32),
-                  _buildSettingsSection(
-                    'Privacy & Security',
-                    [
-                      _buildSettingsTile(
-                        'Data Encryption',
-                        'All data is encrypted end-to-end',
-                        Icons.security_outlined,
-                        true,
-                        null, // Non-toggleable
-                      ),
-                      _buildSettingsItem(
-                        'Privacy Policy',
-                        'Review our privacy practices',
-                        Icons.privacy_tip_outlined,
-                        () {},
-                      ),
-                      _buildSettingsItem(
-                        'Terms of Service',
-                        'Read our terms and conditions',
-                        Icons.description_outlined,
-                        () {},
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 32),
-                  _buildSettingsSection(
-                    'Account',
-                    [
-                      _buildAccountInfo(),
-                      _buildSettingsItem(
-                        'Export Data',
-                        'Download your data',
-                        Icons.download_outlined,
-                        () {},
-                      ),
-                      _buildSettingsItem(
-                        'Sign Out',
-                        'Sign out from your account',
-                        Icons.logout_outlined,
-                        () async {
-                          final navigator = Navigator.of(context);
-                          await context.read<auth.AuthProvider>().logout();
-                          if (mounted) {
-                            navigator.pushNamedAndRemoveUntil(
-                              '/login',
-                              (route) => false,
-                            );
-                          }
-                        },
-                        textColor: AppColors.accent,
-                      ),
-                    ],
+                    ),
                   ),
                 ],
               ),
             ),
           ),
-        ],
-      ),
-    ),
-  ),
-),
-);
+        );
+        
+        return BackgroundLayout(
+          sidebar: sidebar, 
+          homeContent: homeContent,
+          isDarkMode: isDarkMode,
+        );
+      },
+    );
   }
 
   Widget _buildSettingsSection(String title, List<Widget> children) {
@@ -174,11 +198,16 @@ class _SettingsPanelState extends State<SettingsPanel> with TickerProviderStateM
       width: double.infinity,
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
+        // Semi-transparent background to blend with background image
+        color: Colors.black.withValues(alpha: 0.4),
         borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: Colors.white.withValues(alpha: 0.2),
+          width: 1,
+        ),
         boxShadow: [
           BoxShadow(
-            color: Theme.of(context).shadowColor.withValues(alpha: 0.1),
+            color: Colors.black.withValues(alpha: 0.2),
             blurRadius: 10,
             offset: const Offset(0, 5),
           ),
@@ -192,7 +221,7 @@ class _SettingsPanelState extends State<SettingsPanel> with TickerProviderStateM
             style: GoogleFonts.inter(
               fontSize: 18,
               fontWeight: FontWeight.w600,
-              color: Theme.of(context).colorScheme.onSurface,
+              color: Colors.white,
             ),
           ),
           const SizedBox(height: 20),
@@ -227,12 +256,12 @@ class _SettingsPanelState extends State<SettingsPanel> with TickerProviderStateM
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withValues(alpha: 0.1),
+                  color: Colors.white.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: const Icon(
                   Icons.translate_outlined,
-                  color: AppColors.primary,
+                  color: Colors.white,
                   size: 20,
                 ),
               ),
@@ -246,7 +275,7 @@ class _SettingsPanelState extends State<SettingsPanel> with TickerProviderStateM
                       style: GoogleFonts.inter(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
-                        color: Theme.of(context).colorScheme.onSurface,
+                        color: Colors.white,
                       ),
                     ),
                     const SizedBox(height: 4),
@@ -254,38 +283,52 @@ class _SettingsPanelState extends State<SettingsPanel> with TickerProviderStateM
                       'Choose your preferred language',
                       style: GoogleFonts.inter(
                         fontSize: 14,
-                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                        color: Colors.white.withValues(alpha: 0.8),
                       ),
                     ),
                   ],
                 ),
               ),
-              DropdownButton<SupportedLanguage>(
-                value: appProvider.currentLanguage,
-                underline: const SizedBox.shrink(),
-                items: [
-                  DropdownMenuItem(
-                    value: SupportedLanguage.english,
-                    child: Text('🇺🇸 English', style: GoogleFonts.inter(fontSize: 14)),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
+                    color: Colors.white.withValues(alpha: 0.3),
+                    width: 1,
                   ),
-                  DropdownMenuItem(
-                    value: SupportedLanguage.malay,
-                    child: Text('🇲🇾 Bahasa Melayu', style: GoogleFonts.inter(fontSize: 14)),
-                  ),
-                  DropdownMenuItem(
-                    value: SupportedLanguage.mandarin,
-                    child: Text('🇨🇳 中文', style: GoogleFonts.inter(fontSize: 14)),
-                  ),
-                  DropdownMenuItem(
-                    value: SupportedLanguage.tamil,
-                    child: Text('🇮🇳 தமிழ்', style: GoogleFonts.inter(fontSize: 14)),
-                  ),
-                ],
-                onChanged: (language) {
-                  if (language != null) {
-                    appProvider.changeLanguage(language);
-                  }
-                },
+                ),
+                child: DropdownButton<SupportedLanguage>(
+                  value: appProvider.currentLanguage,
+                  underline: const SizedBox.shrink(),
+                  dropdownColor: Colors.black.withValues(alpha: 0.9),
+                  items: [
+                    DropdownMenuItem(
+                      value: SupportedLanguage.english,
+                      child: Text('🇺🇸 English', style: GoogleFonts.inter(fontSize: 14, color: Colors.white)),
+                    ),
+                    DropdownMenuItem(
+                      value: SupportedLanguage.malay,
+                      child: Text('🇲🇾 Bahasa Melayu', style: GoogleFonts.inter(fontSize: 14, color: Colors.white)),
+                    ),
+                    DropdownMenuItem(
+                      value: SupportedLanguage.mandarin,
+                      child: Text('🇨🇳 中文', style: GoogleFonts.inter(fontSize: 14, color: Colors.white)),
+                    ),
+                    DropdownMenuItem(
+                      value: SupportedLanguage.tamil,
+                      child: Text('🇮🇳 தமிழ்', style: GoogleFonts.inter(fontSize: 14, color: Colors.white)),
+                    ),
+                  ],
+                  style: GoogleFonts.inter(fontSize: 14, color: Colors.white),
+                  icon: Icon(Icons.arrow_drop_down, color: Colors.white.withValues(alpha: 0.8)),
+                  onChanged: (language) {
+                    if (language != null) {
+                      appProvider.changeLanguage(language);
+                    }
+                  },
+                ),
               ),
             ],
           ),
@@ -309,12 +352,12 @@ class _SettingsPanelState extends State<SettingsPanel> with TickerProviderStateM
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: AppColors.primary.withValues(alpha: 0.1),
+              color: Colors.white.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(20),
             ),
             child: Icon(
               icon,
-              color: AppColors.primary,
+              color: Colors.white,
               size: 20,
             ),
           ),
@@ -328,7 +371,7 @@ class _SettingsPanelState extends State<SettingsPanel> with TickerProviderStateM
                   style: GoogleFonts.inter(
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
-                    color: Theme.of(context).colorScheme.onSurface,
+                    color: Colors.white,
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -336,7 +379,7 @@ class _SettingsPanelState extends State<SettingsPanel> with TickerProviderStateM
                   subtitle,
                   style: GoogleFonts.inter(
                     fontSize: 14,
-                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                    color: Colors.white.withValues(alpha: 0.8),
                   ),
                 ),
               ],
@@ -347,11 +390,14 @@ class _SettingsPanelState extends State<SettingsPanel> with TickerProviderStateM
               value: value,
               onChanged: onChanged,
               activeColor: const Color.fromRGBO(124, 58, 237, 1),
+              activeTrackColor: const Color.fromRGBO(124, 58, 237, 0.3),
+              inactiveThumbColor: Colors.white.withValues(alpha: 0.8),
+              inactiveTrackColor: Colors.white.withValues(alpha: 0.3),
             )
           else
             Icon(
               value ? Icons.check_circle_outlined : Icons.cancel_outlined,
-              color: value ? AppColors.success : AppColors.textLight,
+              color: value ? Colors.green : Colors.red,
               size: 20,
             ),
         ],
@@ -377,12 +423,12 @@ class _SettingsPanelState extends State<SettingsPanel> with TickerProviderStateM
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color: (textColor ?? AppColors.primary).withValues(alpha: 0.1),
+                color: Colors.white.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Icon(
                 icon,
-                color: textColor ?? AppColors.primary,
+                color: textColor ?? Colors.white,
                 size: 20,
               ),
             ),
@@ -396,7 +442,7 @@ class _SettingsPanelState extends State<SettingsPanel> with TickerProviderStateM
                     style: GoogleFonts.inter(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
-                      color: textColor ?? Theme.of(context).colorScheme.onSurface,
+                      color: textColor ?? Colors.white,
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -404,7 +450,7 @@ class _SettingsPanelState extends State<SettingsPanel> with TickerProviderStateM
                     subtitle,
                     style: GoogleFonts.inter(
                       fontSize: 14,
-                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                      color: Colors.white.withValues(alpha: 0.8),
                     ),
                   ),
                 ],
@@ -413,7 +459,7 @@ class _SettingsPanelState extends State<SettingsPanel> with TickerProviderStateM
             Icon(
               Icons.arrow_forward_ios,
               size: 16,
-              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4),
+              color: Colors.white.withValues(alpha: 0.6),
             ),
           ],
         ),
@@ -430,9 +476,9 @@ class _SettingsPanelState extends State<SettingsPanel> with TickerProviderStateM
           padding: const EdgeInsets.all(16),
           margin: const EdgeInsets.only(bottom: 16),
           decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surface,
+            color: Colors.white.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.2)),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.3)),
           ),
           child: Row(
             children: [
@@ -464,7 +510,7 @@ class _SettingsPanelState extends State<SettingsPanel> with TickerProviderStateM
                       style: GoogleFonts.inter(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
-                        color: Theme.of(context).colorScheme.onSurface,
+                        color: Colors.white,
                       ),
                     ),
                     const SizedBox(height: 4),
@@ -472,21 +518,21 @@ class _SettingsPanelState extends State<SettingsPanel> with TickerProviderStateM
                       user?.email ?? 'user@example.com',
                       style: GoogleFonts.inter(
                         fontSize: 14,
-                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                        color: Colors.white.withValues(alpha: 0.8),
                       ),
                     ),
                     const SizedBox(height: 8),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
-                        color: AppColors.primary.withValues(alpha: 0.1),
+                        color: Colors.white.withValues(alpha: 0.2),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(
                         authProvider.getRoleDisplayName(),
                         style: GoogleFonts.inter(
                           fontSize: 12,
-                          color: AppColors.primary,
+                          color: Colors.white,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -500,7 +546,7 @@ class _SettingsPanelState extends State<SettingsPanel> with TickerProviderStateM
                 },
                 icon: Icon(
                   Icons.edit_outlined,
-                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                  color: Colors.white.withValues(alpha: 0.8),
                 ),
               ),
             ],

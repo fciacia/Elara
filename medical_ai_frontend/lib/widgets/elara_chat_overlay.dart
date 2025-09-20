@@ -59,26 +59,41 @@ class ElaraChatOverlay extends StatelessWidget {
                         // Header with close button
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 18),
-                          child: Row(
+                          child: // Fixed header Row in your elara_chat_overlay.dart
+                          Row(
                             children: [
-                              const Icon(Icons.auto_awesome, color: Colors.white, size: 28),
-                              const SizedBox(width: 12),
-                              Text(
-                                'Elara AI Chat',
-                                style: GoogleFonts.orbitron(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
+                              // Icon
+                              Icon(
+                                Icons.auto_awesome,
+                                color: Colors.white,
+                                size: 20,
+                              ),
+                              const SizedBox(width: 8),
+                              // Use Expanded to prevent overflow
+                              Expanded(
+                              child: Text(
+                              'Elara AI Chat',
+                              style: GoogleFonts.inter(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                            ),
+                            overflow: TextOverflow.ellipsis, // Handle text overflow
+                            maxLines: 1,
+                            ),
                                 ),
-                              ),
-                              const Spacer(),
-                              IconButton(
-                                icon: const Icon(Icons.close, color: Colors.white, size: 28),
-                                onPressed: onClose,
-                                tooltip: 'Close chat',
-                              ),
-                            ],
-                          ),
+                   // Close button
+    IconButton(
+      onPressed: onClose,
+      icon: const Icon(Icons.close, color: Colors.white, size: 18),
+      padding: EdgeInsets.zero,
+      constraints: const BoxConstraints(
+        minWidth: 30,
+        minHeight: 30,
+      ),
+    ),
+  ],
+)
                         ),
                         const Divider(height: 1, thickness: 1, color: Colors.white24),
                         // Chat messages area

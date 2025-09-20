@@ -1,3 +1,4 @@
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../utils/app_colors.dart';
@@ -43,49 +44,67 @@ class CustomSidebar extends StatelessWidget {
       ),
       child: Container(
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.95),
-          border: Border(
-            right: BorderSide(color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.2), width: 1),
+          image: const DecorationImage(
+            image: AssetImage('lib/assets/background.png'),
+            fit: BoxFit.cover,
+            alignment: Alignment.centerLeft,
           ),
-          // Add shadow to make sidebar stand out against background
+          border: Border(
+            right: BorderSide(color: Colors.white.withValues(alpha: 0.2), width: 1),
+          ),
           boxShadow: [
             BoxShadow(
-              color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.1),
+              color: Colors.black.withValues(alpha: 0.3),
               blurRadius: 10,
               offset: const Offset(2, 0),
             ),
           ],
         ),
-        child: Column(
-          children: [
-            // Header
-            Container(
-              height: 80,
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-              child: isCollapsed
-                  ? Center(
-                      child: Container(
-                        width: 40,
-                        height: 40,
-                        decoration: BoxDecoration(
-                          color: AppColors.primary,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: const Icon(
-                          Icons.medical_services_outlined,
-                          color: Colors.white,
-                          size: 24,
-                        ),
-                      ),
-                    )
-                  : Row(
-                      children: [
-                        Container(
+        child: Container(
+          // Semi-transparent overlay for better readability
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Colors.black.withValues(alpha: 0.6),
+                Colors.black.withValues(alpha: 0.4),
+                Colors.black.withValues(alpha: 0.7),
+              ],
+              stops: const [0.0, 0.5, 1.0],
+            ),
+          ),
+          child: Column(
+            children: [
+              // Header with enhanced background
+              Container(
+                height: 80,
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      Colors.black.withValues(alpha: 0.8),
+                      Colors.black.withValues(alpha: 0.4),
+                    ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  ),
+                ),
+                child: isCollapsed
+                    ? Center(
+                        child: Container(
                           width: 40,
                           height: 40,
                           decoration: BoxDecoration(
                             color: AppColors.primary,
                             borderRadius: BorderRadius.circular(10),
+                            boxShadow: [
+                              BoxShadow(
+                                color: AppColors.primary.withValues(alpha: 0.3),
+                                blurRadius: 8,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
                           ),
                           child: const Icon(
                             Icons.medical_services_outlined,
@@ -93,88 +112,148 @@ class CustomSidebar extends StatelessWidget {
                             size: 24,
                           ),
                         ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Text(
-                            'Medical AI',
-                            style: GoogleFonts.inter(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Theme.of(context).colorScheme.onSurface,
+                      )
+                    : Row(
+                        children: [
+                          Container(
+                            width: 40,
+                            height: 40,
+                            decoration: BoxDecoration(
+                              color: AppColors.primary,
+                              borderRadius: BorderRadius.circular(10),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: AppColors.primary.withValues(alpha: 0.3),
+                                  blurRadius: 8,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
                             ),
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 1,
-                            textDirection: TextDirection.ltr,
+                            child: const Icon(
+                              Icons.medical_services_outlined,
+                              color: Colors.white,
+                              size: 24,
+                            ),
                           ),
-                        ),
-                        const SizedBox(width: 8),
-                        IconButton(
-                          onPressed: onToggleCollapse,
-                          icon: Icon(
-                            Icons.menu,
-                            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              'Medical AI',
+                              style: GoogleFonts.inter(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                                shadows: [
+                                  Shadow(
+                                    color: Colors.black.withValues(alpha: 0.5),
+                                    blurRadius: 4,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ],
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                              textDirection: TextDirection.ltr,
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-            ),
+                          const SizedBox(width: 8),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white.withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: IconButton(
+                              onPressed: onToggleCollapse,
+                              icon: Icon(
+                                Icons.menu,
+                                color: Colors.white.withValues(alpha: 0.9),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+              ),
 
-            // Collapse/Expand button for collapsed state
-            if (isCollapsed)
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: IconButton(
-                  onPressed: onToggleCollapse,
-                  icon: Icon(
-                    Icons.menu_open,
-                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+              // Collapse/Expand button for collapsed state
+              if (isCollapsed)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: IconButton(
+                      onPressed: onToggleCollapse,
+                      icon: Icon(
+                        Icons.menu_open,
+                        color: Colors.white.withValues(alpha: 0.9),
+                      ),
+                    ),
+                  ),
+                ),
+
+              // Navigation Items
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: Column(
+                    children: navItems.asMap().entries.map((entry) {
+                      final index = entry.key;
+                      final item = entry.value;
+                      final isSelected = selectedIndex == index;
+
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: _buildNavItem(
+                          context,
+                          item,
+                          isSelected,
+                          () => onItemSelected(index),
+                        ),
+                      );
+                    }).toList(),
                   ),
                 ),
               ),
 
-            // Navigation Items
-            Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                child: Column(
-                  children: navItems.asMap().entries.map((entry) {
-                    final index = entry.key;
-                    final item = entry.value;
-                    final isSelected = selectedIndex == index;
-
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 8),
-                      child: _buildNavItem(
-                        context,
-                        item,
-                        isSelected,
-                        () => onItemSelected(index),
-                      ),
-                    );
-                  }).toList(),
-                ),
-              ),
-            ),
-
-            // Footer
-            if (!isCollapsed)
-              Container(
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  children: [
-                    Divider(color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.2)),
-                    const SizedBox(height: 16),
-                    Text(
-                      'v1.0.0',
-                      style: GoogleFonts.inter(
-                        fontSize: 12,
-                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4),
-                      ),
+              // Footer with enhanced background
+              if (!isCollapsed)
+                Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        Colors.black.withValues(alpha: 0.4),
+                        Colors.black.withValues(alpha: 0.8),
+                      ],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
                     ),
-                  ],
+                  ),
+                  child: Column(
+                    children: [
+                      Divider(color: Colors.white.withValues(alpha: 0.3)),
+                      const SizedBox(height: 16),
+                      Text(
+                        'v1.0.0',
+                        style: GoogleFonts.inter(
+                          fontSize: 12,
+                          color: Colors.white.withValues(alpha: 0.7),
+                          shadows: [
+                            Shadow(
+                              color: Colors.black.withValues(alpha: 0.5),
+                              blurRadius: 2,
+                              offset: const Offset(0, 1),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -186,6 +265,8 @@ class CustomSidebar extends StatelessWidget {
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(12),
+        hoverColor: Colors.white.withValues(alpha: 0.1),
+        splashColor: Colors.white.withValues(alpha: 0.15),
         child: Container(
           width: double.infinity,
           constraints: BoxConstraints(
@@ -197,13 +278,27 @@ class CustomSidebar extends StatelessWidget {
             vertical: 14,
           ),
           decoration: BoxDecoration(
-            color: isSelected 
-                ? AppColors.primary.withValues(alpha: 0.15) 
-                : Colors.transparent,
+            gradient: isSelected 
+                ? LinearGradient(
+                    colors: [
+                      AppColors.primary.withValues(alpha: 0.3),
+                      AppColors.primary.withValues(alpha: 0.1),
+                    ],
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,
+                  )
+                : null,
             borderRadius: BorderRadius.circular(12),
             border: isSelected
-                ? Border.all(color: AppColors.primary.withValues(alpha: 0.3), width: 1)
+                ? Border.all(color: AppColors.primary.withValues(alpha: 0.6), width: 1)
                 : null,
+            boxShadow: isSelected ? [
+              BoxShadow(
+                color: AppColors.primary.withValues(alpha: 0.2),
+                blurRadius: 8,
+                offset: const Offset(0, 2),
+              ),
+            ] : null,
           ),
           child: isCollapsed
               ? Center(
@@ -211,8 +306,15 @@ class CustomSidebar extends StatelessWidget {
                     isSelected ? item.selectedIcon : item.icon,
                     color: isSelected 
                         ? AppColors.primary 
-                        : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                        : Colors.white.withValues(alpha: 0.9),
                     size: 22,
+                    shadows: [
+                      Shadow(
+                        color: Colors.black.withValues(alpha: 0.3),
+                        blurRadius: 2,
+                        offset: const Offset(0, 1),
+                      ),
+                    ],
                   ),
                 )
               : Row(
@@ -223,8 +325,15 @@ class CustomSidebar extends StatelessWidget {
                       isSelected ? item.selectedIcon : item.icon,
                       color: isSelected 
                           ? AppColors.primary 
-                          : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                          : Colors.white.withValues(alpha: 0.9),
                       size: 22,
+                      shadows: [
+                        Shadow(
+                          color: Colors.black.withValues(alpha: 0.3),
+                          blurRadius: 2,
+                          offset: const Offset(0, 1),
+                        ),
+                      ],
                     ),
                     const SizedBox(width: 16),
                     Expanded(
@@ -235,7 +344,14 @@ class CustomSidebar extends StatelessWidget {
                           fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
                           color: isSelected 
                               ? AppColors.primary 
-                              : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
+                              : Colors.white.withValues(alpha: 0.95),
+                          shadows: [
+                            Shadow(
+                              color: Colors.black.withValues(alpha: 0.5),
+                              blurRadius: 2,
+                              offset: const Offset(0, 1),
+                            ),
+                          ],
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,

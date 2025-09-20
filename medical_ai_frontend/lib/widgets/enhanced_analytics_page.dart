@@ -55,27 +55,46 @@ class _EnhancedAnalyticsPageState extends State<EnhancedAnalyticsPage>
           child: SlideTransition(
             position: _slideAnimation,
             child: Container(
-              color: Theme.of(context).colorScheme.background, // Match SettingsPanel background
+              // Use your custom background image
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/background.png'),
+                  fit: BoxFit.cover,
+                ),
+              ),
               child: Padding(
                 padding: const EdgeInsets.all(24),
-                child: SingleChildScrollView( // Added scrollable container to handle overflow
+                child: SingleChildScrollView(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        'Analytics Dashboard',
-                        style: GoogleFonts.inter(
-                          fontSize: 32,
-                          fontWeight: FontWeight.bold,
-                          color: Theme.of(context).colorScheme.onSurface, // Match SettingsPanel text color
+                      // Header with better contrast for background image
+                      Container(
+                        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+                        decoration: BoxDecoration(
+                          color: Colors.black.withValues(alpha: 0.3),
+                          borderRadius: BorderRadius.circular(12),
                         ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Comprehensive insights into system performance and user activity',
-                        style: GoogleFonts.inter(
-                          fontSize: 16,
-                          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7), // Match SettingsPanel subtitle color
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Analytics Dashboard',
+                              style: GoogleFonts.inter(
+                                fontSize: 32,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              'Comprehensive insights into system performance and user activity',
+                              style: GoogleFonts.inter(
+                                fontSize: 16,
+                                color: Colors.white.withValues(alpha: 0.9),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                       const SizedBox(height: 32),
@@ -126,13 +145,12 @@ class _EnhancedAnalyticsPageState extends State<EnhancedAnalyticsPage>
           itemCount: metrics.length,
           itemBuilder: (context, index) {
             final metric = metrics[index];
-            return Container(
+            return HoverContainer(
+              baseColor: Colors.black.withValues(alpha: 0.4), // Semi-transparent for background image
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
               padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.transparent, // Transparent background
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppColors.border),
-              ),
+              enableEnlarge: true,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -143,7 +161,7 @@ class _EnhancedAnalyticsPageState extends State<EnhancedAnalyticsPage>
                     style: GoogleFonts.inter(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      color: Theme.of(context).colorScheme.onSurface,
+                      color: Colors.white,
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -151,7 +169,7 @@ class _EnhancedAnalyticsPageState extends State<EnhancedAnalyticsPage>
                     metric['value'] as String,
                     style: GoogleFonts.inter(
                       fontSize: 14,
-                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                      color: Colors.white.withValues(alpha: 0.8),
                     ),
                   ),
                 ],
@@ -169,7 +187,7 @@ class _EnhancedAnalyticsPageState extends State<EnhancedAnalyticsPage>
         final isMobile = constraints.maxWidth < 768;
         if (isMobile) {
           return Column(
-        children: [
+            children: [
               _buildLineChart(),
               const SizedBox(height: 16),
               _buildPieChart(),
@@ -177,17 +195,17 @@ class _EnhancedAnalyticsPageState extends State<EnhancedAnalyticsPage>
           );
         }
         return Row(
-            children: [
-              Expanded(
-                flex: 2,
-                child: _buildLineChart(),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
+          children: [
+            Expanded(
+              flex: 2,
+              child: _buildLineChart(),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
               flex: 1,
-                child: _buildPieChart(),
-              ),
-            ],
+              child: _buildPieChart(),
+            ),
+          ],
         );
       },
     );
@@ -195,9 +213,9 @@ class _EnhancedAnalyticsPageState extends State<EnhancedAnalyticsPage>
 
   Widget _buildLineChart() {
     return HoverContainer(
-      baseColor: const Color(0xFF0F0A1B),
+      baseColor: Colors.black.withValues(alpha: 0.4),
       borderRadius: BorderRadius.circular(16),
-      border: Border.all(color: AppColors.border),
+      border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
       padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -220,7 +238,7 @@ class _EnhancedAnalyticsPageState extends State<EnhancedAnalyticsPage>
                   leftTitles: AxisTitles(sideTitles: SideTitles(showTitles: true)),
                   bottomTitles: AxisTitles(sideTitles: SideTitles(showTitles: true)),
                   topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                  rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: true)), // Corrected access to 'showTitles'
+                  rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
                 ),
                 borderData: FlBorderData(show: false),
                 lineBarsData: [
@@ -254,9 +272,9 @@ class _EnhancedAnalyticsPageState extends State<EnhancedAnalyticsPage>
 
   Widget _buildPieChart() {
     return HoverContainer(
-      baseColor: const Color(0xFF0F0A1B),
+      baseColor: Colors.black.withValues(alpha: 0.4),
       borderRadius: BorderRadius.circular(16),
-      border: Border.all(color: AppColors.border),
+      border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
       padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -316,9 +334,9 @@ class _EnhancedAnalyticsPageState extends State<EnhancedAnalyticsPage>
     ];
 
     return HoverContainer(
-      baseColor: const Color(0xFF0F0A1B),
+      baseColor: Colors.black.withValues(alpha: 0.4),
       borderRadius: BorderRadius.circular(16),
-      border: Border.all(color: AppColors.border),
+      border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
       padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -339,13 +357,13 @@ class _EnhancedAnalyticsPageState extends State<EnhancedAnalyticsPage>
               2: FlexColumnWidth(2),
               3: FlexColumnWidth(2),
             },
-        children: [
+            children: [
               TableRow(
-        decoration: BoxDecoration(
-                  color: Color(0xFF0F0A1B),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
-          children: [
+                children: [
                   _buildTableHeader('User'),
                   _buildTableHeader('Consultations'),
                   _buildTableHeader('Accuracy'),
@@ -353,7 +371,7 @@ class _EnhancedAnalyticsPageState extends State<EnhancedAnalyticsPage>
                 ],
               ),
               ...users.map((user) => TableRow(
-      children: [
+                children: [
                   _buildTableCell(user['name'] as String),
                   _buildTableCell(user['consultations'].toString()),
                   _buildTableCell(user['accuracy'] as String),
@@ -375,7 +393,7 @@ class _EnhancedAnalyticsPageState extends State<EnhancedAnalyticsPage>
         style: GoogleFonts.inter(
           fontSize: 16,
           fontWeight: FontWeight.bold,
-          color: const Color.fromARGB(255, 255, 255, 255),
+          color: Colors.white,
         ),
       ),
     );
@@ -388,7 +406,7 @@ class _EnhancedAnalyticsPageState extends State<EnhancedAnalyticsPage>
         text,
         style: GoogleFonts.inter(
           fontSize: 14,
-          color: Colors.white, // Changed from AppColors.textMedium to white
+          color: Colors.white.withValues(alpha: 0.9),
         ),
       ),
     );
@@ -403,19 +421,19 @@ class _EnhancedAnalyticsPageState extends State<EnhancedAnalyticsPage>
     ];
 
     return HoverContainer(
-      baseColor: const Color(0xFF0F0A1B),
+      baseColor: Colors.black.withValues(alpha: 0.4),
       borderRadius: BorderRadius.circular(16),
-      border: Border.all(color: AppColors.border),
+      border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
       padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
+        children: [
+          Text(
             'Real-time Activity Feed',
             style: GoogleFonts.inter(
               fontSize: 18,
-                  fontWeight: FontWeight.bold,
-              color: const Color.fromARGB(255, 255, 255, 255),
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
             ),
           ),
           const SizedBox(height: 20),
@@ -433,7 +451,7 @@ class _EnhancedAnalyticsPageState extends State<EnhancedAnalyticsPage>
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: const Color(0xFF0F0A1B),
+              color: Colors.white.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Icon(
@@ -452,14 +470,14 @@ class _EnhancedAnalyticsPageState extends State<EnhancedAnalyticsPage>
                   style: GoogleFonts.inter(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
-                    color: const Color.fromARGB(255, 255, 255, 255),
+                    color: Colors.white,
                   ),
                 ),
                 Text(
                   '${activity['user']} • ${activity['time']}',
                   style: GoogleFonts.inter(
                     fontSize: 12,
-                    color: const Color.fromARGB(255, 255, 255, 255),
+                    color: Colors.white.withValues(alpha: 0.8),
                   ),
                 ),
               ],
@@ -471,14 +489,14 @@ class _EnhancedAnalyticsPageState extends State<EnhancedAnalyticsPage>
   }
 }
 
-
-// Added a reusable HoverContainer widget
+// Updated HoverContainer with semi-transparent background support
 class HoverContainer extends StatefulWidget {
   final Widget child;
   final Color baseColor;
   final BorderRadius? borderRadius;
   final BoxBorder? border;
   final EdgeInsetsGeometry? padding;
+  final bool enableEnlarge;
 
   const HoverContainer({
     super.key,
@@ -487,6 +505,7 @@ class HoverContainer extends StatefulWidget {
     this.borderRadius,
     this.border,
     this.padding,
+    this.enableEnlarge = false,
   });
 
   @override
@@ -502,16 +521,30 @@ class _HoverContainerState extends State<HoverContainer> {
       onEnter: (_) => setState(() => _isHovered = true),
       onExit: (_) => setState(() => _isHovered = false),
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
         padding: widget.padding,
+        transform: widget.enableEnlarge && _isHovered
+            ? (Matrix4.identity()
+                ..translate(-3.0, -3.0)
+                ..scale(1.02))
+            : Matrix4.identity(),
         decoration: BoxDecoration(
-          color: widget.baseColor.withOpacity(_isHovered ? 0.6 : 0.9),
+          color: _isHovered 
+            ? widget.baseColor.withValues(alpha: (widget.baseColor.alpha / 255) + 0.1)
+            : widget.baseColor,
           borderRadius: widget.borderRadius ?? BorderRadius.circular(16),
           border: widget.border,
+          boxShadow: _isHovered ? [
+            BoxShadow(
+              color: Colors.white.withValues(alpha: 0.1),
+              blurRadius: 15,
+              offset: const Offset(0, 5),
+            ),
+          ] : null,
         ),
         child: widget.child,
       ),
     );
   }
 }
-
