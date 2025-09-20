@@ -6,13 +6,15 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import '../../providers/auth_provider.dart' as auth;
 import '../../providers/document_provider.dart';
 import '../../providers/chat_provider.dart';
+import '../../providers/app_provider.dart';
 import '../../utils/app_colors.dart';
 import '../../widgets/custom_sidebar.dart';
 import '../../widgets/dashboard_content_clean.dart' as dashboard;
-import '../../widgets/document_management.dart';
-import '../../widgets/clean_chat_interface.dart';
-import '../../widgets/analytics_view.dart';
+import '../../widgets/futuristic_medical_chat.dart';
+import '../../widgets/multimodal_document_manager.dart';
+import '../../widgets/enhanced_analytics_page.dart';
 import '../../widgets/settings_panel.dart';
+import '../../widgets/background_layout.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -76,11 +78,11 @@ class _HomeScreenState extends State<HomeScreen> {
       case 0:
         return const dashboard.DashboardContent();
       case 1:
-        return const DocumentManagement();
+        return const MultimodalDocumentManager();
       case 2:
-        return const CleanChatInterface(); // Clean, professional AI chat interface
+        return const CleanChatInterface(); // Enhanced futuristic medical chat with advanced features
       case 3:
-        return const AnalyticsView();
+        return const EnhancedAnalyticsPage(); // Enhanced analytics with comprehensive insights
       case 4:
         return const SettingsPanel();
       default:
@@ -93,55 +95,49 @@ class _HomeScreenState extends State<HomeScreen> {
     final size = MediaQuery.of(context).size;
     final isMobile = size.width <= 768;
 
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      body: Row(
-        children: [
-          // Sidebar (only on desktop/tablet)
-          if (!isMobile)
-            CustomSidebar(
-              selectedIndex: _selectedIndex,
-              onItemSelected: (index) => setState(() => _selectedIndex = index),
-              navItems: _navItems,
-              isCollapsed: _isCollapsed,
-              onToggleCollapse: () => setState(() => _isCollapsed = !_isCollapsed),
-            ),
+    return Consumer<AppProvider>(
+      builder: (context, appProvider, child) {
+        Widget sidebar = !isMobile
+            ? CustomSidebar(
+                selectedIndex: _selectedIndex,
+                onItemSelected: (index) => setState(() => _selectedIndex = index),
+                navItems: _navItems,
+                isCollapsed: _isCollapsed,
+                onToggleCollapse: () => setState(() => _isCollapsed = !_isCollapsed),
+              )
+            : SizedBox.shrink();
 
-          // Main Content
-          Expanded(
-            child: Column(
-              children: [
-                // Top App Bar
-                _buildTopAppBar(),
+        Widget homeContent = Column(
+          children: [
+            _buildTopAppBar(),
+            Expanded(child: _getSelectedContent()),
+          ],
+        );
 
-                // Content Area
-                Expanded(
-                  child: _getSelectedContent(),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
+        Widget backgroundLayout = BackgroundLayout(
+          sidebar: sidebar,
+          homeContent: homeContent,
+          isDarkMode: appProvider.isDarkMode,
+        );
 
-      // Bottom Navigation (mobile only)
-      bottomNavigationBar: isMobile ? _buildBottomNavigation() : null,
-
-      // Floating Action Button (mobile only)
-      floatingActionButton: isMobile && _selectedIndex == 2 
-          ? FloatingActionButton(
-              onPressed: () {
-                // Start new chat
-                context.read<ChatProvider>().startNewSession(
-                  context.read<auth.AuthProvider>().currentUser?.role ?? auth.UserRole.nurse,
-                  null,
-                );
-              },
-              backgroundColor: AppColors.primary,
-              child: const Icon(Icons.add_comment_outlined, color: Colors.white),
-            )
-          : null,
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+        return Scaffold(
+          body: backgroundLayout,
+          bottomNavigationBar: isMobile ? _buildBottomNavigation() : null,
+          floatingActionButton: isMobile && _selectedIndex == 2
+              ? FloatingActionButton(
+                  onPressed: () {
+                    context.read<ChatProvider>().startNewSession(
+                      context.read<auth.AuthProvider>().currentUser?.role ?? auth.UserRole.nurse,
+                      null,
+                    );
+                  },
+                  backgroundColor: AppColors.primary,
+                  child: const Icon(Icons.add_comment_outlined, color: Colors.white),
+                )
+              : null,
+          floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+        );
+      },
     );
   }
 
@@ -414,13 +410,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-
-
-
-
-
-
-
   Widget _buildBottomNavigation() {
     return Container(
       decoration: BoxDecoration(
@@ -463,7 +452,4 @@ class _HomeScreenState extends State<HomeScreen> {
         return 'User';
     }
   }
-
-
-
 }

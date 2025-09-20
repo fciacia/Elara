@@ -1,3 +1,4 @@
+  // ...imports remain unchanged...
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -14,7 +15,10 @@ class CleanChatInterface extends StatefulWidget {
   State<CleanChatInterface> createState() => _CleanChatInterfaceState();
 }
 
-class _CleanChatInterfaceState extends State<CleanChatInterface> {
+class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProviderStateMixin {
+  AnimationController? _animationController;
+  Animation<double>? _fadeAnimation;
+  Animation<Offset>? _slideAnimation;
   final TextEditingController _messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   final String _selectedPatientId = 'P001'; // Default patient
@@ -26,7 +30,25 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> {
   String _processingStatus = '';
 
   @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 1200),
+      vsync: this,
+    );
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _animationController!, curve: Curves.easeInOut),
+    );
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0, 0.3),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(parent: _animationController!, curve: Curves.easeOutCubic));
+    _animationController!.forward();
+  }
+
+  @override
   void dispose() {
+  _animationController?.dispose();
     _messageController.dispose();
     _scrollController.dispose();
     super.dispose();
@@ -136,54 +158,56 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> {
     });
   }
 
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.grey[100],
-      child: Row(
-        children: [
-          // Left Sidebar - Chat Sessions & Patients
-          Container(
-            width: 280,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              border: Border(
-                right: BorderSide(color: Colors.grey.withValues(alpha: 0.2), width: 1),
+    return FadeTransition(
+      opacity: _fadeAnimation ?? const AlwaysStoppedAnimation(1.0),
+      child: SlideTransition(
+        position: _slideAnimation ?? const AlwaysStoppedAnimation(Offset.zero),
+        child: Container(
+          color: Colors.grey[100],
+          child: Row(
+            children: [
+              Container(
+                width: 280,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border(
+                    right: BorderSide(color: Colors.grey.withValues(alpha: 0.2), width: 1),
+                  ),
+                ),
+                child: _buildLeftSidebar(),
               ),
-            ),
-            child: _buildLeftSidebar(),
-          ),
-          
-          // Main Chat Area
-          Expanded(
-            flex: 2,
-            child: Stack(
-              children: [
-                Column(
+              Expanded(
+                flex: 2,
+                child: Stack(
                   children: [
-                    _buildChatHeader(),
-                    Expanded(child: _buildMessageListWithDragDrop()),
-                    _buildUploadedFilesPreview(),
-                    _buildMessageInput(),
+                    Column(
+                      children: [
+                        _buildChatHeader(),
+                        Expanded(child: _buildMessageListWithDragDrop()),
+                        _buildUploadedFilesPreview(),
+                        _buildMessageInput(),
+                      ],
+                    ),
+                    if (_isProcessing) _buildProcessingOverlay(),
                   ],
                 ),
-                if (_isProcessing) _buildProcessingOverlay(),
-              ],
-            ),
-          ),
-          
-          // Right Sidebar - Patient Context
-          Container(
-            width: 300,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              border: Border(
-                left: BorderSide(color: Colors.grey.withValues(alpha: 0.2), width: 1),
               ),
-            ),
-            child: _buildPatientContext(),
+              Container(
+                width: 300,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border(
+                    left: BorderSide(color: Colors.grey.withValues(alpha: 0.2), width: 1),
+                  ),
+                ),
+                child: _buildPatientContext(),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

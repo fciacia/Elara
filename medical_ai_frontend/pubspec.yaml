@@ -33,6 +33,18 @@ dependencies:
   fl_chart: ^0.68.0
   timeline_tile: ^2.0.0
   
+  # Voice & Audio
+  speech_to_text: ^6.6.0
+  flutter_tts: ^3.8.5
+  
+  # Image & Camera
+  image_picker: ^1.0.7
+  camera: ^0.10.5+9
+  
+  # Advanced UI
+  flutter_staggered_animations: ^1.1.1
+  shimmer: ^3.0.0
+  
   # Animation
   lottie: ^3.1.0
   animated_text_kit: ^4.2.2
@@ -61,11 +73,9 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
-
-  # The following line ensures that the Material Icons font is
-  # included with your application, so that you can use the icons in
-  # the material Icons class.
   uses-material-design: true
+  assets:
+    - lib/assets/background.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:

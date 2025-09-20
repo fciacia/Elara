@@ -83,6 +83,7 @@ class DocumentProvider extends ChangeNotifier {
 
   // Getters
   List<MedicalDocument> get documents => _filteredDocuments;
+  List<MedicalDocument> get filteredDocuments => _filteredDocuments;
   List<MedicalDocument> get allDocuments => _documents;
   bool get isLoading => _isLoading;
   bool get isUploading => _isUploading;
@@ -352,6 +353,25 @@ class DocumentProvider extends ChangeNotifier {
 
   void _clearError() {
     _errorMessage = null;
+    notifyListeners();
+  }
+
+  // Additional methods for search and filtering
+  void setSearchQuery(String query) {
+    _searchQuery = query;
+    _applyFilters();
+    notifyListeners();
+  }
+
+  void setTypeFilter(DocumentType? type) {
+    _selectedType = type;
+    _applyFilters();
+    notifyListeners();
+  }
+
+  void setStatusFilter(ProcessingStatus? status) {
+    _selectedStatus = status;
+    _applyFilters();
     notifyListeners();
   }
 }

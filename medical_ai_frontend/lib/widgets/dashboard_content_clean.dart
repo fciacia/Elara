@@ -14,56 +14,82 @@ class DashboardContent extends StatefulWidget {
   State<DashboardContent> createState() => _DashboardContentState();
 }
 
-class _DashboardContentState extends State<DashboardContent> {
+class _DashboardContentState extends State<DashboardContent> with TickerProviderStateMixin {
+  late AnimationController _animationController;
+  late Animation<double> _fadeAnimation;
+  late Animation<Offset> _slideAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 1200),
+      vsync: this,
+    );
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
+    );
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0, 0.3),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(parent: _animationController, curve: Curves.easeOutCubic));
+    _animationController.forward();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Welcome Section
-          _buildWelcomeSection(),
-          
-          const SizedBox(height: 24),
-
-          // Quick Access Features Row
-          _buildQuickAccessRow(),
-          
-          const SizedBox(height: 24),
-
-          // Main Content Grid
-          Row(
+    return FadeTransition(
+      opacity: _fadeAnimation,
+      child: SlideTransition(
+        position: _slideAnimation,
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(24),
+          child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Left Column - Chat & Queries
-              Expanded(
-                flex: 2,
-                child: Column(
-                  children: [
-                    _buildRecentChatsCard(),
-                    const SizedBox(height: 16),
-                    _buildRecentQueriesCard(),
-                  ],
-                ),
-              ),
-              
-              const SizedBox(width: 16),
-              
-              // Right Column - Patients & Stats
-              Expanded(
-                flex: 2,
-                child: Column(
-                  children: [
-                    _buildRecentPatientsCard(),
-                    const SizedBox(height: 16),
-                    _buildStatsCards(),
-                  ],
-                ),
+              // Welcome Section
+              _buildWelcomeSection(),
+              const SizedBox(height: 24),
+              // Quick Access Features Row
+              _buildQuickAccessRow(),
+              const SizedBox(height: 24),
+              // Main Content Grid
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Left Column - Chat & Queries
+                  Expanded(
+                    flex: 2,
+                    child: Column(
+                      children: [
+                        _buildRecentChatsCard(),
+                        const SizedBox(height: 16),
+                        _buildRecentQueriesCard(),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  // Right Column - Patients & Stats
+                  Expanded(
+                    flex: 2,
+                    child: Column(
+                      children: [
+                        _buildRecentPatientsCard(),
+                        const SizedBox(height: 16),
+                        _buildStatsCards(),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
-        ],
+        ),
       ),
     );
   }
