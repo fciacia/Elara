@@ -131,7 +131,6 @@ class CustomSidebar extends StatelessWidget {
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 8),
                       child: _buildNavItem(
-                        context,
                         item,
                         isSelected,
                         () => onItemSelected(index),
@@ -154,7 +153,7 @@ class CustomSidebar extends StatelessWidget {
                       'v1.0.0',
                       style: GoogleFonts.inter(
                         fontSize: 12,
-                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4),
+                        color: AppColors.textLight,
                       ),
                     ),
                   ],
@@ -166,7 +165,7 @@ class CustomSidebar extends StatelessWidget {
     );
   }
 
-  Widget _buildNavItem(BuildContext context, NavItem item, bool isSelected, VoidCallback onTap) {
+  Widget _buildNavItem(NavItem item, bool isSelected, VoidCallback onTap) {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(12),

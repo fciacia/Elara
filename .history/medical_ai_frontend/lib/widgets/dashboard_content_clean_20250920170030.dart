@@ -647,7 +647,7 @@ class _DashboardContentState extends State<DashboardContent> with TickerProvider
                     style: GoogleFonts.inter(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
-                      color: Theme.of(context).colorScheme.onSurface,
+                      color: AppColors.textDark,
                     ),
                   ),
                 ],

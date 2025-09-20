@@ -246,7 +246,7 @@ class _MultimodalDocumentManagerState extends State<MultimodalDocumentManager>
               style: GoogleFonts.inter(
                 fontSize: 28,
                 fontWeight: FontWeight.bold,
-                color: Theme.of(context).colorScheme.onSurface,
+                color: AppColors.textDark,
                 letterSpacing: -0.5,
               ),
             ),
@@ -257,7 +257,7 @@ class _MultimodalDocumentManagerState extends State<MultimodalDocumentManager>
           'AI-powered document analysis with advanced multimodal viewing capabilities',
           style: GoogleFonts.inter(
             fontSize: 16,
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
+            color: AppColors.textMedium,
             height: 1.5,
           ),
         ),
@@ -305,7 +305,7 @@ class _MultimodalDocumentManagerState extends State<MultimodalDocumentManager>
             style: GoogleFonts.inter(
               fontSize: 20,
               fontWeight: FontWeight.w600,
-              color: Theme.of(context).colorScheme.onSurface,
+              color: AppColors.textDark,
             ),
           ),
           const SizedBox(height: 8),
@@ -313,7 +313,7 @@ class _MultimodalDocumentManagerState extends State<MultimodalDocumentManager>
             'Experience advanced AI analysis with multimodal viewing',
             style: GoogleFonts.inter(
               fontSize: 14,
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
+              color: AppColors.textMedium,
             ),
           ),
           const SizedBox(height: 20),
@@ -427,7 +427,7 @@ class _MultimodalDocumentManagerState extends State<MultimodalDocumentManager>
             Icon(
               MdiIcons.fileDocumentOutline,
               size: 64,
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
+              color: AppColors.textMedium,
             ),
             const SizedBox(height: 16),
             Text(
@@ -435,7 +435,7 @@ class _MultimodalDocumentManagerState extends State<MultimodalDocumentManager>
               style: GoogleFonts.inter(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                color: AppColors.textMedium,
               ),
             ),
             const SizedBox(height: 8),
@@ -443,7 +443,7 @@ class _MultimodalDocumentManagerState extends State<MultimodalDocumentManager>
               'Upload your first document to experience multimodal analysis',
               style: GoogleFonts.inter(
                 fontSize: 14,
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                color: AppColors.textMedium,
               ),
             ),
           ],

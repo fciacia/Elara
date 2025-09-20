@@ -98,7 +98,7 @@ class CustomSidebar extends StatelessWidget {
                           onPressed: onToggleCollapse,
                           icon: Icon(
                             Icons.menu,
-                            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                            color: AppColors.textMedium,
                           ),
                         ),
                       ],
@@ -113,7 +113,7 @@ class CustomSidebar extends StatelessWidget {
                   onPressed: onToggleCollapse,
                   icon: Icon(
                     Icons.menu_open,
-                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                    color: AppColors.textMedium,
                   ),
                 ),
               ),
@@ -131,7 +131,6 @@ class CustomSidebar extends StatelessWidget {
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 8),
                       child: _buildNavItem(
-                        context,
                         item,
                         isSelected,
                         () => onItemSelected(index),
@@ -148,13 +147,13 @@ class CustomSidebar extends StatelessWidget {
                 padding: const EdgeInsets.all(20),
                 child: Column(
                   children: [
-                    Divider(color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.2)),
+                    const Divider(color: AppColors.border),
                     const SizedBox(height: 16),
                     Text(
                       'v1.0.0',
                       style: GoogleFonts.inter(
                         fontSize: 12,
-                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4),
+                        color: AppColors.textLight,
                       ),
                     ),
                   ],
@@ -166,7 +165,7 @@ class CustomSidebar extends StatelessWidget {
     );
   }
 
-  Widget _buildNavItem(BuildContext context, NavItem item, bool isSelected, VoidCallback onTap) {
+  Widget _buildNavItem(NavItem item, bool isSelected, VoidCallback onTap) {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(12),
@@ -184,7 +183,7 @@ class CustomSidebar extends StatelessWidget {
           children: [
             Icon(
               isSelected ? item.selectedIcon : item.icon,
-              color: isSelected ? AppColors.primary : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+              color: isSelected ? AppColors.primary : AppColors.textMedium,
               size: 24,
             ),
             if (!isCollapsed) ...[
@@ -195,7 +194,7 @@ class CustomSidebar extends StatelessWidget {
                   style: GoogleFonts.inter(
                     fontSize: 14,
                     fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-                    color: isSelected ? AppColors.primary : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                    color: isSelected ? AppColors.primary : AppColors.textMedium,
                   ),
                   overflow: TextOverflow.ellipsis,
                 ),

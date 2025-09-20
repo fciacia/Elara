@@ -498,12 +498,12 @@ class _DashboardContentState extends State<DashboardContent> with TickerProvider
         return Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surface,
+            color: Colors.white,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.2)),
+            border: Border.all(color: AppColors.border),
             boxShadow: [
               BoxShadow(
-                color: Theme.of(context).shadowColor.withValues(alpha: 0.1),
+                color: Colors.black.withValues(alpha: 0.05),
                 blurRadius: 10,
                 offset: const Offset(0, 2),
               ),
@@ -624,12 +624,12 @@ class _DashboardContentState extends State<DashboardContent> with TickerProvider
         return Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surface,
+            color: Colors.white,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.2)),
+            border: Border.all(color: AppColors.border),
             boxShadow: [
               BoxShadow(
-                color: Theme.of(context).shadowColor.withValues(alpha: 0.1),
+                color: Colors.black.withValues(alpha: 0.05),
                 blurRadius: 10,
                 offset: const Offset(0, 2),
               ),
@@ -647,7 +647,7 @@ class _DashboardContentState extends State<DashboardContent> with TickerProvider
                     style: GoogleFonts.inter(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
-                      color: Theme.of(context).colorScheme.onSurface,
+                      color: AppColors.textDark,
                     ),
                   ),
                 ],

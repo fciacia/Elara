@@ -48,11 +48,9 @@ class _SettingsPanelState extends State<SettingsPanel> with TickerProviderStateM
       opacity: _fadeAnimation,
       child: SlideTransition(
         position: _slideAnimation,
-        child: Container(
-          color: Theme.of(context).colorScheme.background,
-          child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: Column(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
@@ -165,7 +163,6 @@ class _SettingsPanelState extends State<SettingsPanel> with TickerProviderStateM
       ),
     ),
   ),
-),
 );
   }
 

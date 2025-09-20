@@ -7,7 +7,6 @@ import 'package:file_picker/file_picker.dart';
 
 import '../providers/auth_provider.dart' as auth;
 import '../providers/chat_provider.dart';
-import '../utils/app_colors.dart';
 
 class CleanChatInterface extends StatefulWidget {
   const CleanChatInterface({super.key});
@@ -240,7 +239,7 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
                 style: GoogleFonts.inter(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: Theme.of(context).colorScheme.onSurface,
+                  color: Colors.grey[800],
                 ),
               ),
               const SizedBox(height: 4),
@@ -259,7 +258,7 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
                     'AI Assistant Active',
                     style: GoogleFonts.inter(
                       fontSize: 12,
-                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                      color: Colors.grey[600],
                     ),
                   ),
                 ],
@@ -510,7 +509,7 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
                   style: GoogleFonts.inter(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
-                    color: Theme.of(context).colorScheme.onSurface,
+                    color: Colors.grey[800],
                   ),
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,
@@ -519,7 +518,7 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
                   'Ready to help with your medical documents',
                   style: GoogleFonts.inter(
                     fontSize: 12,
-                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                    color: Colors.grey[600],
                   ),
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,
@@ -529,7 +528,7 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
           ),
           IconButton(
             onPressed: () {},
-            icon: Icon(Icons.more_vert, color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6)),
+            icon: Icon(Icons.more_vert, color: Colors.grey[600]),
           ),
         ],
       ),
@@ -698,9 +697,9 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
+        color: Colors.white,
         border: Border(
-          top: BorderSide(color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.2), width: 1),
+          top: BorderSide(color: Colors.grey.withValues(alpha: 0.2), width: 1),
         ),
       ),
       child: IntrinsicHeight(
@@ -710,12 +709,12 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
             // File upload button
             Container(
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surfaceVariant,
+                color: Colors.grey[100],
                 borderRadius: BorderRadius.circular(20),
               ),
               child: IconButton(
                 onPressed: _pickFiles,
-                icon: Icon(Icons.attach_file, color: Theme.of(context).colorScheme.onSurfaceVariant, size: 20),
+                icon: Icon(Icons.attach_file, color: Colors.grey[600], size: 20),
                 tooltip: 'Upload medical documents',
                 constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
               ),
@@ -735,24 +734,24 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
                         ? 'Ask about your uploaded documents...'
                         : 'Ask me anything about medical care...',
                     hintStyle: GoogleFonts.inter(
-                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4),
+                      color: Colors.grey[400],
                       fontSize: 14,
                     ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(24),
-                      borderSide: BorderSide(color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.3)),
+                      borderSide: BorderSide(color: Colors.grey.withValues(alpha: 0.3)),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(24),
-                      borderSide: BorderSide(color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.3)),
+                      borderSide: BorderSide(color: Colors.grey.withValues(alpha: 0.3)),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(24),
-                      borderSide: BorderSide(color: AppColors.primary, width: 2),
+                      borderSide: BorderSide(color: Colors.blue[600]!, width: 2),
                     ),
                     contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     filled: true,
-                    fillColor: Theme.of(context).colorScheme.surfaceVariant.withValues(alpha: 0.3),
+                    fillColor: Colors.grey[50],
                     isDense: true,
                   ),
                   onSubmitted: (_) => _sendMessage(),
@@ -762,7 +761,7 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
             const SizedBox(width: 8),
             Container(
               decoration: BoxDecoration(
-                color: AppColors.primary,
+                color: Colors.blue[600],
                 borderRadius: BorderRadius.circular(20),
               ),
               child: IconButton(

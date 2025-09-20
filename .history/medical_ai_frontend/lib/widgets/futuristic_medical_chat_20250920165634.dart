@@ -240,7 +240,7 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
                 style: GoogleFonts.inter(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: Theme.of(context).colorScheme.onSurface,
+                  color: Colors.grey[800],
                 ),
               ),
               const SizedBox(height: 4),
@@ -259,7 +259,7 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
                     'AI Assistant Active',
                     style: GoogleFonts.inter(
                       fontSize: 12,
-                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                      color: Colors.grey[600],
                     ),
                   ),
                 ],

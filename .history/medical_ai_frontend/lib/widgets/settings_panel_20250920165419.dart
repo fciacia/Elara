@@ -165,7 +165,6 @@ class _SettingsPanelState extends State<SettingsPanel> with TickerProviderStateM
       ),
     ),
   ),
-),
 );
   }
 

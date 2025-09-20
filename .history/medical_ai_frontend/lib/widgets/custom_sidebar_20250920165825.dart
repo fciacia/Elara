@@ -154,7 +154,7 @@ class CustomSidebar extends StatelessWidget {
                       'v1.0.0',
                       style: GoogleFonts.inter(
                         fontSize: 12,
-                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4),
+                        color: AppColors.textLight,
                       ),
                     ),
                   ],
