@@ -6,6 +6,7 @@ import '../providers/auth_provider.dart' as auth;
 import '../providers/document_provider.dart';
 import '../providers/chat_provider.dart';
 import '../utils/app_colors.dart';
+import 'dart:ui';
 
 class DashboardContent extends StatefulWidget {
   const DashboardContent({super.key});
@@ -55,9 +56,11 @@ class _DashboardContentState extends State<DashboardContent> with TickerProvider
               // Welcome Section
               _buildWelcomeSection(),
               const SizedBox(height: 24),
+              // Generative AI Widget
+              _buildGenerativeAIWidget(),
+              const SizedBox(height: 16),
               // Quick Access Features Row
               _buildQuickAccessRow(),
-              const SizedBox(height: 24),
               // Main Content Grid
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -89,6 +92,159 @@ class _DashboardContentState extends State<DashboardContent> with TickerProvider
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  bool _isHoveringAI = false;
+
+  Widget _buildGenerativeAIWidget() {
+    return MouseRegion(
+      onEnter: (_) => setState(() => _isHoveringAI = true),
+      onExit: (_) => setState(() => _isHoveringAI = false),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 32),
+        decoration: BoxDecoration(
+          color: _isHoveringAI ? Colors.white.withOpacity(0.98) : Colors.white.withOpacity(0.92),
+          borderRadius: BorderRadius.circular(24),
+          boxShadow: [
+            BoxShadow(
+              color: _isHoveringAI ? const Color(0xFF3B82F6).withOpacity(0.10) : Colors.black.withOpacity(0.06),
+              blurRadius: _isHoveringAI ? 18 : 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Elara logo and title, left aligned
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  margin: const EdgeInsets.only(right: 16),
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      AnimatedContainer(
+                        duration: const Duration(milliseconds: 300),
+                        width: 48,
+                        height: 48,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          gradient: RadialGradient(
+                            colors: [
+                              _isHoveringAI ? const Color(0xFF3B82F6) : const Color(0xFF6366F1),
+                              Colors.white,
+                            ],
+                            center: Alignment.center,
+                            radius: 0.8,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: _isHoveringAI ? const Color(0xFF3B82F6).withOpacity(0.25) : const Color(0xFF6366F1).withOpacity(0.12),
+                              blurRadius: _isHoveringAI ? 18 : 10,
+                              spreadRadius: 1,
+                            ),
+                          ],
+                        ),
+                      ),
+                      Icon(Icons.auto_awesome, size: 28, color: _isHoveringAI ? const Color(0xFF3B82F6) : const Color(0xFF6366F1)),
+                    ],
+                  ),
+                ),
+                Text(
+                  'Elara',
+                  style: GoogleFonts.orbitron(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 2.2,
+                    color: _isHoveringAI ? const Color(0xFF3B82F6) : const Color(0xFF181F36),
+                    shadows: [
+                      Shadow(
+                        color: _isHoveringAI ? const Color(0xFF3B82F6).withOpacity(0.3) : const Color(0xFF6366F1).withOpacity(0.18),
+                        blurRadius: 8,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Ask medical questions, generate summaries, or request AI-powered insights.',
+              style: GoogleFonts.inter(
+                fontSize: 15,
+                color: _isHoveringAI ? const Color(0xFF3B82F6) : const Color(0xFF6366F1),
+                fontWeight: FontWeight.w500,
+                letterSpacing: 0.2,
+              ),
+            ),
+            const SizedBox(height: 18),
+            // Futuristic TextField with glowing border
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: _isHoveringAI ? const Color(0xFF3B82F6).withOpacity(0.18) : const Color(0xFF6366F1).withOpacity(0.10),
+                    blurRadius: _isHoveringAI ? 12 : 6,
+                    spreadRadius: 1,
+                  ),
+                ],
+              ),
+              child: TextField(
+                style: GoogleFonts.inter(fontSize: 16, color: const Color(0xFF181F36)),
+                decoration: InputDecoration(
+                  hintText: 'Type your prompt for Elara...',
+                  hintStyle: GoogleFonts.inter(fontSize: 15, color: const Color(0xFF6366F1)),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    borderSide: BorderSide(color: _isHoveringAI ? const Color(0xFF3B82F6) : const Color(0xFF6366F1), width: _isHoveringAI ? 2.5 : 1.5),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    borderSide: BorderSide(color: const Color(0xFF6366F1), width: 1.5),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    borderSide: BorderSide(color: const Color(0xFF3B82F6), width: 2.5),
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                  suffixIcon: AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: LinearGradient(
+                        colors: _isHoveringAI
+                            ? [const Color(0xFF3B82F6), const Color(0xFF6366F1)]
+                            : [const Color(0xFF6366F1), Colors.white],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                    ),
+                    child: Icon(Icons.send, color: Colors.white),
+                  ),
+                  filled: true,
+                  fillColor: Colors.white,
+                ),
+                onSubmitted: (value) {
+                  // TODO: Connect to generative AI backend
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('AI response coming soon...', style: GoogleFonts.inter()),
+                      backgroundColor: const Color(0xFF3B82F6),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
         ),
       ),
     );
