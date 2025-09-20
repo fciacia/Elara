@@ -36,6 +36,9 @@ class _MultimodalDocumentViewerState extends State<MultimodalDocumentViewer>
       duration: const Duration(milliseconds: 800),
       vsync: this,
     );
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
+    );
     
     _animationController.forward();
     _initializeAnnotations();
@@ -52,7 +55,33 @@ class _MultimodalDocumentViewerState extends State<MultimodalDocumentViewer>
   void _initializeAnnotations() {
     // Simulate AI-generated annotations
     _annotations.addAll([
-
+      DocumentAnnotation(
+        id: '1',
+        type: AnnotationType.medicalTerm,
+        text: 'Hemoglobin',
+        position: const Offset(100, 150),
+        confidence: 0.95,
+        description: 'Protein in red blood cells that carries oxygen',
+        color: Colors.blue,
+      ),
+      DocumentAnnotation(
+        id: '2',
+        type: AnnotationType.value,
+        text: '14.2 g/dL',
+        position: const Offset(200, 150),
+        confidence: 0.98,
+        description: 'Normal range: 12.0-15.5 g/dL for women',
+        color: Colors.green,
+      ),
+      DocumentAnnotation(
+        id: '3',
+        type: AnnotationType.alert,
+        text: 'High Blood Pressure',
+        position: const Offset(100, 300),
+        confidence: 0.87,
+        description: 'Consider lifestyle modifications and medication review',
+        color: Colors.orange,
+      ),
     ]);
   }
 
@@ -273,6 +302,7 @@ class _MultimodalDocumentViewerState extends State<MultimodalDocumentViewer>
               onInteractionUpdate: (details) {
                 setState(() {
                   _zoomLevel = details.scale;
+                  _panOffset = details.focalPoint;
                 });
               },
               child: Container(
@@ -375,12 +405,14 @@ class _MultimodalDocumentViewerState extends State<MultimodalDocumentViewer>
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildSection('LABORATORY RESULTS', [
+              _buildLabResult('Hemoglobin', '14.2 g/dL', 'Normal'),
               _buildLabResult('White Blood Cells', '7,200/μL', 'Normal'),
               _buildLabResult('Blood Sugar', '5.2 mmol/L', 'Normal'),
               _buildLabResult('Cholesterol', '4.8 mmol/L', 'Normal'),
             ]),
             const SizedBox(height: 24),
             _buildSection('VITAL SIGNS', [
+              _buildVitalSign('Blood Pressure', '120/80 mmHg', 'Normal'),
               _buildVitalSign('Heart Rate', '72 bpm', 'Normal'),
               _buildVitalSign('Temperature', '37.2°C', 'Normal'),
               _buildVitalSign('Weight', '75 kg', 'Normal'),
@@ -395,6 +427,7 @@ class _MultimodalDocumentViewerState extends State<MultimodalDocumentViewer>
               _buildRecommendation('Continue current medication regimen'),
               _buildRecommendation('Schedule follow-up in 3 months'),
               _buildRecommendation('Maintain regular exercise routine'),
+              _buildRecommendation('Monitor blood pressure weekly'),
             ]),
           ],
         ),
@@ -990,15 +1023,15 @@ class _MultimodalDocumentViewerState extends State<MultimodalDocumentViewer>
             child: Column(
               children: [
                 _buildChatMessage(
-                  'I\'ve analyzed your medical report. Your test results show all values within normal ranges. Would you like me to explain any specific findings?',
+                  'I\'ve analyzed your medical report. Your blood test results show all values within normal ranges. Would you like me to explain any specific findings?',
                   false,
                 ),
                 _buildChatMessage(
-                  'What does my cholesterol level indicate?',
+                  'What does my hemoglobin level mean?',
                   true,
                 ),
                 _buildChatMessage(
-                  'Your cholesterol level of 4.8 mmol/L is within the recommended range. This indicates good cardiovascular health.',
+                  'Your hemoglobin level of 14.2 g/dL is excellent and within the normal range (12.0-15.5 g/dL for women). This indicates healthy red blood cells that are effectively carrying oxygen throughout your body.',
                   false,
                 ),
               ],
@@ -1097,6 +1130,7 @@ class _MultimodalDocumentViewerState extends State<MultimodalDocumentViewer>
   void _resetZoom() {
     setState(() {
       _zoomLevel = 1.0;
+      _panOffset = Offset.zero;
     });
   }
 

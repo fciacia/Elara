@@ -1056,6 +1056,7 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
               ],
             ),
           ),
+          ),
         ],
       ),
     );

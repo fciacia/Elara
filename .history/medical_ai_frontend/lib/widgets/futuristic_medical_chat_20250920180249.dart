@@ -340,7 +340,7 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
                     
                     _buildSectionHeader('Recent Queries', Icons.history),
                     const SizedBox(height: 8),
-                    _buildQueryItem('Patient care guidelines', '2 hours ago'),
+                    _buildQueryItem('Blood pressure medication side effects', '2 hours ago'),
                     _buildQueryItem('Diabetes management protocols', '1 day ago'),
                   ],
                 ),
@@ -798,62 +798,46 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
 
   Widget _buildPatientContext() {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Header
           Row(
             children: [
-              Icon(
-                MdiIcons.account,
-                size: 20,
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
+              Icon(Icons.person_outline, size: 16, color: Colors.grey[600]),
               const SizedBox(width: 8),
               Text(
                 'Patient Context',
                 style: GoogleFonts.inter(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
-                  color: Theme.of(context).colorScheme.onSurface,
+                  color: Colors.grey[800],
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 16),
           
-          // Patient Info Card
+          const SizedBox(height: 20),
+          
+          // Patient Info
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  Colors.blue.withValues(alpha: 0.1),
-                  Colors.blue.withValues(alpha: 0.05),
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
+              color: Colors.blue[50],
               borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: Colors.blue.withValues(alpha: 0.2)),
             ),
             child: Row(
               children: [
-                Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: Colors.blue,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: const Center(
-                    child: Text(
-                      'A',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16,
-                      ),
+                CircleAvatar(
+                  radius: 20,
+                  backgroundColor: Colors.blue[600],
+                  child: Text(
+                    'A',
+                    style: GoogleFonts.inter(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),
@@ -867,15 +851,14 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
                         style: GoogleFonts.inter(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
-                          color: Theme.of(context).colorScheme.onSurface,
+                          color: Colors.grey[800],
                         ),
                       ),
-                      const SizedBox(height: 2),
                       Text(
                         'Age 45 • IC: 123456-78-9012',
                         style: GoogleFonts.inter(
                           fontSize: 12,
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                          color: Colors.grey[600],
                         ),
                       ),
                     ],
@@ -884,176 +867,124 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
               ],
             ),
           ),
-          const SizedBox(height: 16),
           
-          // Critical Info Section
+          const SizedBox(height: 20),
+          
+          // Critical Info
           Container(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  Colors.orange.withValues(alpha: 0.1),
-                  Colors.orange.withValues(alpha: 0.05),
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              borderRadius: BorderRadius.circular(12),
+              color: Colors.orange[50],
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: Colors.orange.withValues(alpha: 0.2)),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
                   children: [
-                    Icon(
-                      Icons.warning_rounded,
-                      size: 16,
-                      color: Colors.orange[700],
-                    ),
-                    const SizedBox(width: 8),
+                    Icon(Icons.warning_outlined, color: Colors.orange[600], size: 16),
+                    const SizedBox(width: 6),
                     Text(
                       'CRITICAL INFO',
                       style: GoogleFonts.inter(
                         fontSize: 12,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.orange[700],
-                        letterSpacing: 0.5,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.orange[600],
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
-                _buildCriticalInfoItem('Allergies', 'Penicillin, Aspirin'),
                 const SizedBox(height: 8),
-                _buildCriticalInfoItem('Comorbidities', 'Type 2 Diabetes, Hypertension'),
+                _buildCriticalItem('Allergies', 'Penicillin, Aspirin', Colors.orange[600]!),
+                _buildCriticalItem('Comorbidities', 'Type 2 Diabetes, Hypertension', Colors.amber[600]!),
               ],
             ),
           ),
-          const SizedBox(height: 16),
           
-          // Recent Vitals Section
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Recent Vitals',
-                style: GoogleFonts.inter(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: Theme.of(context).colorScheme.onSurface,
-                ),
-              ),
-              const SizedBox(height: 12),
-              _buildVitalRow('Blood Pressure', '140/90 mmHg', Colors.orange),
-              const SizedBox(height: 8),
-              _buildVitalRow('Heart Rate', '72 bpm', Colors.green),
-              const SizedBox(height: 8),
-              _buildVitalRow('Temperature', '37.2°C', Colors.blue),
-              const SizedBox(height: 8),
-              _buildVitalRow('Blood Sugar', '8.5 mmol/L', Colors.orange),
-            ],
-          ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 20),
           
-          // Recent Medications Section - Expandable
-          ExpansionTile(
-            tilePadding: EdgeInsets.zero,
-            childrenPadding: const EdgeInsets.only(left: 12, bottom: 8),
-            title: Text(
-              'Recent Medications',
-              style: GoogleFonts.inter(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: Theme.of(context).colorScheme.onSurface,
-              ),
+          // Recent Vitals
+          Text(
+            'Recent Vitals',
+            style: GoogleFonts.inter(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: Colors.grey[800],
             ),
-            children: [
-              _buildMedicationRow('Metformin 500mg', 'Twice daily', Colors.green),
-              const SizedBox(height: 8),
-              _buildMedicationRow('Lisinopril 10mg', 'Once daily', Colors.green),
-              const SizedBox(height: 8),
-              _buildMedicationRow('Aspirin 81mg', 'As needed', Colors.blue),
-              const SizedBox(height: 8),
-              _buildMedicationRow('Insulin Glargine', '10 units bedtime', Colors.orange),
-            ],
           ),
-          const SizedBox(height: 16),
-          
-          // Upcoming Appointments Section
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Upcoming Appointments',
-                style: GoogleFonts.inter(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: Theme.of(context).colorScheme.onSurface,
-                ),
-              ),
-              const SizedBox(height: 12),
-              _buildAppointmentRow('Dr. Sarah Wong', 'Sep 25, 2:00 PM', Icons.local_hospital),
-              const SizedBox(height: 8),
-              _buildAppointmentRow('Lab Tests', 'Oct 2, 9:00 AM', Icons.science),
-              const SizedBox(height: 8),
-              _buildAppointmentRow('Follow-up', 'Oct 15, 3:30 PM', Icons.schedule),
-            ],
-          ),
-          const SizedBox(height: 16),
-          
-          // Care Team Section - Expandable
-          ExpansionTile(
-            tilePadding: EdgeInsets.zero,
-            childrenPadding: const EdgeInsets.only(left: 12, bottom: 8),
-            title: Text(
-              'Care Team',
-              style: GoogleFonts.inter(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: Theme.of(context).colorScheme.onSurface,
-              ),
-            ),
-            children: [
-              _buildCareTeamRow('Dr. Ahmad Rahman', 'Primary Physician', Icons.person),
-              const SizedBox(height: 8),
-              _buildCareTeamRow('Nurse Sarah', 'Care Coordinator', Icons.medical_services),
-              const SizedBox(height: 8),
-              _buildCareTeamRow('Dr. Lisa Chen', 'Endocrinologist', Icons.healing),
-              const SizedBox(height: 8),
-              _buildCareTeamRow('Maria Garcia', 'Dietitian', Icons.restaurant_menu),
-              const SizedBox(height: 8),
-              _buildCareTeamRow('John Wilson', 'Pharmacist', Icons.local_pharmacy),
-            ],
-          ),
-          const SizedBox(height: 16),
-          
-          // Medical Notes Section
+          const SizedBox(height: 12),
+          _buildVitalItem('Blood Pressure', '140/90 mmHg', Colors.amber[600]!),
+          _buildVitalItem('Heart Rate', '72 bpm', Colors.green[600]!),
+          _buildVitalItem('Temperature', '37.2°C', Colors.blue[600]!),
+          _buildVitalItem('Blood Sugar', '8.5 mmol/L', Colors.orange[600]!),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCriticalItem(String label, String value, Color color) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
           Container(
-            padding: const EdgeInsets.all(12),
+            width: 4,
+            height: 4,
+            margin: const EdgeInsets.only(top: 6),
             decoration: BoxDecoration(
-              color: Colors.grey.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(8),
+              color: color,
+              shape: BoxShape.circle,
             ),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Recent Notes',
-                  style: GoogleFonts.inter(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: Theme.of(context).colorScheme.onSurface,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'Patient shows good compliance with diabetes management. Continue current medication regimen and monitor blood glucose levels.',
+                  label,
                   style: GoogleFonts.inter(
                     fontSize: 12,
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.grey[800],
+                  ),
+                ),
+                Text(
+                  value,
+                  style: GoogleFonts.inter(
+                    fontSize: 11,
+                    color: Colors.grey[600],
                   ),
                 ),
               ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildVitalItem(String label, String value, Color color) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            label,
+            style: GoogleFonts.inter(
+              fontSize: 12,
+              color: Colors.grey[600],
+            ),
+          ),
+          Text(
+            value,
+            style: GoogleFonts.inter(
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              color: color,
             ),
           ),
         ],
@@ -1283,172 +1214,6 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
           ),
         ),
       ),
-    );
-  }
-  
-  Widget _buildCriticalInfoItem(String label, String value) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          width: 4,
-          height: 4,
-          margin: const EdgeInsets.only(top: 6),
-          decoration: BoxDecoration(
-            color: Colors.orange[700],
-            shape: BoxShape.circle,
-          ),
-        ),
-        const SizedBox(width: 8),
-        Expanded(
-          child: RichText(
-            text: TextSpan(
-              style: GoogleFonts.inter(
-                fontSize: 12,
-                color: Theme.of(context).colorScheme.onSurface,
-              ),
-              children: [
-                TextSpan(
-                  text: '$label: ',
-                  style: const TextStyle(fontWeight: FontWeight.w600),
-                ),
-                TextSpan(text: value),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-  
-  Widget _buildVitalRow(String label, String value, Color valueColor) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          label,
-          style: GoogleFonts.inter(
-            fontSize: 12,
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
-          ),
-        ),
-        Text(
-          value,
-          style: GoogleFonts.inter(
-            fontSize: 12,
-            fontWeight: FontWeight.w600,
-            color: valueColor,
-          ),
-        ),
-      ],
-    );
-  }
-  
-  Widget _buildMedicationRow(String medication, String frequency, Color statusColor) {
-    return Row(
-      children: [
-        Container(
-          width: 6,
-          height: 6,
-          decoration: BoxDecoration(
-            color: statusColor,
-            shape: BoxShape.circle,
-          ),
-        ),
-        const SizedBox(width: 8),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                medication,
-                style: GoogleFonts.inter(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  color: Theme.of(context).colorScheme.onSurface,
-                ),
-              ),
-              Text(
-                frequency,
-                style: GoogleFonts.inter(
-                  fontSize: 11,
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-  
-  Widget _buildAppointmentRow(String provider, String datetime, IconData icon) {
-    return Row(
-      children: [
-        Icon(
-          icon,
-          size: 14,
-          color: Colors.blue[600],
-        ),
-        const SizedBox(width: 8),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                provider,
-                style: GoogleFonts.inter(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  color: Theme.of(context).colorScheme.onSurface,
-                ),
-              ),
-              Text(
-                datetime,
-                style: GoogleFonts.inter(
-                  fontSize: 11,
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-  
-  Widget _buildCareTeamRow(String name, String role, IconData icon) {
-    return Row(
-      children: [
-        Icon(
-          icon,
-          size: 14,
-          color: Colors.green[600],
-        ),
-        const SizedBox(width: 8),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                name,
-                style: GoogleFonts.inter(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  color: Theme.of(context).colorScheme.onSurface,
-                ),
-              ),
-              Text(
-                role,
-                style: GoogleFonts.inter(
-                  fontSize: 11,
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
     );
   }
 }

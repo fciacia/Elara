@@ -26,7 +26,6 @@ class _MultimodalDocumentManagerState extends State<MultimodalDocumentManager>
   late AnimationController _animationController;
   late Animation<double> _pageTransitionFade;
   late Animation<Offset> _slideAnimation;
-  late AnimationController _staggerController;
   DocumentType? _selectedType;
   MedicalDocument? _selectedDocument;
 
@@ -61,15 +60,9 @@ class _MultimodalDocumentManagerState extends State<MultimodalDocumentManager>
 
     _animationController.forward();
     
-    _staggerController = AnimationController(
-      duration: const Duration(milliseconds: 800),
-      vsync: this,
-    );
-    
     // Initialize document provider
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<DocumentProvider>().initialize();
-      _staggerController.forward();
     });
   }
 
@@ -77,7 +70,6 @@ class _MultimodalDocumentManagerState extends State<MultimodalDocumentManager>
   void dispose() {
     _fadeController.dispose();
     _animationController.dispose();
-    _staggerController.dispose();
     super.dispose();
   }
 
@@ -232,31 +224,18 @@ class _MultimodalDocumentManagerState extends State<MultimodalDocumentManager>
   Widget _buildDocumentManager() {
     return Consumer<DocumentProvider>(
       builder: (context, documentProvider, child) {
-        final screenWidth = MediaQuery.of(context).size.width;
-        final isLargeScreen = screenWidth > 1200;
-        final isMediumScreen = screenWidth > 800;
-        final isSmallScreen = screenWidth < 600;
-        
-        // Adjust padding based on screen size
-        final horizontalPadding = isLargeScreen ? 32.0 : isMediumScreen ? 24.0 : 16.0;
-        final verticalPadding = isLargeScreen ? 32.0 : isMediumScreen ? 24.0 : 16.0;
-        
-        return SingleChildScrollView(
-          padding: EdgeInsets.symmetric(
-            horizontal: horizontalPadding,
-            vertical: verticalPadding,
-          ),
+        return Padding(
+          padding: const EdgeInsets.all(24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildHeader(),
-              SizedBox(height: isLargeScreen ? 24 : 20),
+              const SizedBox(height: 24),
               _buildUploadSection(documentProvider),
-              SizedBox(height: isLargeScreen ? 32 : 24),
+              const SizedBox(height: 32),
               _buildSearchAndFilter(),
-              SizedBox(height: isLargeScreen ? 24 : 20),
-              SizedBox(
-                height: isSmallScreen ? 400 : 600, // Fixed height for scrollable list
+              const SizedBox(height: 24),
+              Expanded(
                 child: _buildDocumentsList(documentProvider),
               ),
             ],
@@ -435,13 +414,13 @@ class _MultimodalDocumentManagerState extends State<MultimodalDocumentManager>
             ),
             // Main content
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 40),
               child: Column(
                 children: [
                   // Enhanced upload icon
                   Container(
-                    width: 80,
-                    height: 80,
+                    width: 100,
+                    height: 100,
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [
@@ -462,22 +441,22 @@ class _MultimodalDocumentManagerState extends State<MultimodalDocumentManager>
                     ),
                     child: Icon(
                       MdiIcons.cloudUploadOutline,
-                      size: 36,
+                      size: 48,
                       color: AppColors.primary,
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 24),
                   // Title and subtitle
                   Text(
                     'Upload Medical Documents',
                     style: GoogleFonts.inter(
-                      fontSize: 20,
+                      fontSize: 24,
                       fontWeight: FontWeight.w700,
                       color: Theme.of(context).colorScheme.onSurface,
                       letterSpacing: -0.5,
                     ),
                   ),
-                  const SizedBox(height: 6),
+                  const SizedBox(height: 8),
                   Text(
                     'Drag and drop files here or click to browse',
                     style: GoogleFonts.inter(
@@ -495,7 +474,7 @@ class _MultimodalDocumentManagerState extends State<MultimodalDocumentManager>
                       fontWeight: FontWeight.w400,
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 32),
                   // Enhanced button
                   AnimatedContainer(
                     duration: const Duration(milliseconds: 200),
@@ -585,201 +564,65 @@ class _MultimodalDocumentManagerState extends State<MultimodalDocumentManager>
   }
 
   Widget _buildSearchAndFilter() {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final isSmallScreen = screenWidth < 600;
-    
-    return Container(
-      padding: const EdgeInsets.all(2),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: AppColors.primary.withValues(alpha: 0.1),
-          width: 1,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.05),
-            blurRadius: 20,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: isSmallScreen 
-        ? Column(
-            children: [
-              _buildSearchField(),
-              const SizedBox(height: 8),
-              _buildFilterDropdown(),
-            ],
-          )
-        : Row(
-            children: [
-              Expanded(flex: 3, child: _buildSearchField()),
-              const SizedBox(width: 12),
-              _buildFilterDropdown(),
-            ],
-          ),
-    );
-  }
-
-  Widget _buildSearchField() {
-    return Container(
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
-        borderRadius: BorderRadius.circular(14),
-      ),
-      child: TextField(
-        onChanged: (value) {
-          context.read<DocumentProvider>().setSearchQuery(value);
-        },
-        decoration: InputDecoration(
-          hintText: 'Search documents, types, or content...',
-          hintStyle: GoogleFonts.inter(
-            color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
-            fontWeight: FontWeight.w400,
-          ),
-          prefixIcon: Container(
-            padding: const EdgeInsets.all(14),
-            child: Icon(
-              MdiIcons.magnify,
-              color: AppColors.primary,
-              size: 20,
-            ),
-          ),
-          border: InputBorder.none,
-          enabledBorder: InputBorder.none,
-          focusedBorder: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-        ),
-        style: GoogleFonts.inter(
-          fontSize: 15,
-          fontWeight: FontWeight.w500,
-          color: Theme.of(context).colorScheme.onSurface,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildFilterDropdown() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            AppColors.primary.withValues(alpha: 0.05),
-            AppColors.secondary.withValues(alpha: 0.05),
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: AppColors.primary.withValues(alpha: 0.15),
-          width: 1,
-        ),
-      ),
-      child: DropdownButton<DocumentType?>(
-        value: _selectedType,
-        hint: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              MdiIcons.filterOutline,
-              size: 18,
-              color: AppColors.primary,
-            ),
-            const SizedBox(width: 8),
-            Text(
-              'All Types',
-              style: GoogleFonts.inter(
-                color: AppColors.primary,
-                fontWeight: FontWeight.w600,
-                fontSize: 14,
+    return Row(
+      children: [
+        Expanded(
+          child: TextField(
+            onChanged: (value) {
+              context.read<DocumentProvider>().setSearchQuery(value);
+            },
+            decoration: InputDecoration(
+              hintText: 'Search documents...',
+              hintStyle: GoogleFonts.inter(color: Theme.of(context).colorScheme.onSurfaceVariant),
+              prefixIcon: Icon(Icons.search, color: Theme.of(context).colorScheme.onSurfaceVariant),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(color: Theme.of(context).colorScheme.outline),
               ),
-            ),
-          ],
-        ),
-        items: [
-          DropdownMenuItem<DocumentType?>(
-            value: null,
-            child: Row(
-              children: [
-                Icon(
-                  MdiIcons.fileDocumentMultipleOutline,
-                  size: 16,
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  'All Types',
-                  style: GoogleFonts.inter(
-                    fontWeight: FontWeight.w500,
-                    fontSize: 14,
-                  ),
-                ),
-              ],
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(color: Theme.of(context).colorScheme.outline),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(color: AppColors.primary, width: 2),
+              ),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             ),
           ),
-          ...DocumentType.values.map((type) {
-            return DropdownMenuItem<DocumentType?>(
-              value: type,
-              child: Row(
-                children: [
-                  Icon(
-                    _getDocumentTypeIcon(type),
-                    size: 16,
-                    color: _getDocumentTypeColor(type),
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    _getDocumentTypeDisplayName(type),
-                    style: GoogleFonts.inter(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 14,
-                    ),
-                  ),
-                ],
-              ),
-            );
-          }),
-        ],
-        onChanged: (value) {
-          setState(() {
-            _selectedType = value;
-          });
-          context.read<DocumentProvider>().setTypeFilter(value);
-        },
-        underline: Container(),
-        borderRadius: BorderRadius.circular(12),
-        dropdownColor: Theme.of(context).colorScheme.surface,
-        elevation: 8,
-        icon: Icon(
-          MdiIcons.chevronDown,
-          color: AppColors.primary,
-          size: 20,
         ),
-      ),
+        const SizedBox(width: 16),
+        DropdownButton<DocumentType?>(
+          value: _selectedType,
+          hint: Text(
+            'Filter by type',
+            style: GoogleFonts.inter(color: Theme.of(context).colorScheme.onSurfaceVariant),
+          ),
+          items: [
+            DropdownMenuItem<DocumentType?>(
+              value: null,
+              child: Text('All Types', style: GoogleFonts.inter()),
+            ),
+            ...DocumentType.values.map((type) {
+              return DropdownMenuItem<DocumentType?>(
+                value: type,
+                child: Text(
+                  type.toString().split('.').last,
+                  style: GoogleFonts.inter(),
+                ),
+              );
+            }),
+          ],
+          onChanged: (value) {
+            setState(() {
+              _selectedType = value;
+            });
+            context.read<DocumentProvider>().setTypeFilter(value);
+          },
+          underline: Container(),
+        ),
+      ],
     );
-  }
-
-  String _getDocumentTypeDisplayName(DocumentType type) {
-    switch (type) {
-      case DocumentType.labReport:
-        return 'Lab Reports';
-      case DocumentType.prescription:
-        return 'Prescriptions';
-      case DocumentType.discharge:
-        return 'Discharge Papers';
-      case DocumentType.xray:
-        return 'X-Ray & Imaging';
-      case DocumentType.consultation:
-        return 'Consultation Notes';
-      case DocumentType.insurance:
-        return 'Insurance Forms';
-      case DocumentType.general:
-        return 'General Documents';
-    }
   }
 
   Widget _buildDocumentsList(DocumentProvider documentProvider) {
@@ -825,254 +668,105 @@ class _MultimodalDocumentManagerState extends State<MultimodalDocumentManager>
       itemCount: documentProvider.filteredDocuments.length,
       itemBuilder: (context, index) {
         final document = documentProvider.filteredDocuments[index];
-        final animationDelay = index * 0.1;
-        final slideAnimation = Tween<Offset>(
-          begin: const Offset(0, 0.5),
-          end: Offset.zero,
-        ).animate(CurvedAnimation(
-          parent: _staggerController,
-          curve: Interval(
-            animationDelay.clamp(0.0, 1.0),
-            (animationDelay + 0.3).clamp(0.0, 1.0),
-            curve: Curves.easeOutCubic,
-          ),
-        ));
-        final fadeAnimation = Tween<double>(
-          begin: 0.0,
-          end: 1.0,
-        ).animate(CurvedAnimation(
-          parent: _staggerController,
-          curve: Interval(
-            animationDelay.clamp(0.0, 1.0),
-            (animationDelay + 0.3).clamp(0.0, 1.0),
-            curve: Curves.easeOut,
-          ),
-        ));
-        return SlideTransition(
-          position: slideAnimation,
-          child: FadeTransition(
-            opacity: fadeAnimation,
-            child: _buildDocumentCard(document),
-          ),
-        );
+        return _buildDocumentCard(document);
       },
     );
   }
 
   Widget _buildDocumentCard(MedicalDocument document) {
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 200),
-      margin: const EdgeInsets.only(bottom: 16),
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.1),
-          width: 1,
-        ),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Theme.of(context).colorScheme.outline),
         boxShadow: [
           BoxShadow(
             color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.04),
-            blurRadius: 16,
-            offset: const Offset(0, 4),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
           ),
         ],
       ),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(12),
           onTap: () => _viewDocument(document),
-          hoverColor: AppColors.primary.withValues(alpha: 0.02),
-          splashColor: AppColors.primary.withValues(alpha: 0.1),
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            padding: const EdgeInsets.all(20),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
             child: Row(
               children: [
-                // Enhanced document type icon with hover animation
-                TweenAnimationBuilder<double>(
-                  duration: const Duration(milliseconds: 200),
-                  tween: Tween(begin: 1.0, end: 1.0),
-                  builder: (context, scale, child) {
-                    return Transform.scale(
-                      scale: scale,
-                      child: Container(
-                        width: 60,
-                        height: 60,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              _getDocumentTypeColor(document.type).withValues(alpha: 0.15),
-                              _getDocumentTypeColor(document.type).withValues(alpha: 0.08),
-                            ],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          ),
-                          borderRadius: BorderRadius.circular(16),
-                          boxShadow: [
-                            BoxShadow(
-                              color: _getDocumentTypeColor(document.type).withValues(alpha: 0.2),
-                              blurRadius: 12,
-                              offset: const Offset(0, 4),
-                            ),
-                          ],
-                        ),
-                        child: Icon(
-                          _getDocumentTypeIcon(document.type),
-                          color: _getDocumentTypeColor(document.type),
-                          size: 28,
-                        ),
-                      ),
-                    );
-                  },
+                Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: _getDocumentTypeColor(document.type).withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(
+                    _getDocumentTypeIcon(document.type),
+                    color: _getDocumentTypeColor(document.type),
+                    size: 24,
+                  ),
                 ),
-                const SizedBox(width: 20),
-                // Enhanced document information
+                const SizedBox(width: 16),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Document name with better typography
                       Text(
                         document.name,
                         style: GoogleFonts.inter(
-                          fontSize: 18,
+                          fontSize: 16,
                           fontWeight: FontWeight.w600,
                           color: Theme.of(context).colorScheme.onSurface,
-                          letterSpacing: -0.2,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      const SizedBox(height: 6),
-                      // File details with improved layout
-                      Row(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                            decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
-                              borderRadius: BorderRadius.circular(6),
-                            ),
-                            child: Text(
-                              _getFileExtension(document.fileName),
-                              style: GoogleFonts.jetBrainsMono(
-                                fontSize: 11,
-                                fontWeight: FontWeight.w600,
-                                color: Theme.of(context).colorScheme.onSurfaceVariant,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          Icon(
-                            MdiIcons.circle,
-                            size: 4,
-                            color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            _formatFileSize(document.fileSizeBytes),
-                            style: GoogleFonts.inter(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w500,
-                              color: Theme.of(context).colorScheme.onSurfaceVariant,
-                            ),
-                          ),
-                        ],
+                      const SizedBox(height: 4),
+                      Text(
+                        '${document.fileName} • ${_formatFileSize(document.fileSizeBytes)}',
+                        style: GoogleFonts.inter(
+                          fontSize: 14,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      const SizedBox(height: 8),
-                      // Upload date with icon
-                      Row(
-                        children: [
-                          Icon(
-                            MdiIcons.clockOutline,
-                            size: 14,
-                            color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
-                          ),
-                          const SizedBox(width: 6),
-                          Text(
-                            _formatDate(document.uploadDate),
-                            style: GoogleFonts.inter(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w400,
-                              color: Theme.of(context).colorScheme.onSurfaceVariant,
-                            ),
-                          ),
-                        ],
+                      const SizedBox(height: 4),
+                      Text(
+                        _formatDate(document.uploadDate),
+                        style: GoogleFonts.inter(
+                          fontSize: 12,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
                       ),
                     ],
                   ),
                 ),
                 const SizedBox(width: 16),
-                // Enhanced status and action area
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    // Enhanced status badge
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            _getStatusColor(document.processingStatus).withValues(alpha: 0.15),
-                            _getStatusColor(document.processingStatus).withValues(alpha: 0.08),
-                          ],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(
-                          color: _getStatusColor(document.processingStatus).withValues(alpha: 0.3),
-                          width: 1,
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Container(
-                            width: 6,
-                            height: 6,
-                            decoration: BoxDecoration(
-                              color: _getStatusColor(document.processingStatus),
-                              shape: BoxShape.circle,
-                            ),
-                          ),
-                          const SizedBox(width: 6),
-                          Text(
-                            _getStatusText(document.processingStatus),
-                            style: GoogleFonts.inter(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600,
-                              color: _getStatusColor(document.processingStatus),
-                            ),
-                          ),
-                        ],
-                      ),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: _getStatusColor(document.processingStatus).withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: Text(
+                    _getStatusText(document.processingStatus),
+                    style: GoogleFonts.inter(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      color: _getStatusColor(document.processingStatus),
                     ),
-                    const SizedBox(height: 12),
-                    // View button with hover animation
-                    MouseRegion(
-                      cursor: SystemMouseCursors.click,
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 200),
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: AppColors.primary.withValues(alpha: 0.08),
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(
-                            color: AppColors.primary.withValues(alpha: 0.2),
-                            width: 1,
-                          ),
-                        ),
-                        child: Icon(
-                          MdiIcons.arrowRight,
-                          size: 18,
-                          color: AppColors.primary,
-                        ),
-                      ),
-                    ),
-                  ],
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Icon(
+                  MdiIcons.eyeOutline,
+                  size: 16,
+                  color: AppColors.primary,
                 ),
               ],
             ),
@@ -1080,11 +774,6 @@ class _MultimodalDocumentManagerState extends State<MultimodalDocumentManager>
         ),
       ),
     );
-  }
-
-  String _getFileExtension(String fileName) {
-    final parts = fileName.split('.');
-    return parts.length > 1 ? parts.last.toUpperCase() : 'FILE';
   }
 
   IconData _getDocumentTypeIcon(DocumentType type) {

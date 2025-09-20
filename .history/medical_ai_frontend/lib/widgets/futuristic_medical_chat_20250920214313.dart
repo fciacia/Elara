@@ -954,80 +954,80 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
             ],
           ),
           const SizedBox(height: 16),
-          
-          // Recent Medications Section - Expandable
-          ExpansionTile(
-            tilePadding: EdgeInsets.zero,
-            childrenPadding: const EdgeInsets.only(left: 12, bottom: 8),
-            title: Text(
-              'Recent Medications',
-              style: GoogleFonts.inter(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: Theme.of(context).colorScheme.onSurface,
-              ),
-            ),
-            children: [
-              _buildMedicationRow('Metformin 500mg', 'Twice daily', Colors.green),
-              const SizedBox(height: 8),
-              _buildMedicationRow('Lisinopril 10mg', 'Once daily', Colors.green),
-              const SizedBox(height: 8),
-              _buildMedicationRow('Aspirin 81mg', 'As needed', Colors.blue),
-              const SizedBox(height: 8),
-              _buildMedicationRow('Insulin Glargine', '10 units bedtime', Colors.orange),
-            ],
-          ),
-          const SizedBox(height: 16),
-          
-          // Upcoming Appointments Section
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Upcoming Appointments',
-                style: GoogleFonts.inter(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: Theme.of(context).colorScheme.onSurface,
+                
+                // Recent Medications Section - Expandable
+                ExpansionTile(
+                  tilePadding: EdgeInsets.zero,
+                  childrenPadding: const EdgeInsets.only(left: 12, bottom: 8),
+                  title: Text(
+                    'Recent Medications',
+                    style: GoogleFonts.inter(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: Theme.of(context).colorScheme.onSurface,
+                    ),
+                  ),
+                  children: [
+                    _buildMedicationRow('Metformin 500mg', 'Twice daily', Colors.green),
+                    const SizedBox(height: 8),
+                    _buildMedicationRow('Lisinopril 10mg', 'Once daily', Colors.green),
+                    const SizedBox(height: 8),
+                    _buildMedicationRow('Aspirin 81mg', 'As needed', Colors.blue),
+                    const SizedBox(height: 8),
+                    _buildMedicationRow('Insulin Glargine', '10 units bedtime', Colors.orange),
+                  ],
                 ),
-              ),
-              const SizedBox(height: 12),
-              _buildAppointmentRow('Dr. Sarah Wong', 'Sep 25, 2:00 PM', Icons.local_hospital),
-              const SizedBox(height: 8),
-              _buildAppointmentRow('Lab Tests', 'Oct 2, 9:00 AM', Icons.science),
-              const SizedBox(height: 8),
-              _buildAppointmentRow('Follow-up', 'Oct 15, 3:30 PM', Icons.schedule),
-            ],
-          ),
-          const SizedBox(height: 16),
-          
-          // Care Team Section - Expandable
-          ExpansionTile(
-            tilePadding: EdgeInsets.zero,
-            childrenPadding: const EdgeInsets.only(left: 12, bottom: 8),
-            title: Text(
-              'Care Team',
-              style: GoogleFonts.inter(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: Theme.of(context).colorScheme.onSurface,
-              ),
+                
+                // Upcoming Appointments Section
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Upcoming Appointments',
+                      style: GoogleFonts.inter(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    _buildAppointmentRow('Dr. Sarah Wong', 'Sep 25, 2:00 PM', Icons.local_hospital),
+                    const SizedBox(height: 8),
+                    _buildAppointmentRow('Lab Tests', 'Oct 2, 9:00 AM', Icons.science),
+                    const SizedBox(height: 8),
+                    _buildAppointmentRow('Follow-up', 'Oct 15, 3:30 PM', Icons.schedule),
+                  ],
+                ),
+                
+                // Care Team Section - Expandable
+                ExpansionTile(
+                  tilePadding: EdgeInsets.zero,
+                  childrenPadding: const EdgeInsets.only(left: 12, bottom: 8),
+                  title: Text(
+                    'Care Team',
+                    style: GoogleFonts.inter(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: Theme.of(context).colorScheme.onSurface,
+                    ),
+                  ),
+                  children: [
+                    _buildCareTeamRow('Dr. Ahmad Rahman', 'Primary Physician', Icons.person),
+                    const SizedBox(height: 8),
+                    _buildCareTeamRow('Nurse Sarah', 'Care Coordinator', Icons.medical_services),
+                    const SizedBox(height: 8),
+                    _buildCareTeamRow('Dr. Lisa Chen', 'Endocrinologist', Icons.healing),
+                    const SizedBox(height: 8),
+                    _buildCareTeamRow('Maria Garcia', 'Dietitian', Icons.restaurant_menu),
+                    const SizedBox(height: 8),
+                    _buildCareTeamRow('John Wilson', 'Pharmacist', Icons.local_pharmacy),
+                  ],
+                ),
+              ],
             ),
-            children: [
-              _buildCareTeamRow('Dr. Ahmad Rahman', 'Primary Physician', Icons.person),
-              const SizedBox(height: 8),
-              _buildCareTeamRow('Nurse Sarah', 'Care Coordinator', Icons.medical_services),
-              const SizedBox(height: 8),
-              _buildCareTeamRow('Dr. Lisa Chen', 'Endocrinologist', Icons.healing),
-              const SizedBox(height: 8),
-              _buildCareTeamRow('Maria Garcia', 'Dietitian', Icons.restaurant_menu),
-              const SizedBox(height: 8),
-              _buildCareTeamRow('John Wilson', 'Pharmacist', Icons.local_pharmacy),
-            ],
           ),
-          const SizedBox(height: 16),
           
-          // Medical Notes Section
+          // Bottom Section - Medical Notes
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(

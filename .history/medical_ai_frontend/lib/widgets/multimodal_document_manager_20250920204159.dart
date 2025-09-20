@@ -235,28 +235,19 @@ class _MultimodalDocumentManagerState extends State<MultimodalDocumentManager>
         final screenWidth = MediaQuery.of(context).size.width;
         final isLargeScreen = screenWidth > 1200;
         final isMediumScreen = screenWidth > 800;
-        final isSmallScreen = screenWidth < 600;
         
-        // Adjust padding based on screen size
-        final horizontalPadding = isLargeScreen ? 32.0 : isMediumScreen ? 24.0 : 16.0;
-        final verticalPadding = isLargeScreen ? 32.0 : isMediumScreen ? 24.0 : 16.0;
-        
-        return SingleChildScrollView(
-          padding: EdgeInsets.symmetric(
-            horizontal: horizontalPadding,
-            vertical: verticalPadding,
-          ),
+        return Padding(
+          padding: EdgeInsets.all(isLargeScreen ? 32 : isMediumScreen ? 24 : 16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildHeader(),
-              SizedBox(height: isLargeScreen ? 24 : 20),
-              _buildUploadSection(documentProvider),
               SizedBox(height: isLargeScreen ? 32 : 24),
+              _buildUploadSection(documentProvider),
+              SizedBox(height: isLargeScreen ? 40 : 32),
               _buildSearchAndFilter(),
-              SizedBox(height: isLargeScreen ? 24 : 20),
-              SizedBox(
-                height: isSmallScreen ? 400 : 600, // Fixed height for scrollable list
+              SizedBox(height: isLargeScreen ? 32 : 24),
+              Expanded(
                 child: _buildDocumentsList(documentProvider),
               ),
             ],
@@ -435,13 +426,13 @@ class _MultimodalDocumentManagerState extends State<MultimodalDocumentManager>
             ),
             // Main content
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 40),
               child: Column(
                 children: [
                   // Enhanced upload icon
                   Container(
-                    width: 80,
-                    height: 80,
+                    width: 100,
+                    height: 100,
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [
@@ -462,22 +453,22 @@ class _MultimodalDocumentManagerState extends State<MultimodalDocumentManager>
                     ),
                     child: Icon(
                       MdiIcons.cloudUploadOutline,
-                      size: 36,
+                      size: 48,
                       color: AppColors.primary,
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 24),
                   // Title and subtitle
                   Text(
                     'Upload Medical Documents',
                     style: GoogleFonts.inter(
-                      fontSize: 20,
+                      fontSize: 24,
                       fontWeight: FontWeight.w700,
                       color: Theme.of(context).colorScheme.onSurface,
                       letterSpacing: -0.5,
                     ),
                   ),
-                  const SizedBox(height: 6),
+                  const SizedBox(height: 8),
                   Text(
                     'Drag and drop files here or click to browse',
                     style: GoogleFonts.inter(
@@ -495,7 +486,7 @@ class _MultimodalDocumentManagerState extends State<MultimodalDocumentManager>
                       fontWeight: FontWeight.w400,
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 32),
                   // Enhanced button
                   AnimatedContainer(
                     duration: const Duration(milliseconds: 200),

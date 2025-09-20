@@ -37,10 +37,6 @@ class CustomSidebar extends StatelessWidget {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
       width: isCollapsed ? 80 : 280,
-      constraints: BoxConstraints(
-        minWidth: isCollapsed ? 80 : 280,
-        maxWidth: isCollapsed ? 80 : 300,
-      ),
       child: Container(
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.95),
@@ -103,8 +99,6 @@ class CustomSidebar extends StatelessWidget {
                               color: Theme.of(context).colorScheme.onSurface,
                             ),
                             overflow: TextOverflow.ellipsis,
-                            maxLines: 1,
-                            textDirection: TextDirection.ltr,
                           ),
                         ),
                         const SizedBox(width: 8),
@@ -240,7 +234,6 @@ class CustomSidebar extends StatelessWidget {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         softWrap: false,
-                        textDirection: TextDirection.ltr,
                       ),
                     ),
                   ],

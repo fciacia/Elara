@@ -235,28 +235,19 @@ class _MultimodalDocumentManagerState extends State<MultimodalDocumentManager>
         final screenWidth = MediaQuery.of(context).size.width;
         final isLargeScreen = screenWidth > 1200;
         final isMediumScreen = screenWidth > 800;
-        final isSmallScreen = screenWidth < 600;
         
-        // Adjust padding based on screen size
-        final horizontalPadding = isLargeScreen ? 32.0 : isMediumScreen ? 24.0 : 16.0;
-        final verticalPadding = isLargeScreen ? 32.0 : isMediumScreen ? 24.0 : 16.0;
-        
-        return SingleChildScrollView(
-          padding: EdgeInsets.symmetric(
-            horizontal: horizontalPadding,
-            vertical: verticalPadding,
-          ),
+        return Padding(
+          padding: EdgeInsets.all(isLargeScreen ? 32 : isMediumScreen ? 24 : 16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildHeader(),
-              SizedBox(height: isLargeScreen ? 24 : 20),
-              _buildUploadSection(documentProvider),
               SizedBox(height: isLargeScreen ? 32 : 24),
+              _buildUploadSection(documentProvider),
+              SizedBox(height: isLargeScreen ? 40 : 32),
               _buildSearchAndFilter(),
-              SizedBox(height: isLargeScreen ? 24 : 20),
-              SizedBox(
-                height: isSmallScreen ? 400 : 600, // Fixed height for scrollable list
+              SizedBox(height: isLargeScreen ? 32 : 24),
+              Expanded(
                 child: _buildDocumentsList(documentProvider),
               ),
             ],
@@ -435,13 +426,13 @@ class _MultimodalDocumentManagerState extends State<MultimodalDocumentManager>
             ),
             // Main content
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 40),
               child: Column(
                 children: [
                   // Enhanced upload icon
                   Container(
-                    width: 80,
-                    height: 80,
+                    width: 100,
+                    height: 100,
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [
@@ -462,22 +453,22 @@ class _MultimodalDocumentManagerState extends State<MultimodalDocumentManager>
                     ),
                     child: Icon(
                       MdiIcons.cloudUploadOutline,
-                      size: 36,
+                      size: 48,
                       color: AppColors.primary,
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 24),
                   // Title and subtitle
                   Text(
                     'Upload Medical Documents',
                     style: GoogleFonts.inter(
-                      fontSize: 20,
+                      fontSize: 24,
                       fontWeight: FontWeight.w700,
                       color: Theme.of(context).colorScheme.onSurface,
                       letterSpacing: -0.5,
                     ),
                   ),
-                  const SizedBox(height: 6),
+                  const SizedBox(height: 8),
                   Text(
                     'Drag and drop files here or click to browse',
                     style: GoogleFonts.inter(
@@ -495,7 +486,7 @@ class _MultimodalDocumentManagerState extends State<MultimodalDocumentManager>
                       fontWeight: FontWeight.w400,
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 32),
                   // Enhanced button
                   AnimatedContainer(
                     duration: const Duration(milliseconds: 200),
@@ -860,8 +851,7 @@ class _MultimodalDocumentManagerState extends State<MultimodalDocumentManager>
   }
 
   Widget _buildDocumentCard(MedicalDocument document) {
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 200),
+    return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
@@ -883,49 +873,40 @@ class _MultimodalDocumentManagerState extends State<MultimodalDocumentManager>
         child: InkWell(
           borderRadius: BorderRadius.circular(16),
           onTap: () => _viewDocument(document),
-          hoverColor: AppColors.primary.withValues(alpha: 0.02),
-          splashColor: AppColors.primary.withValues(alpha: 0.1),
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
+          onHover: (isHovered) {
+            // Add subtle hover effect
+          },
+          child: Container(
             padding: const EdgeInsets.all(20),
             child: Row(
               children: [
-                // Enhanced document type icon with hover animation
-                TweenAnimationBuilder<double>(
-                  duration: const Duration(milliseconds: 200),
-                  tween: Tween(begin: 1.0, end: 1.0),
-                  builder: (context, scale, child) {
-                    return Transform.scale(
-                      scale: scale,
-                      child: Container(
-                        width: 60,
-                        height: 60,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              _getDocumentTypeColor(document.type).withValues(alpha: 0.15),
-                              _getDocumentTypeColor(document.type).withValues(alpha: 0.08),
-                            ],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          ),
-                          borderRadius: BorderRadius.circular(16),
-                          boxShadow: [
-                            BoxShadow(
-                              color: _getDocumentTypeColor(document.type).withValues(alpha: 0.2),
-                              blurRadius: 12,
-                              offset: const Offset(0, 4),
-                            ),
-                          ],
-                        ),
-                        child: Icon(
-                          _getDocumentTypeIcon(document.type),
-                          color: _getDocumentTypeColor(document.type),
-                          size: 28,
-                        ),
+                // Enhanced document type icon
+                Container(
+                  width: 60,
+                  height: 60,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        _getDocumentTypeColor(document.type).withValues(alpha: 0.15),
+                        _getDocumentTypeColor(document.type).withValues(alpha: 0.08),
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: _getDocumentTypeColor(document.type).withValues(alpha: 0.2),
+                        blurRadius: 12,
+                        offset: const Offset(0, 4),
                       ),
-                    );
-                  },
+                    ],
+                  ),
+                  child: Icon(
+                    _getDocumentTypeIcon(document.type),
+                    color: _getDocumentTypeColor(document.type),
+                    size: 28,
+                  ),
                 ),
                 const SizedBox(width: 20),
                 // Enhanced document information
@@ -1051,25 +1032,21 @@ class _MultimodalDocumentManagerState extends State<MultimodalDocumentManager>
                       ),
                     ),
                     const SizedBox(height: 12),
-                    // View button with hover animation
-                    MouseRegion(
-                      cursor: SystemMouseCursors.click,
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 200),
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: AppColors.primary.withValues(alpha: 0.08),
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(
-                            color: AppColors.primary.withValues(alpha: 0.2),
-                            width: 1,
-                          ),
+                    // View button
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: AppColors.primary.withValues(alpha: 0.08),
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(
+                          color: AppColors.primary.withValues(alpha: 0.2),
+                          width: 1,
                         ),
-                        child: Icon(
-                          MdiIcons.arrowRight,
-                          size: 18,
-                          color: AppColors.primary,
-                        ),
+                      ),
+                      child: Icon(
+                        MdiIcons.arrowRight,
+                        size: 18,
+                        color: AppColors.primary,
                       ),
                     ),
                   ],
