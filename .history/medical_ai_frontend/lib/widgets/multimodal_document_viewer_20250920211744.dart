@@ -38,7 +38,7 @@ class _MultimodalDocumentViewerState extends State<MultimodalDocumentViewer>
     );
     
     _animationController.forward();
-
+    _initializeAnnotations();
   }
 
   @override

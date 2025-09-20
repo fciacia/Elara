@@ -797,9 +797,11 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
   }
 
   Widget _buildPatientContext() {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
+    return Padding(
+      padding: const EdgeInsets.all(20),
       child: Column(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Header
@@ -821,213 +823,209 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
               ),
             ],
           ),
-          const SizedBox(height: 16),
           
-          // Patient Info Card
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  Colors.blue.withValues(alpha: 0.1),
-                  Colors.blue.withValues(alpha: 0.05),
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Row(
+          // Main Content - Expanded to fill available space
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Patient Info Card
                 Container(
-                  width: 40,
-                  height: 40,
+                  padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: Colors.blue,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: const Center(
-                    child: Text(
-                      'A',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16,
-                      ),
+                    gradient: LinearGradient(
+                      colors: [
+                        Colors.blue.withValues(alpha: 0.1),
+                        Colors.blue.withValues(alpha: 0.05),
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
                     ),
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  child: Row(
                     children: [
-                      Text(
-                        'Ahmad Ibrahim',
-                        style: GoogleFonts.inter(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: Theme.of(context).colorScheme.onSurface,
+                      Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: Colors.blue,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: const Center(
+                          child: Text(
+                            'A',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 16,
+                            ),
+                          ),
                         ),
                       ),
-                      const SizedBox(height: 2),
-                      Text(
-                        'Age 45 • IC: 123456-78-9012',
-                        style: GoogleFonts.inter(
-                          fontSize: 12,
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Ahmad Ibrahim',
+                              style: GoogleFonts.inter(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: Theme.of(context).colorScheme.onSurface,
+                              ),
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              'Age 45 • IC: 123456-78-9012',
+                              style: GoogleFonts.inter(
+                                fontSize: 12,
+                                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],
                   ),
                 ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 16),
-          
-          // Critical Info Section
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  Colors.orange.withValues(alpha: 0.1),
-                  Colors.orange.withValues(alpha: 0.05),
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Icon(
-                      Icons.warning_rounded,
-                      size: 16,
-                      color: Colors.orange[700],
+                
+                // Critical Info Section
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        Colors.orange.withValues(alpha: 0.1),
+                        Colors.orange.withValues(alpha: 0.05),
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
                     ),
-                    const SizedBox(width: 8),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.warning_rounded,
+                            size: 16,
+                            color: Colors.orange[700],
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            'CRITICAL INFO',
+                            style: GoogleFonts.inter(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.orange[700],
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      _buildCriticalInfoItem('Allergies', 'Penicillin, Aspirin'),
+                      const SizedBox(height: 8),
+                      _buildCriticalInfoItem('Comorbidities', 'Type 2 Diabetes, Hypertension'),
+                    ],
+                  ),
+                ),
+                
+                // Recent Vitals Section
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
                     Text(
-                      'CRITICAL INFO',
+                      'Recent Vitals',
                       style: GoogleFonts.inter(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.orange[700],
-                        letterSpacing: 0.5,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: Theme.of(context).colorScheme.onSurface,
                       ),
                     ),
+                    const SizedBox(height: 12),
+                    _buildVitalRow('Blood Pressure', '140/90 mmHg', Colors.orange),
+                    const SizedBox(height: 8),
+                    _buildVitalRow('Heart Rate', '72 bpm', Colors.green),
+                    const SizedBox(height: 8),
+                    _buildVitalRow('Temperature', '37.2°C', Colors.blue),
+                    const SizedBox(height: 8),
+                    _buildVitalRow('Blood Sugar', '8.5 mmol/L', Colors.orange),
                   ],
                 ),
-                const SizedBox(height: 12),
-                _buildCriticalInfoItem('Allergies', 'Penicillin, Aspirin'),
-                const SizedBox(height: 8),
-                _buildCriticalInfoItem('Comorbidities', 'Type 2 Diabetes, Hypertension'),
+                
+                // Recent Medications Section
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Recent Medications',
+                      style: GoogleFonts.inter(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    _buildMedicationRow('Metformin 500mg', 'Twice daily', Colors.green),
+                    const SizedBox(height: 8),
+                    _buildMedicationRow('Lisinopril 10mg', 'Once daily', Colors.green),
+                    const SizedBox(height: 8),
+                    _buildMedicationRow('Aspirin 81mg', 'As needed', Colors.blue),
+                  ],
+                ),
+                
+                // Upcoming Appointments Section
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Upcoming Appointments',
+                      style: GoogleFonts.inter(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    _buildAppointmentRow('Dr. Sarah Wong', 'Sep 25, 2:00 PM', Icons.local_hospital),
+                    const SizedBox(height: 8),
+                    _buildAppointmentRow('Lab Tests', 'Oct 2, 9:00 AM', Icons.science),
+                    const SizedBox(height: 8),
+                    _buildAppointmentRow('Follow-up', 'Oct 15, 3:30 PM', Icons.schedule),
+                  ],
+                ),
+                
+                // Care Team Section
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Care Team',
+                      style: GoogleFonts.inter(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    _buildCareTeamRow('Dr. Ahmad Rahman', 'Primary Physician', Icons.person),
+                    const SizedBox(height: 8),
+                    _buildCareTeamRow('Nurse Sarah', 'Care Coordinator', Icons.medical_services),
+                    const SizedBox(height: 8),
+                    _buildCareTeamRow('Dr. Lisa Chen', 'Endocrinologist', Icons.healing),
+                  ],
+                ),
               ],
             ),
           ),
-          const SizedBox(height: 16),
           
-          // Recent Vitals Section
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Recent Vitals',
-                style: GoogleFonts.inter(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: Theme.of(context).colorScheme.onSurface,
-                ),
-              ),
-              const SizedBox(height: 12),
-              _buildVitalRow('Blood Pressure', '140/90 mmHg', Colors.orange),
-              const SizedBox(height: 8),
-              _buildVitalRow('Heart Rate', '72 bpm', Colors.green),
-              const SizedBox(height: 8),
-              _buildVitalRow('Temperature', '37.2°C', Colors.blue),
-              const SizedBox(height: 8),
-              _buildVitalRow('Blood Sugar', '8.5 mmol/L', Colors.orange),
-            ],
-          ),
-          const SizedBox(height: 16),
-          
-          // Recent Medications Section - Expandable
-          ExpansionTile(
-            tilePadding: EdgeInsets.zero,
-            childrenPadding: const EdgeInsets.only(left: 12, bottom: 8),
-            title: Text(
-              'Recent Medications',
-              style: GoogleFonts.inter(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: Theme.of(context).colorScheme.onSurface,
-              ),
-            ),
-            children: [
-              _buildMedicationRow('Metformin 500mg', 'Twice daily', Colors.green),
-              const SizedBox(height: 8),
-              _buildMedicationRow('Lisinopril 10mg', 'Once daily', Colors.green),
-              const SizedBox(height: 8),
-              _buildMedicationRow('Aspirin 81mg', 'As needed', Colors.blue),
-              const SizedBox(height: 8),
-              _buildMedicationRow('Insulin Glargine', '10 units bedtime', Colors.orange),
-            ],
-          ),
-          const SizedBox(height: 16),
-          
-          // Upcoming Appointments Section
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Upcoming Appointments',
-                style: GoogleFonts.inter(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: Theme.of(context).colorScheme.onSurface,
-                ),
-              ),
-              const SizedBox(height: 12),
-              _buildAppointmentRow('Dr. Sarah Wong', 'Sep 25, 2:00 PM', Icons.local_hospital),
-              const SizedBox(height: 8),
-              _buildAppointmentRow('Lab Tests', 'Oct 2, 9:00 AM', Icons.science),
-              const SizedBox(height: 8),
-              _buildAppointmentRow('Follow-up', 'Oct 15, 3:30 PM', Icons.schedule),
-            ],
-          ),
-          const SizedBox(height: 16),
-          
-          // Care Team Section - Expandable
-          ExpansionTile(
-            tilePadding: EdgeInsets.zero,
-            childrenPadding: const EdgeInsets.only(left: 12, bottom: 8),
-            title: Text(
-              'Care Team',
-              style: GoogleFonts.inter(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: Theme.of(context).colorScheme.onSurface,
-              ),
-            ),
-            children: [
-              _buildCareTeamRow('Dr. Ahmad Rahman', 'Primary Physician', Icons.person),
-              const SizedBox(height: 8),
-              _buildCareTeamRow('Nurse Sarah', 'Care Coordinator', Icons.medical_services),
-              const SizedBox(height: 8),
-              _buildCareTeamRow('Dr. Lisa Chen', 'Endocrinologist', Icons.healing),
-              const SizedBox(height: 8),
-              _buildCareTeamRow('Maria Garcia', 'Dietitian', Icons.restaurant_menu),
-              const SizedBox(height: 8),
-              _buildCareTeamRow('John Wilson', 'Pharmacist', Icons.local_pharmacy),
-            ],
-          ),
-          const SizedBox(height: 16),
-          
-          // Medical Notes Section
+          // Bottom Section - Medical Notes
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(

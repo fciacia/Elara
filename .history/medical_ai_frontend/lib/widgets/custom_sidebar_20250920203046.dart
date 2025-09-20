@@ -103,8 +103,6 @@ class CustomSidebar extends StatelessWidget {
                               color: Theme.of(context).colorScheme.onSurface,
                             ),
                             overflow: TextOverflow.ellipsis,
-                            maxLines: 1,
-                            textDirection: TextDirection.ltr,
                           ),
                         ),
                         const SizedBox(width: 8),

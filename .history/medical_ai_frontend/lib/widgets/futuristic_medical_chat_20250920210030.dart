@@ -340,7 +340,7 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
                     
                     _buildSectionHeader('Recent Queries', Icons.history),
                     const SizedBox(height: 8),
-                    _buildQueryItem('Patient care guidelines', '2 hours ago'),
+                    _buildQueryItem('Blood pressure medication side effects', '2 hours ago'),
                     _buildQueryItem('Diabetes management protocols', '1 day ago'),
                   ],
                 ),
@@ -798,7 +798,7 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
 
   Widget _buildPatientContext() {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -821,7 +821,7 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 20),
           
           // Patient Info Card
           Container(
@@ -884,9 +884,9 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
               ],
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 20),
           
-          // Critical Info Section
+          // Critical Info
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
@@ -906,154 +906,107 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
                 Row(
                   children: [
                     Icon(
-                      Icons.warning_rounded,
+                      MdiIcons.alert,
                       size: 16,
-                      color: Colors.orange[700],
+                      color: Colors.orange,
                     ),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: 6),
                     Text(
                       'CRITICAL INFO',
                       style: GoogleFonts.inter(
                         fontSize: 12,
                         fontWeight: FontWeight.w700,
-                        color: Colors.orange[700],
-                        letterSpacing: 0.5,
+                        color: Colors.orange,
                       ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 12),
-                _buildCriticalInfoItem('Allergies', 'Penicillin, Aspirin'),
+                _buildInfoRow('Allergies', 'Penicillin, Aspirin'),
                 const SizedBox(height: 8),
-                _buildCriticalInfoItem('Comorbidities', 'Type 2 Diabetes, Hypertension'),
+                _buildInfoRow('Comorbidities', 'Type 2 Diabetes, Hypertension'),
               ],
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 20),
           
-          // Recent Vitals Section
-          Column(
+          // Recent Vitals
+          Text(
+            'Recent Vitals',
+            style: GoogleFonts.inter(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
+          ),
+          const SizedBox(height: 12),
+          _buildVitalRow('Blood Pressure', '140/90 mmHg', Colors.orange),
+          _buildVitalRow('Heart Rate', '72 bpm', Colors.green),
+          _buildVitalRow('Temperature', '37.2°C', Colors.blue),
+          _buildVitalRow('Blood Sugar', '8.5 mmol/L', Colors.orange),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildInfoRow(String label, String value) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: 4,
+          height: 4,
+          margin: const EdgeInsets.only(top: 6, right: 8),
+          decoration: const BoxDecoration(
+            color: Colors.orange,
+            shape: BoxShape.circle,
+          ),
+        ),
+        Expanded(
+          child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Recent Vitals',
+                label,
                 style: GoogleFonts.inter(
-                  fontSize: 14,
+                  fontSize: 12,
                   fontWeight: FontWeight.w600,
                   color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
-              const SizedBox(height: 12),
-              _buildVitalRow('Blood Pressure', '140/90 mmHg', Colors.orange),
-              const SizedBox(height: 8),
-              _buildVitalRow('Heart Rate', '72 bpm', Colors.green),
-              const SizedBox(height: 8),
-              _buildVitalRow('Temperature', '37.2°C', Colors.blue),
-              const SizedBox(height: 8),
-              _buildVitalRow('Blood Sugar', '8.5 mmol/L', Colors.orange),
-            ],
-          ),
-          const SizedBox(height: 16),
-          
-          // Recent Medications Section - Expandable
-          ExpansionTile(
-            tilePadding: EdgeInsets.zero,
-            childrenPadding: const EdgeInsets.only(left: 12, bottom: 8),
-            title: Text(
-              'Recent Medications',
-              style: GoogleFonts.inter(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: Theme.of(context).colorScheme.onSurface,
-              ),
-            ),
-            children: [
-              _buildMedicationRow('Metformin 500mg', 'Twice daily', Colors.green),
-              const SizedBox(height: 8),
-              _buildMedicationRow('Lisinopril 10mg', 'Once daily', Colors.green),
-              const SizedBox(height: 8),
-              _buildMedicationRow('Aspirin 81mg', 'As needed', Colors.blue),
-              const SizedBox(height: 8),
-              _buildMedicationRow('Insulin Glargine', '10 units bedtime', Colors.orange),
-            ],
-          ),
-          const SizedBox(height: 16),
-          
-          // Upcoming Appointments Section
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
               Text(
-                'Upcoming Appointments',
+                value,
                 style: GoogleFonts.inter(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: Theme.of(context).colorScheme.onSurface,
+                  fontSize: 11,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
               ),
-              const SizedBox(height: 12),
-              _buildAppointmentRow('Dr. Sarah Wong', 'Sep 25, 2:00 PM', Icons.local_hospital),
-              const SizedBox(height: 8),
-              _buildAppointmentRow('Lab Tests', 'Oct 2, 9:00 AM', Icons.science),
-              const SizedBox(height: 8),
-              _buildAppointmentRow('Follow-up', 'Oct 15, 3:30 PM', Icons.schedule),
             ],
           ),
-          const SizedBox(height: 16),
-          
-          // Care Team Section - Expandable
-          ExpansionTile(
-            tilePadding: EdgeInsets.zero,
-            childrenPadding: const EdgeInsets.only(left: 12, bottom: 8),
-            title: Text(
-              'Care Team',
-              style: GoogleFonts.inter(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: Theme.of(context).colorScheme.onSurface,
-              ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildVitalRow(String label, String value, Color color) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            label,
+            style: GoogleFonts.inter(
+              fontSize: 13,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),
-            children: [
-              _buildCareTeamRow('Dr. Ahmad Rahman', 'Primary Physician', Icons.person),
-              const SizedBox(height: 8),
-              _buildCareTeamRow('Nurse Sarah', 'Care Coordinator', Icons.medical_services),
-              const SizedBox(height: 8),
-              _buildCareTeamRow('Dr. Lisa Chen', 'Endocrinologist', Icons.healing),
-              const SizedBox(height: 8),
-              _buildCareTeamRow('Maria Garcia', 'Dietitian', Icons.restaurant_menu),
-              const SizedBox(height: 8),
-              _buildCareTeamRow('John Wilson', 'Pharmacist', Icons.local_pharmacy),
-            ],
           ),
-          const SizedBox(height: 16),
-          
-          // Medical Notes Section
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: Colors.grey.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Recent Notes',
-                  style: GoogleFonts.inter(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: Theme.of(context).colorScheme.onSurface,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'Patient shows good compliance with diabetes management. Continue current medication regimen and monitor blood glucose levels.',
-                  style: GoogleFonts.inter(
-                    fontSize: 12,
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
-                ),
-              ],
+          Text(
+            value,
+            style: GoogleFonts.inter(
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+              color: color,
             ),
           ),
         ],
@@ -1283,172 +1236,6 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
           ),
         ),
       ),
-    );
-  }
-  
-  Widget _buildCriticalInfoItem(String label, String value) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          width: 4,
-          height: 4,
-          margin: const EdgeInsets.only(top: 6),
-          decoration: BoxDecoration(
-            color: Colors.orange[700],
-            shape: BoxShape.circle,
-          ),
-        ),
-        const SizedBox(width: 8),
-        Expanded(
-          child: RichText(
-            text: TextSpan(
-              style: GoogleFonts.inter(
-                fontSize: 12,
-                color: Theme.of(context).colorScheme.onSurface,
-              ),
-              children: [
-                TextSpan(
-                  text: '$label: ',
-                  style: const TextStyle(fontWeight: FontWeight.w600),
-                ),
-                TextSpan(text: value),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-  
-  Widget _buildVitalRow(String label, String value, Color valueColor) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          label,
-          style: GoogleFonts.inter(
-            fontSize: 12,
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
-          ),
-        ),
-        Text(
-          value,
-          style: GoogleFonts.inter(
-            fontSize: 12,
-            fontWeight: FontWeight.w600,
-            color: valueColor,
-          ),
-        ),
-      ],
-    );
-  }
-  
-  Widget _buildMedicationRow(String medication, String frequency, Color statusColor) {
-    return Row(
-      children: [
-        Container(
-          width: 6,
-          height: 6,
-          decoration: BoxDecoration(
-            color: statusColor,
-            shape: BoxShape.circle,
-          ),
-        ),
-        const SizedBox(width: 8),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                medication,
-                style: GoogleFonts.inter(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  color: Theme.of(context).colorScheme.onSurface,
-                ),
-              ),
-              Text(
-                frequency,
-                style: GoogleFonts.inter(
-                  fontSize: 11,
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-  
-  Widget _buildAppointmentRow(String provider, String datetime, IconData icon) {
-    return Row(
-      children: [
-        Icon(
-          icon,
-          size: 14,
-          color: Colors.blue[600],
-        ),
-        const SizedBox(width: 8),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                provider,
-                style: GoogleFonts.inter(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  color: Theme.of(context).colorScheme.onSurface,
-                ),
-              ),
-              Text(
-                datetime,
-                style: GoogleFonts.inter(
-                  fontSize: 11,
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-  
-  Widget _buildCareTeamRow(String name, String role, IconData icon) {
-    return Row(
-      children: [
-        Icon(
-          icon,
-          size: 14,
-          color: Colors.green[600],
-        ),
-        const SizedBox(width: 8),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                name,
-                style: GoogleFonts.inter(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  color: Theme.of(context).colorScheme.onSurface,
-                ),
-              ),
-              Text(
-                role,
-                style: GoogleFonts.inter(
-                  fontSize: 11,
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
     );
   }
 }

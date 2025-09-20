@@ -237,9 +237,9 @@ class _MultimodalDocumentManagerState extends State<MultimodalDocumentManager>
         final isMediumScreen = screenWidth > 800;
         final isSmallScreen = screenWidth < 600;
         
-        // Adjust padding based on screen size
-        final horizontalPadding = isLargeScreen ? 32.0 : isMediumScreen ? 24.0 : 16.0;
-        final verticalPadding = isLargeScreen ? 32.0 : isMediumScreen ? 24.0 : 16.0;
+        // Adjust padding based on screen size and whether patient context is shown
+        final horizontalPadding = isLargeScreen ? 24.0 : isMediumScreen ? 20.0 : 16.0;
+        final verticalPadding = isLargeScreen ? 24.0 : isMediumScreen ? 20.0 : 16.0;
         
         return SingleChildScrollView(
           padding: EdgeInsets.symmetric(

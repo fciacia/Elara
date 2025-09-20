@@ -162,25 +162,278 @@ class _MultimodalDocumentManagerState extends State<MultimodalDocumentManager>
     return Consumer<AppProvider>(
       builder: (context, appProvider, child) {
         final isDarkMode = appProvider.isDarkMode;
-        Widget sidebar = SizedBox.shrink(); // No sidebar for document manager
-        Widget homeContent = FadeTransition(
-          opacity: _pageTransitionFade,
-          child: SlideTransition(
-            position: _slideAnimation,
-            child: FadeTransition(
-              opacity: _fadeAnimation,
-              child: _selectedDocument != null 
-                ? _buildDocumentViewer()
-                : _buildDocumentManager(),
+        final screenWidth = MediaQuery.of(context).size.width;
+        final showPatientContext = screenWidth > 1200; // Only show on large screens
+        
+        Widget sidebar = SizedBox.shrink(); // No left sidebar for document manager
+        
+        Widget homeContent = Row(
+          children: [
+            // Main content area
+            Expanded(
+              flex: showPatientContext ? 3 : 1,
+              child: FadeTransition(
+                opacity: _pageTransitionFade,
+                child: SlideTransition(
+                  position: _slideAnimation,
+                  child: FadeTransition(
+                    opacity: _fadeAnimation,
+                    child: _selectedDocument != null 
+                      ? _buildDocumentViewer()
+                      : _buildDocumentManager(),
+                  ),
+                ),
+              ),
             ),
-          ),
+            // Patient context panel
+            if (showPatientContext)
+              Container(
+                width: 320,
+                margin: const EdgeInsets.all(16),
+                child: _buildPatientContextPanel(),
+              ),
+          ],
         );
+        
         return BackgroundLayout(
           sidebar: sidebar, 
           homeContent: homeContent,
           isDarkMode: isDarkMode,
         );
       },
+    );
+  }
+
+  Widget _buildPatientContextPanel() {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: AppColors.primary.withValues(alpha: 0.1),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.08),
+            blurRadius: 20,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header
+          Row(
+            children: [
+              Icon(
+                MdiIcons.account,
+                size: 20,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                'Patient Context',
+                style: GoogleFonts.inter(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: Theme.of(context).colorScheme.onSurface,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+          
+          // Patient Info Card
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Colors.blue.withValues(alpha: 0.1),
+                  Colors.blue.withValues(alpha: 0.05),
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Row(
+              children: [
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: Colors.blue,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: const Center(
+                    child: Text(
+                      'A',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Ahmad Ibrahim',
+                        style: GoogleFonts.inter(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: Theme.of(context).colorScheme.onSurface,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        'Age 45 • IC: 123456-78-9012',
+                        style: GoogleFonts.inter(
+                          fontSize: 12,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 20),
+          
+          // Critical Info
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Colors.orange.withValues(alpha: 0.1),
+                  Colors.orange.withValues(alpha: 0.05),
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(
+                      MdiIcons.alert,
+                      size: 16,
+                      color: Colors.orange,
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      'CRITICAL INFO',
+                      style: GoogleFonts.inter(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.orange,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                _buildInfoRow('Allergies', 'Penicillin, Aspirin'),
+                const SizedBox(height: 8),
+                _buildInfoRow('Comorbidities', 'Type 2 Diabetes, Hypertension'),
+              ],
+            ),
+          ),
+          const SizedBox(height: 20),
+          
+          // Recent Vitals
+          Text(
+            'Recent Vitals',
+            style: GoogleFonts.inter(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
+          ),
+          const SizedBox(height: 12),
+          _buildVitalRow('Blood Pressure', '140/90 mmHg', Colors.orange),
+          _buildVitalRow('Heart Rate', '72 bpm', Colors.green),
+          _buildVitalRow('Temperature', '37.2°C', Colors.blue),
+          _buildVitalRow('Blood Sugar', '8.5 mmol/L', Colors.orange),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildInfoRow(String label, String value) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: 4,
+          height: 4,
+          margin: const EdgeInsets.only(top: 6, right: 8),
+          decoration: const BoxDecoration(
+            color: Colors.orange,
+            shape: BoxShape.circle,
+          ),
+        ),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                style: GoogleFonts.inter(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: Theme.of(context).colorScheme.onSurface,
+                ),
+              ),
+              Text(
+                value,
+                style: GoogleFonts.inter(
+                  fontSize: 11,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildVitalRow(String label, String value, Color color) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            label,
+            style: GoogleFonts.inter(
+              fontSize: 13,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
+          ),
+          Text(
+            value,
+            style: GoogleFonts.inter(
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+              color: color,
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -237,9 +490,9 @@ class _MultimodalDocumentManagerState extends State<MultimodalDocumentManager>
         final isMediumScreen = screenWidth > 800;
         final isSmallScreen = screenWidth < 600;
         
-        // Adjust padding based on screen size
-        final horizontalPadding = isLargeScreen ? 32.0 : isMediumScreen ? 24.0 : 16.0;
-        final verticalPadding = isLargeScreen ? 32.0 : isMediumScreen ? 24.0 : 16.0;
+        // Adjust padding based on screen size and whether patient context is shown
+        final horizontalPadding = isLargeScreen ? 24.0 : isMediumScreen ? 20.0 : 16.0;
+        final verticalPadding = isLargeScreen ? 24.0 : isMediumScreen ? 20.0 : 16.0;
         
         return SingleChildScrollView(
           padding: EdgeInsets.symmetric(
@@ -462,22 +715,22 @@ class _MultimodalDocumentManagerState extends State<MultimodalDocumentManager>
                     ),
                     child: Icon(
                       MdiIcons.cloudUploadOutline,
-                      size: 36,
+                      size: 48,
                       color: AppColors.primary,
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 24),
                   // Title and subtitle
                   Text(
                     'Upload Medical Documents',
                     style: GoogleFonts.inter(
-                      fontSize: 20,
+                      fontSize: 24,
                       fontWeight: FontWeight.w700,
                       color: Theme.of(context).colorScheme.onSurface,
                       letterSpacing: -0.5,
                     ),
                   ),
-                  const SizedBox(height: 6),
+                  const SizedBox(height: 8),
                   Text(
                     'Drag and drop files here or click to browse',
                     style: GoogleFonts.inter(
@@ -495,7 +748,7 @@ class _MultimodalDocumentManagerState extends State<MultimodalDocumentManager>
                       fontWeight: FontWeight.w400,
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 32),
                   // Enhanced button
                   AnimatedContainer(
                     duration: const Duration(milliseconds: 200),

@@ -37,10 +37,6 @@ class CustomSidebar extends StatelessWidget {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
       width: isCollapsed ? 80 : 280,
-      constraints: BoxConstraints(
-        minWidth: isCollapsed ? 80 : 280,
-        maxWidth: isCollapsed ? 80 : 300,
-      ),
       child: Container(
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.95),
@@ -103,8 +99,6 @@ class CustomSidebar extends StatelessWidget {
                               color: Theme.of(context).colorScheme.onSurface,
                             ),
                             overflow: TextOverflow.ellipsis,
-                            maxLines: 1,
-                            textDirection: TextDirection.ltr,
                           ),
                         ),
                         const SizedBox(width: 8),
@@ -134,8 +128,8 @@ class CustomSidebar extends StatelessWidget {
 
             // Navigation Items
             Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Column(
                   children: navItems.asMap().entries.map((entry) {
                     final index = entry.key;
@@ -181,70 +175,41 @@ class CustomSidebar extends StatelessWidget {
   }
 
   Widget _buildNavItem(BuildContext context, NavItem item, bool isSelected, VoidCallback onTap) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
-        child: Container(
-          width: double.infinity,
-          constraints: BoxConstraints(
-            minHeight: 50,
-            minWidth: isCollapsed ? 60 : 220,
-          ),
-          padding: EdgeInsets.symmetric(
-            horizontal: isCollapsed ? 14 : 16,
-            vertical: 14,
-          ),
-          decoration: BoxDecoration(
-            color: isSelected 
-                ? AppColors.primary.withValues(alpha: 0.15) 
-                : Colors.transparent,
-            borderRadius: BorderRadius.circular(12),
-            border: isSelected
-                ? Border.all(color: AppColors.primary.withValues(alpha: 0.3), width: 1)
-                : null,
-          ),
-          child: isCollapsed
-              ? Center(
-                  child: Icon(
-                    isSelected ? item.selectedIcon : item.icon,
-                    color: isSelected 
-                        ? AppColors.primary 
-                        : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
-                    size: 22,
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        decoration: BoxDecoration(
+          color: isSelected ? AppColors.primary.withValues(alpha: 0.1) : null,
+          borderRadius: BorderRadius.circular(12),
+          border: isSelected
+              ? Border.all(color: AppColors.primary.withValues(alpha: 0.3))
+              : null,
+        ),
+        child: Row(
+          children: [
+            Icon(
+              isSelected ? item.selectedIcon : item.icon,
+              color: isSelected ? AppColors.primary : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+              size: 24,
+            ),
+            if (!isCollapsed) ...[
+              const SizedBox(width: 16),
+              Expanded(
+                child: Text(
+                  item.label,
+                  style: GoogleFonts.inter(
+                    fontSize: 14,
+                    fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                    color: isSelected ? AppColors.primary : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                   ),
-                )
-              : Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Icon(
-                      isSelected ? item.selectedIcon : item.icon,
-                      color: isSelected 
-                          ? AppColors.primary 
-                          : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
-                      size: 22,
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Text(
-                        item.label,
-                        style: GoogleFonts.inter(
-                          fontSize: 14,
-                          fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-                          color: isSelected 
-                              ? AppColors.primary 
-                              : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        softWrap: false,
-                        textDirection: TextDirection.ltr,
-                      ),
-                    ),
-                  ],
+                  overflow: TextOverflow.ellipsis,
                 ),
+              ),
+            ],
+          ],
         ),
       ),
     );
