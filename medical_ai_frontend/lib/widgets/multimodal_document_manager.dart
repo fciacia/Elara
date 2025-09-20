@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart'; // for kIsWeb
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -79,17 +80,33 @@ class _MultimodalDocumentManagerState extends State<MultimodalDocumentManager>
         allowMultiple: true,
         type: FileType.custom,
         allowedExtensions: ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx', 'txt'],
+        withData: true, // ensures bytes are loaded for web
       );
 
       if (result != null && result.files.isNotEmpty) {
-        final files = result.files
-            .where((file) => file.path != null)
-            .map((file) => File(file.path!))
-            .toList();
-
-        if (files.isNotEmpty) {
+        if (kIsWeb) {
+          // On web, use bytes
+          final files = result.files.where((file) => file.bytes != null).toList();
+          final success = await context.read<DocumentProvider>().uploadDocumentsWeb(files);
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  success 
+                    ? 'Documents uploaded successfully!' 
+                    : 'Failed to upload documents',
+                  style: GoogleFonts.inter(),
+                ),
+                backgroundColor: success ? Colors.green : Colors.red,
+                behavior: SnackBarBehavior.floating,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              ),
+            );
+          }
+        } else {
+          // On mobile/desktop, use File
+          final files = result.files.where((file) => file.path != null).map((file) => File(file.path!)).toList();
           final success = await context.read<DocumentProvider>().uploadDocuments(files);
-          
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(

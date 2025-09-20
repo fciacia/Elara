@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:get/get.dart';
 
 import '../providers/auth_provider.dart' as auth;
 import '../providers/chat_provider.dart';
@@ -14,6 +15,8 @@ class CleanChatInterface extends StatefulWidget {
   @override
   State<CleanChatInterface> createState() => _CleanChatInterfaceState();
 }
+
+
 
 class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProviderStateMixin {
   AnimationController? _animationController;
@@ -228,6 +231,22 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
                   fontWeight: FontWeight.bold,
                   color: Colors.grey[800],
                 ),
+              ),
+              const SizedBox(height: 8),
+              DropdownButton<Locale>(
+                value: Get.locale,
+                icon: const Icon(Icons.language, color: Colors.blueAccent),
+                underline: const SizedBox(),
+                items: const [
+                  DropdownMenuItem(value: Locale('en'), child: Text("EN")),
+                  DropdownMenuItem(value: Locale('ms'), child: Text("MS")),
+                  DropdownMenuItem(value: Locale('zh'), child: Text("中文")),
+                ],
+                onChanged: (locale) {
+                  if (locale != null) {
+                    Get.updateLocale(locale);
+                  }
+                },
               ),
               const SizedBox(height: 4),
               Row(
@@ -704,9 +723,9 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
             child: TextField(
               controller: _messageController,
               decoration: InputDecoration(
-                hintText: _uploadedFiles.isNotEmpty 
-                    ? 'Ask about your uploaded documents...'
-                    : 'Ask me anything about medical care...',
+        hintText: _uploadedFiles.isNotEmpty 
+          ? 'Ask about your uploaded documents...'
+          : 'Ask me anything about medical care...',
                 hintStyle: GoogleFonts.inter(
                   color: Colors.grey[400],
                 ),

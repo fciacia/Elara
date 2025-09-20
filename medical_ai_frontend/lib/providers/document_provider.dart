@@ -72,6 +72,37 @@ class MedicalDocument {
 }
 
 class DocumentProvider extends ChangeNotifier {
+  // Web upload handler
+  Future<bool> uploadDocumentsWeb(List<dynamic> files) async {
+    // files: List<PlatformFile> from file_picker
+    _setUploading(true);
+    _clearError();
+    try {
+      for (var file in files) {
+        // Simulate processing time
+        await Future.delayed(const Duration(seconds: 1));
+        final document = MedicalDocument(
+          id: DateTime.now().millisecondsSinceEpoch.toString(),
+          name: file.name,
+          fileName: file.name,
+          type: _inferDocumentType(file.name),
+          uploadDate: DateTime.now(),
+          filePath: '', // No path on web
+          fileSizeBytes: file.size,
+          processingStatus: ProcessingStatus.pending,
+        );
+        _documents.add(document);
+        _processDocument(document.id);
+      }
+      _applyFilters();
+      return true;
+    } catch (e) {
+      _setError(e.toString());
+      return false;
+    } finally {
+      _setUploading(false);
+    }
+  }
   List<MedicalDocument> _documents = [];
   List<MedicalDocument> _filteredDocuments = [];
   bool _isLoading = false;
