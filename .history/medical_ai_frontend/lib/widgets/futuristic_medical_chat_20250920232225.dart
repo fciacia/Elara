@@ -1,3 +1,4 @@
+  // ...imports remain unchanged...
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -8,6 +9,7 @@ import 'package:get/get.dart';
 import '../providers/auth_provider.dart' as auth;
 import '../providers/chat_provider.dart';
 import '../utils/app_colors.dart';
+import 'common/patient_context_panel.dart';
 
 class CleanChatInterface extends StatefulWidget {
   const CleanChatInterface({super.key});
@@ -24,7 +26,7 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
   Animation<Offset>? _slideAnimation;
   final TextEditingController _messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
-  final String _selectedPatientId = 'P12345'; // Emily Chen
+  final String _selectedPatientId = 'P001'; // Default patient
   
   // File upload state
   bool _isDragOver = false;
@@ -36,7 +38,6 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
   bool _showPatientContext = true;
   late AnimationController _panelAnimationController;
   late Animation<double> _panelAnimation;
-  late TabController _patientTabController;
 
   @override
   void initState() {
@@ -69,10 +70,6 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
     if (_showPatientContext) {
       _panelAnimationController.forward();
     }
-    
-    // Initialize patient tab controller
-    _patientTabController = TabController(length: 4, vsync: this);
-    
     _animationController!.forward();
   }
 
@@ -82,7 +79,6 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
     _messageController.dispose();
     _scrollController.dispose();
     _panelAnimationController.dispose();
-    _patientTabController.dispose();
     super.dispose();
   }
 
@@ -222,7 +218,7 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
                   // Left Sidebar - responsive width
                   if (!isMobile)
                     Container(
-                      width: isTablet ? 200 : 240,
+                      width: isTablet ? 240 : 280,
                       decoration: BoxDecoration(
                         color: Theme.of(context).colorScheme.surface,
                         border: Border(
@@ -254,8 +250,8 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
                     builder: (context, child) {
                       if (!_showPatientContext || isMobile) return Container();
                       
-                      // Responsive panel width - made narrower
-                      final double panelWidth = isTablet ? 280 : 320;
+                      // Responsive panel width
+                      final double panelWidth = isTablet ? 340 : 380;
                       
                       return Transform.translate(
                         offset: Offset(
@@ -274,7 +270,7 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
                               ),
                             ],
                           ),
-                          child: _buildPatientContextPanel(),
+                          child: PatientContextPanel(patientId: _selectedPatientId),
                         ),
                       );
                     },
@@ -553,9 +549,6 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
   }
 
   Widget _buildChatHeader() {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final isMobile = screenWidth < 768;
-    
     return Container(
       height: 70,
       padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -608,18 +601,16 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
               ],
             ),
           ),
-          // Patient context toggle - only show on tablet/desktop
-          if (!isMobile)
-            IconButton(
-              onPressed: _togglePatientContext,
-              icon: Icon(
-                _showPatientContext ? MdiIcons.accountOff : MdiIcons.account,
-                color: _showPatientContext 
-                  ? AppColors.primary 
-                  : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
-              ),
-              tooltip: _showPatientContext ? 'Hide Patient Context' : 'Show Patient Context',
+          IconButton(
+            onPressed: _togglePatientContext,
+            icon: Icon(
+              _showPatientContext ? MdiIcons.accountOff : MdiIcons.account,
+              color: _showPatientContext 
+                ? AppColors.primary 
+                : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
             ),
+            tooltip: _showPatientContext ? 'Hide Patient Context' : 'Show Patient Context',
+          ),
           IconButton(
             onPressed: () {},
             icon: Icon(Icons.more_vert, color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6)),
@@ -1092,732 +1083,6 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildPatientContextPanel() {
-    return Container(
-      width: double.infinity,
-      height: double.infinity,
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        border: Border(
-          left: BorderSide(
-            color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.2), 
-            width: 1
-          ),
-        ),
-      ),
-      child: Column(
-        children: [
-          _buildPatientHeader(),
-          _buildPatientInfo(),
-          _buildPatientTabBar(),
-          Expanded(
-            child: TabBarView(
-              controller: _patientTabController,
-              children: [
-                _buildOverviewTab(),
-                _buildVitalsTab(),
-                _buildMedicationsTab(),
-                _buildNotesTab(),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildPatientHeader() {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        border: Border(
-          bottom: BorderSide(
-            color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.2), 
-            width: 1
-          ),
-        ),
-      ),
-      child: Row(
-        children: [
-          Icon(
-            MdiIcons.account,
-            size: 20,
-            color: AppColors.primary,
-          ),
-          const SizedBox(width: 8),
-          Text(
-            'Patient Context',
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.w600,
-              color: Theme.of(context).colorScheme.onSurface,
-            ),
-          ),
-          const Spacer(),
-          IconButton(
-            icon: Icon(
-              MdiIcons.refresh,
-              size: 20,
-              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
-            ),
-            onPressed: () {
-              // Refresh patient data
-            },
-            tooltip: 'Refresh',
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildPatientInfo() {
-    return Container(
-      margin: const EdgeInsets.all(16),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            AppColors.primary.withValues(alpha: 0.1),
-            AppColors.primary.withValues(alpha: 0.05),
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 48,
-            height: 48,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  AppColors.primary, 
-                  AppColors.primary.withValues(alpha: 0.8)
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: const Center(
-              child: Text(
-                'EC',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 16,
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Emily Chen',
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurface,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                Text(
-                  'ID: P12345 • Age: 34',
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(
-              color: Colors.green.withValues(alpha: 0.2),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Text(
-              'Stable',
-              style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                color: Colors.green[700],
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildPatientTabBar() {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.2), 
-            width: 1
-          ),
-        ),
-      ),
-      child: TabBar(
-        controller: _patientTabController,
-        isScrollable: false,
-        labelColor: AppColors.primary,
-        unselectedLabelColor: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
-        indicatorColor: AppColors.primary,
-        labelStyle: Theme.of(context).textTheme.labelMedium?.copyWith(
-          fontWeight: FontWeight.w600
-        ),
-        unselectedLabelStyle: Theme.of(context).textTheme.labelMedium,
-        tabs: const [
-          Tab(text: 'Overview'),
-          Tab(text: 'Vitals'),
-          Tab(text: 'Meds'),
-          Tab(text: 'Notes'),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildOverviewTab() {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildPatientSectionHeader('Personal Information'),
-          const SizedBox(height: 12),
-          _buildInfoRow('Gender', 'Female'),
-          _buildInfoRow('Date of Birth', 'March 15, 1990'),
-          _buildInfoRow('Blood Type', 'A+'),
-          _buildInfoRow('Phone', '+60 12-345 6789'),
-          _buildInfoRow('Emergency Contact', 'John Chen (Husband)'),
-          const SizedBox(height: 20),
-          _buildPatientSectionHeader('Medical History'),
-          const SizedBox(height: 12),
-          _buildInfoRow('Allergies', 'Penicillin, Shellfish'),
-          _buildInfoRow('Chronic Conditions', 'Hypertension'),
-          _buildInfoRow('Previous Surgeries', 'Appendectomy (2018)'),
-          _buildInfoRow('Family History', 'Diabetes, Heart Disease'),
-          const SizedBox(height: 20),
-          _buildPatientSectionHeader('Insurance & Coverage'),
-          const SizedBox(height: 12),
-          _buildInfoRow('Insurance Provider', 'Great Eastern'),
-          _buildInfoRow('Policy Number', 'GE123456789'),
-          _buildInfoRow('Coverage Type', 'Premium Family'),
-          _buildInfoRow('Validity', 'Valid until Dec 2024'),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildVitalsTab() {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Vital Signs Grid
-          Row(
-            children: [
-              Expanded(
-                child: _buildVitalSignCard(
-                  '72',
-                  'bpm',
-                  'Heart Rate',
-                  Colors.green,
-                  MdiIcons.heart,
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: _buildVitalSignCard(
-                  '36.5',
-                  '°C',
-                  'Temperature',
-                  Colors.blue,
-                  MdiIcons.thermometer,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              Expanded(
-                child: _buildVitalSignCard(
-                  '98',
-                  '%',
-                  'Oxygen',
-                  Colors.green,
-                  MdiIcons.lungs,
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: _buildVitalSignCard(
-                  '16',
-                  '/min',
-                  'Resp. Rate',
-                  Colors.blue,
-                  MdiIcons.chartLine,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 24),
-          
-          // Vital Trends Section
-          _buildPatientSectionHeader('Vital Trends (7 days)'),
-          const SizedBox(height: 16),
-          _buildVitalTrendsChart(),
-          const SizedBox(height: 24),
-          
-          // Recent Readings Section
-          _buildPatientSectionHeader('Recent Readings'),
-          const SizedBox(height: 16),
-          _buildRecentReading('Blood Pressure', '120/80 mmHg', '2 hours ago'),
-          const SizedBox(height: 12),
-          _buildRecentReading('Weight', '65.2 kg', '1 day ago'),
-          const SizedBox(height: 12),
-          _buildRecentReading('Height', '165 cm', '1 week ago'),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildMedicationsTab() {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildPatientSectionHeader('Current Medications'),
-          const SizedBox(height: 12),
-          _buildCurrentMedicationCard('Lisinopril', '10mg • Once daily', 'Hypertension', Colors.red),
-          const SizedBox(height: 12),
-          _buildCurrentMedicationCard('Metformin', '500mg • Twice daily', 'Diabetes prevention', Colors.orange),
-          const SizedBox(height: 12),
-          _buildCurrentMedicationCard('Vitamin D3', '1000 IU • Once daily', 'Vitamin deficiency', Colors.green),
-          const SizedBox(height: 24),
-          _buildPatientSectionHeader('Recent Prescriptions'),
-          const SizedBox(height: 12),
-          _buildRecentPrescriptionCard('Amoxicillin 500mg', 'Dr. Johnson', '5 days ago'),
-          const SizedBox(height: 8),
-          _buildRecentPrescriptionCard('Ibuprofen 400mg', 'Dr. Johnson', '1 week ago'),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildNotesTab() {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              _buildPatientSectionHeader('Clinical Notes'),
-              OutlinedButton.icon(
-                onPressed: () {},
-                icon: const Icon(Icons.add, size: 16),
-                label: const Text('Add Note'),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: AppColors.primary,
-                  side: BorderSide(color: AppColors.primary),
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          _buildClinicalNoteCard(
-            'Routine Checkup',
-            'Patient reports feeling well overall. Blood pressure controlled with current medication...',
-            'Dr. Sarah Johnson',
-            'Today, 2:30 PM',
-          ),
-          const SizedBox(height: 12),
-          _buildClinicalNoteCard(
-            'Follow-up Visit',
-            'Blood work results reviewed. All values within normal range. Continue current treatment...',
-            'Dr. Michael Wong',
-            'Yesterday, 10:15 AM',
-          ),
-          const SizedBox(height: 12),
-          _buildClinicalNoteCard(
-            'Initial Consultation',
-            'New patient presenting with mild hypertension. Family history of cardiovascular disease...',
-            'Dr. Sarah Johnson',
-            '3 days ago, 4:45 PM',
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildPatientSectionHeader(String title) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 4),
-      child: Text(
-        title,
-        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-          fontWeight: FontWeight.w700,
-          color: Theme.of(context).colorScheme.onSurface,
-          fontSize: 18,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildInfoRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 140,
-            child: Text(
-              label,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-          ),
-          Expanded(
-            child: Text(
-              value,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Theme.of(context).colorScheme.onSurface,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildCurrentMedicationCard(String name, String dosage, String condition, Color indicatorColor) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.1)),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 4,
-            height: 48,
-            decoration: BoxDecoration(
-              color: indicatorColor,
-              borderRadius: BorderRadius.circular(2),
-            ),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  name,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: Theme.of(context).colorScheme.onSurface,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  dosage,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  condition,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildRecentPrescriptionCard(String medication, String doctor, String timeAgo) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.1)),
-      ),
-      child: Row(
-        children: [
-          Icon(
-            Icons.medication_outlined,
-            size: 20,
-            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  medication,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.w500,
-                    color: Theme.of(context).colorScheme.onSurface,
-                  ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  '$doctor • $timeAgo',
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildClinicalNoteCard(String title, String content, String author, String timestamp) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.1)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                title,
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: Theme.of(context).colorScheme.onSurface,
-                ),
-              ),
-              Text(
-                timestamp,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          Text(
-            content,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
-              height: 1.4,
-            ),
-          ),
-          const SizedBox(height: 12),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  Icon(
-                    Icons.person_outline,
-                    size: 16,
-                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    author,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
-                    ),
-                  ),
-                ],
-              ),
-              TextButton(
-                onPressed: () {},
-                style: TextButton.styleFrom(
-                  foregroundColor: AppColors.primary,
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  minimumSize: Size.zero,
-                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                ),
-                child: const Text(
-                  'View Full Note',
-                  style: TextStyle(fontSize: 12),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildVitalSignCard(String value, String unit, String label, Color color, IconData icon) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.1),
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: color.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Icon(
-                  icon,
-                  size: 20,
-                  color: color,
-                ),
-              ),
-              const Spacer(),
-              Icon(
-                MdiIcons.trendingUp,
-                size: 16,
-                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                value,
-                style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                  fontWeight: FontWeight.w700,
-                  color: color,
-                  fontSize: 32,
-                ),
-              ),
-              const SizedBox(width: 2),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 6),
-                child: Text(
-                  unit,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: color,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 4),
-          Text(
-            label,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
-              fontWeight: FontWeight.w400,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildVitalTrendsChart() {
-    return Container(
-      height: 200,
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.1),
-        ),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            MdiIcons.chartLine,
-            size: 48,
-            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            'Vital Trends Chart',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildRecentReading(String label, String value, String time) {
-    return Row(
-      children: [
-        Expanded(
-          flex: 2,
-          child: Text(
-            label,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Theme.of(context).colorScheme.onSurface,
-              fontWeight: FontWeight.w400,
-            ),
-          ),
-        ),
-        Expanded(
-          flex: 2,
-          child: Text(
-            value,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Theme.of(context).colorScheme.onSurface,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ),
-        Expanded(
-          flex: 1,
-          child: Text(
-            time,
-            textAlign: TextAlign.right,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
-            ),
-          ),
-        ),
-      ],
     );
   }
 }
