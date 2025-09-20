@@ -38,7 +38,7 @@ class _MultimodalDocumentViewerState extends State<MultimodalDocumentViewer>
     );
     
     _animationController.forward();
-    _initializeAnnotations();
+
   }
 
   @override
@@ -49,38 +49,7 @@ class _MultimodalDocumentViewerState extends State<MultimodalDocumentViewer>
     super.dispose();
   }
 
-  void _initializeAnnotations() {
-    // Simulate AI-generated annotations
-    _annotations.addAll([
-      DocumentAnnotation(
-        id: '1',
-        type: AnnotationType.medicalTerm,
-        text: 'Hemoglobin',
-        position: const Offset(100, 150),
-        confidence: 0.95,
-        description: 'Protein in red blood cells that carries oxygen',
-        color: Colors.blue,
-      ),
-      DocumentAnnotation(
-        id: '2',
-        type: AnnotationType.value,
-        text: '14.2 g/dL',
-        position: const Offset(200, 150),
-        confidence: 0.98,
-        description: 'Normal range: 12.0-15.5 g/dL for women',
-        color: Colors.green,
-      ),
-      DocumentAnnotation(
-        id: '3',
-        type: AnnotationType.alert,
-        text: 'High Blood Pressure',
-        position: const Offset(100, 300),
-        confidence: 0.87,
-        description: 'Consider lifestyle modifications and medication review',
-        color: Colors.orange,
-      ),
-    ]);
-  }
+  
 
   @override
   Widget build(BuildContext context) {

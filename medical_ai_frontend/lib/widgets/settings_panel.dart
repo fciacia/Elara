@@ -346,7 +346,7 @@ class _SettingsPanelState extends State<SettingsPanel> with TickerProviderStateM
             Switch(
               value: value,
               onChanged: onChanged,
-              activeColor: AppColors.primary,
+              activeColor: const Color.fromRGBO(124, 58, 237, 1),
             )
           else
             Icon(

@@ -27,20 +27,20 @@ class ElaraChatOverlay extends StatelessWidget {
         duration: const Duration(milliseconds: 600),
         curve: Curves.easeInOut,
         child: Container(
-          color: Colors.black.withOpacity(0.25),
+          color: Colors.transparent, // Fully transparent overlay
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
             child: Center(
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 600),
                 curve: Curves.easeInOut,
-                width: 600,
-                height: 600,
+                width: 280,
+                height: 420,
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.12),
+                  color: Colors.transparent, // Fully transparent box
                   borderRadius: BorderRadius.circular(32),
                   border: Border.all(
-                    color: Color(0xFF8B5CF6), // Purple border
+                    color: const Color(0xFF8B5CF6),
                     width: 4,
                   ),
                   boxShadow: [
@@ -50,96 +50,135 @@ class ElaraChatOverlay extends StatelessWidget {
                     ),
                   ],
                 ),
-                child: Column(
-                  children: [
-                    // Header with close button
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 18),
-                      child: Row(
-                        children: [
-                          Icon(Icons.auto_awesome, color: const Color(0xFF3B82F6), size: 28),
-                          const SizedBox(width: 12),
-                          Text('Elara AI Chat', style: GoogleFonts.orbitron(fontSize: 20, fontWeight: FontWeight.bold, color: const Color(0xFF3B82F6))),
-                          const Spacer(),
-                          IconButton(
-                            icon: const Icon(Icons.close, color: Colors.grey, size: 28),
-                            onPressed: onClose,
-                            tooltip: 'Close chat',
-                          ),
-                        ],
-                      ),
-                    ),
-                    const Divider(height: 1, thickness: 1),
-                    // Chat messages area
-                    Expanded(
-                      child: ListView.builder(
-                        padding: const EdgeInsets.all(24),
-                        itemCount: messages.length,
-                        itemBuilder: (context, index) {
-                          final msg = messages[index];
-                          return buildChatBubble(msg.text, msg.isUser);
-                        },
-                      ),
-                    ),
-                    // Input area
-                    Container(
-                      padding: const EdgeInsets.all(24),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: TextField(
-                              style: GoogleFonts.inter(fontSize: 16, color: const Color(0xFF181F36)),
-                              decoration: InputDecoration(
-                                hintText: 'Type your message...',
-                                hintStyle: GoogleFonts.inter(fontSize: 15, color: const Color(0xFF6366F1)),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(16),
-                                  borderSide: const BorderSide(color: Color(0xFF6366F1), width: 1.5),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(32),
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
+                    child: Column(
+                      children: [
+                        // Header with close button
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 18),
+                          child: Row(
+                            children: [
+                              const Icon(Icons.auto_awesome, color: Colors.white, size: 28),
+                              const SizedBox(width: 12),
+                              Text(
+                                'Elara AI Chat',
+                                style: GoogleFonts.orbitron(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
                                 ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(16),
-                                  borderSide: const BorderSide(color: Color(0xFF6366F1), width: 1.5),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(16),
-                                  borderSide: const BorderSide(color: Color(0xFF3B82F6), width: 2.5),
-                                ),
-                                contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-                                filled: true,
-                                fillColor: Colors.white,
                               ),
-                              onChanged: onInputChanged,
-                              onSubmitted: (value) {
-                                if (value.trim().isNotEmpty) {
-                                  onSend();
-                                }
-                              },
-                              controller: TextEditingController(text: input),
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Container(
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              gradient: const LinearGradient(
-                                colors: [Color(0xFF3B82F6), Color(0xFF6366F1)],
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
+                              const Spacer(),
+                              IconButton(
+                                icon: const Icon(Icons.close, color: Colors.white, size: 28),
+                                onPressed: onClose,
+                                tooltip: 'Close chat',
                               ),
-                            ),
-                            child: IconButton(
-                              icon: const Icon(Icons.send, color: Colors.white),
-                              onPressed: () {
-                                if (input.trim().isNotEmpty) {
-                                  onSend();
-                                }
-                              },
-                            ),
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                        const Divider(height: 1, thickness: 1, color: Colors.white24),
+                        // Chat messages area
+                        Expanded(
+                          child: ListView.builder(
+                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                            itemCount: messages.length,
+                            itemBuilder: (context, index) {
+                              final msg = messages[index];
+                              return Align(
+                                alignment: msg.isUser ? Alignment.centerRight : Alignment.centerLeft,
+                                child: Container(
+                                  margin: const EdgeInsets.symmetric(vertical: 6),
+                                  padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+                                  constraints: BoxConstraints(
+                                    maxWidth: MediaQuery.of(context).size.width * 0.6,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: msg.isUser ? const Color(0xFF3B82F6) : Colors.transparent,
+                                    borderRadius: BorderRadius.circular(16),
+                                    border: msg.isUser ? null : Border.all(color: const Color(0xFF6366F1).withOpacity(0.3)),
+                                  ),
+                                  child: Text(
+                                    msg.text,
+                                    style: GoogleFonts.inter(
+                                      fontSize: 15,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                        // Input area
+                        Container(
+                          padding: const EdgeInsets.all(20),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: TextField(
+                                  style: GoogleFonts.inter(
+                                    fontSize: 16,
+                                    color: Colors.white,
+                                  ),
+                                  decoration: InputDecoration(
+                                    hintText: 'Ask a medical question...',
+                                    hintStyle: GoogleFonts.inter(
+                                      fontSize: 15,
+                                      color: Colors.white.withOpacity(0.6),
+                                    ),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(16),
+                                      borderSide: const BorderSide(color: Color(0xFF6366F1), width: 1.5),
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(16),
+                                      borderSide: const BorderSide(color: Color(0xFF6366F1), width: 1.5),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(16),
+                                      borderSide: const BorderSide(color: Color(0xFF3B82F6), width: 2.5),
+                                    ),
+                                    contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                                    filled: false,
+                                  ),
+                                  onChanged: onInputChanged,
+                                  onSubmitted: (value) {
+                                    if (value.trim().isNotEmpty) {
+                                      onSend();
+                                    }
+                                  },
+                                  controller: TextEditingController(text: input),
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  gradient: const LinearGradient(
+                                    colors: [Color(0xFF3B82F6), Color(0xFF6366F1)],
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                  ),
+                                ),
+                                child: IconButton(
+                                  icon: const Icon(Icons.send, color: Colors.white),
+                                  onPressed: () {
+                                    if (input.trim().isNotEmpty) {
+                                      onSend();
+                                    }
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
               ),
             ),
@@ -149,3 +188,4 @@ class ElaraChatOverlay extends StatelessWidget {
     );
   }
 }
+

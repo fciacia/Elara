@@ -152,12 +152,13 @@ class _DashboardContentState extends State<DashboardContent> with TickerProvider
         width: double.infinity,
         padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 32),
         decoration: BoxDecoration(
-          color: _isHoveringAI ? Colors.white.withOpacity(0.98) : Colors.white.withOpacity(0.92),
+          color: Colors.transparent, // Match the background color
           borderRadius: BorderRadius.circular(24),
+          border: Border.all(color: Colors.grey.withOpacity(0.5)), // Grey border for glass effect
           boxShadow: [
             BoxShadow(
-              color: _isHoveringAI ? const Color(0xFF3B82F6).withOpacity(0.10) : Colors.black.withOpacity(0.06),
-              blurRadius: _isHoveringAI ? 18 : 10,
+              color: Colors.black.withOpacity(0.04),
+              blurRadius: 8,
               offset: const Offset(0, 4),
             ),
           ],

@@ -19,9 +19,6 @@ class _EnhancedAnalyticsPageState extends State<EnhancedAnalyticsPage>
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
 
-  String _selectedTimeRange = '7D';
-  String _selectedMetric = 'Consultations';
-
   @override
   void initState() {
     super.initState();
@@ -57,24 +54,44 @@ class _EnhancedAnalyticsPageState extends State<EnhancedAnalyticsPage>
           opacity: _fadeAnimation,
           child: SlideTransition(
             position: _slideAnimation,
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(24),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildHeader(),
-                const SizedBox(height: 32),
-                  _buildMetricsGrid(),
-                const SizedBox(height: 32),
-                  _buildChartsSection(),
-                const SizedBox(height: 32),
-                  _buildUserAnalyticsTable(),
-                const SizedBox(height: 32),
-                  _buildActivityFeed(),
-              ],
+            child: Container(
+              color: Theme.of(context).colorScheme.background, // Match SettingsPanel background
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: SingleChildScrollView( // Added scrollable container to handle overflow
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Analytics Dashboard',
+                        style: GoogleFonts.inter(
+                          fontSize: 32,
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).colorScheme.onSurface, // Match SettingsPanel text color
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Comprehensive insights into system performance and user activity',
+                        style: GoogleFonts.inter(
+                          fontSize: 16,
+                          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7), // Match SettingsPanel subtitle color
+                        ),
+                      ),
+                      const SizedBox(height: 32),
+                      _buildMetricsGrid(),
+                      const SizedBox(height: 32),
+                      _buildChartsSection(),
+                      const SizedBox(height: 32),
+                      _buildUserAnalyticsTable(),
+                      const SizedBox(height: 32),
+                      _buildActivityFeed(),
+                    ],
+                  ),
+                ),
+              ),
+            ),
           ),
-        ),
-      ),
         );
         
         return BackgroundLayout(
@@ -83,77 +100,6 @@ class _EnhancedAnalyticsPageState extends State<EnhancedAnalyticsPage>
           isDarkMode: isDarkMode,
         );
       },
-    );
-  }
-
-  Widget _buildHeader() {
-    return Row(
-      children: [
-        Expanded(
-      child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                'Analytics Dashboard',
-                style: GoogleFonts.inter(
-                  fontSize: 32,
-                      fontWeight: FontWeight.bold,
-                  color: AppColors.textDark,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                'Comprehensive insights into system performance and user activity',
-                style: GoogleFonts.inter(
-                  fontSize: 16,
-                  color: AppColors.textMedium,
-                    ),
-                  ),
-                ],
-              ),
-        ),
-        _buildTimeRangeSelector(),
-                  const SizedBox(width: 16),
-        _buildMetricSelector(),
-      ],
-    );
-  }
-
-  Widget _buildTimeRangeSelector() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: AppColors.border),
-      ),
-      child: DropdownButton<String>(
-        value: _selectedTimeRange,
-        onChanged: (value) => setState(() => _selectedTimeRange = value!),
-        underline: const SizedBox(),
-        items: ['7D', '30D', '90D'].map((range) => 
-          DropdownMenuItem(value: range, child: Text(range))
-        ).toList(),
-      ),
-    );
-  }
-
-  Widget _buildMetricSelector() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: AppColors.border),
-      ),
-      child: DropdownButton<String>(
-        value: _selectedMetric,
-        onChanged: (value) => setState(() => _selectedMetric = value!),
-        underline: const SizedBox(),
-        items: ['Consultations', 'Accuracy', 'Users', 'Response Time'].map((metric) => 
-          DropdownMenuItem(value: metric, child: Text(metric))
-        ).toList(),
-      ),
     );
   }
 
@@ -180,85 +126,40 @@ class _EnhancedAnalyticsPageState extends State<EnhancedAnalyticsPage>
           itemCount: metrics.length,
           itemBuilder: (context, index) {
             final metric = metrics[index];
-            return _buildMetricCard(metric);
+            return Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.transparent, // Transparent background
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: AppColors.border),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(metric['icon'] as IconData, color: metric['color'] as Color, size: 32),
+                  const SizedBox(height: 8),
+                  Text(
+                    metric['title'] as String,
+                    style: GoogleFonts.inter(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.onSurface,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    metric['value'] as String,
+                    style: GoogleFonts.inter(
+                      fontSize: 14,
+                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                    ),
+                  ),
+                ],
+              ),
+            );
           },
         );
       },
-    );
-  }
-
-  Widget _buildMetricCard(Map<String, dynamic> metric) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.border),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(4),
-                decoration: BoxDecoration(
-                  color: (metric['color'] as Color).withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(4),
-                ),
-                child: Icon(
-                  metric['icon'] as IconData,
-                  color: metric['color'] as Color,
-                  size: 14,
-              ),
-              ),
-              const Spacer(),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                decoration: BoxDecoration(
-                  color: Colors.green.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Text(
-                  metric['change'] as String,
-                  style: GoogleFonts.inter(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.green.shade700,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          Text(
-            metric['value'] as String,
-            style: GoogleFonts.inter(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: AppColors.textDark,
-            ),
-          ),
-          const SizedBox(height: 2),
-          Text(
-            metric['title'] as String,
-            style: GoogleFonts.inter(
-              fontSize: 11,
-              color: AppColors.textMedium,
-            ),
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ],
-      ),
     );
   }
 
@@ -293,23 +194,21 @@ class _EnhancedAnalyticsPageState extends State<EnhancedAnalyticsPage>
   }
 
   Widget _buildLineChart() {
-    return Container(
+    return HoverContainer(
+      baseColor: const Color(0xFF0F0A1B),
+      borderRadius: BorderRadius.circular(16),
+      border: Border.all(color: AppColors.border),
       padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.border),
-      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Consultation Trends',
+        children: [
+          Text(
+            'Consultation Trends',
             style: GoogleFonts.inter(
               fontSize: 18,
-                  fontWeight: FontWeight.bold,
-              color: AppColors.textDark,
-                ),
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
           ),
           const SizedBox(height: 20),
           SizedBox(
@@ -321,7 +220,7 @@ class _EnhancedAnalyticsPageState extends State<EnhancedAnalyticsPage>
                   leftTitles: AxisTitles(sideTitles: SideTitles(showTitles: true)),
                   bottomTitles: AxisTitles(sideTitles: SideTitles(showTitles: true)),
                   topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                  rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                  rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: true)), // Corrected access to 'showTitles'
                 ),
                 borderData: FlBorderData(show: false),
                 lineBarsData: [
@@ -354,13 +253,11 @@ class _EnhancedAnalyticsPageState extends State<EnhancedAnalyticsPage>
   }
 
   Widget _buildPieChart() {
-    return Container(
+    return HoverContainer(
+      baseColor: const Color(0xFF0F0A1B),
+      borderRadius: BorderRadius.circular(16),
+      border: Border.all(color: AppColors.border),
       padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.border),
-      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -369,7 +266,7 @@ class _EnhancedAnalyticsPageState extends State<EnhancedAnalyticsPage>
             style: GoogleFonts.inter(
               fontSize: 18,
               fontWeight: FontWeight.bold,
-              color: AppColors.textDark,
+              color: Colors.white,
             ),
           ),
           const SizedBox(height: 20),
@@ -381,21 +278,21 @@ class _EnhancedAnalyticsPageState extends State<EnhancedAnalyticsPage>
                   PieChartSectionData(
                     value: 75,
                     title: 'Accurate',
-                    color: Colors.green,
+                    color: const Color(0xFF00BFA6),
                     radius: 60,
                     titleStyle: GoogleFonts.inter(fontSize: 12, color: Colors.white),
                   ),
                   PieChartSectionData(
                     value: 15,
                     title: 'Review',
-                    color: Colors.orange,
+                    color: const Color(0xFFFBBF24),
                     radius: 60,
                     titleStyle: GoogleFonts.inter(fontSize: 12, color: Colors.white),
                   ),
                   PieChartSectionData(
                     value: 10,
                     title: 'Incorrect',
-                    color: Colors.red,
+                    color: const Color(0xFF10B981),
                     radius: 60,
                     titleStyle: GoogleFonts.inter(fontSize: 12, color: Colors.white),
                   ),
@@ -418,13 +315,11 @@ class _EnhancedAnalyticsPageState extends State<EnhancedAnalyticsPage>
       {'name': 'Nurse Lisa Wang', 'consultations': 31, 'accuracy': '93.5%', 'lastActive': '8 min ago'},
     ];
 
-    return Container(
+    return HoverContainer(
+      baseColor: const Color(0xFF0F0A1B),
+      borderRadius: BorderRadius.circular(16),
+      border: Border.all(color: AppColors.border),
       padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.border),
-      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -433,7 +328,7 @@ class _EnhancedAnalyticsPageState extends State<EnhancedAnalyticsPage>
             style: GoogleFonts.inter(
               fontSize: 18,
               fontWeight: FontWeight.bold,
-              color: AppColors.textDark,
+              color: Colors.white,
             ),
           ),
           const SizedBox(height: 20),
@@ -447,7 +342,7 @@ class _EnhancedAnalyticsPageState extends State<EnhancedAnalyticsPage>
         children: [
               TableRow(
         decoration: BoxDecoration(
-                  color: AppColors.background,
+                  color: Color(0xFF0F0A1B),
                   borderRadius: BorderRadius.circular(8),
                 ),
           children: [
@@ -478,9 +373,9 @@ class _EnhancedAnalyticsPageState extends State<EnhancedAnalyticsPage>
       child: Text(
         text,
         style: GoogleFonts.inter(
-          fontSize: 14,
-          fontWeight: FontWeight.w600,
-          color: AppColors.textDark,
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+          color: const Color.fromARGB(255, 255, 255, 255),
         ),
       ),
     );
@@ -493,7 +388,7 @@ class _EnhancedAnalyticsPageState extends State<EnhancedAnalyticsPage>
         text,
         style: GoogleFonts.inter(
           fontSize: 14,
-          color: AppColors.textMedium,
+          color: Colors.white, // Changed from AppColors.textMedium to white
         ),
       ),
     );
@@ -507,13 +402,11 @@ class _EnhancedAnalyticsPageState extends State<EnhancedAnalyticsPage>
       {'action': 'Consultation completed', 'user': 'Dr. Emily Davis', 'time': '12 min ago', 'icon': Icons.check_circle},
     ];
 
-    return Container(
+    return HoverContainer(
+      baseColor: const Color(0xFF0F0A1B),
+      borderRadius: BorderRadius.circular(16),
+      border: Border.all(color: AppColors.border),
       padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.border),
-      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -522,7 +415,7 @@ class _EnhancedAnalyticsPageState extends State<EnhancedAnalyticsPage>
             style: GoogleFonts.inter(
               fontSize: 18,
                   fontWeight: FontWeight.bold,
-              color: AppColors.textDark,
+              color: const Color.fromARGB(255, 255, 255, 255),
             ),
           ),
           const SizedBox(height: 20),
@@ -540,7 +433,7 @@ class _EnhancedAnalyticsPageState extends State<EnhancedAnalyticsPage>
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: AppColors.primary.withValues(alpha: 0.1),
+              color: const Color(0xFF0F0A1B),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Icon(
@@ -559,20 +452,64 @@ class _EnhancedAnalyticsPageState extends State<EnhancedAnalyticsPage>
                   style: GoogleFonts.inter(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
-                    color: AppColors.textDark,
+                    color: const Color.fromARGB(255, 255, 255, 255),
                   ),
                 ),
                 Text(
                   '${activity['user']} • ${activity['time']}',
                   style: GoogleFonts.inter(
                     fontSize: 12,
-                    color: AppColors.textMedium,
+                    color: const Color.fromARGB(255, 255, 255, 255),
                   ),
                 ),
               ],
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+
+// Added a reusable HoverContainer widget
+class HoverContainer extends StatefulWidget {
+  final Widget child;
+  final Color baseColor;
+  final BorderRadius? borderRadius;
+  final BoxBorder? border;
+  final EdgeInsetsGeometry? padding;
+
+  const HoverContainer({
+    super.key,
+    required this.child,
+    required this.baseColor,
+    this.borderRadius,
+    this.border,
+    this.padding,
+  });
+
+  @override
+  State<HoverContainer> createState() => _HoverContainerState();
+}
+
+class _HoverContainerState extends State<HoverContainer> {
+  bool _isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      onEnter: (_) => setState(() => _isHovered = true),
+      onExit: (_) => setState(() => _isHovered = false),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: widget.padding,
+        decoration: BoxDecoration(
+          color: widget.baseColor.withOpacity(_isHovered ? 0.6 : 0.9),
+          borderRadius: widget.borderRadius ?? BorderRadius.circular(16),
+          border: widget.border,
+        ),
+        child: widget.child,
       ),
     );
   }
