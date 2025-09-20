@@ -3,6 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/auth_provider.dart' as auth;
+import 'elara_chat_overlay.dart';
+import 'elara_chat_message.dart';
 import '../providers/document_provider.dart';
 import '../providers/chat_provider.dart';
 import '../utils/app_colors.dart';
@@ -16,6 +18,12 @@ class DashboardContent extends StatefulWidget {
 }
 
 class _DashboardContentState extends State<DashboardContent> with TickerProviderStateMixin {
+  // Elara AI chat overlay state
+  List<ElaraChatMessage> _elaraMessages = [
+    ElaraChatMessage('Hello! How can I assist you today?', false),
+  ];
+  bool _showAIChatOverlay = false;
+  String _elaraInput = '';
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
@@ -44,56 +52,87 @@ class _DashboardContentState extends State<DashboardContent> with TickerProvider
   }
   @override
   Widget build(BuildContext context) {
-    return FadeTransition(
-      opacity: _fadeAnimation,
-      child: SlideTransition(
-        position: _slideAnimation,
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Welcome Section
-              _buildWelcomeSection(),
-              const SizedBox(height: 24),
-              // Generative AI Widget
-              _buildGenerativeAIWidget(),
-              const SizedBox(height: 16),
-              // Quick Access Features Row
-              _buildQuickAccessRow(),
-              // Main Content Grid
-              Row(
+    return Stack(
+      children: [
+        FadeTransition(
+          opacity: _fadeAnimation,
+          child: SlideTransition(
+            position: _slideAnimation,
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(24),
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Left Column - Chat & Queries
-                  Expanded(
-                    flex: 2,
-                    child: Column(
-                      children: [
-                        _buildRecentChatsCard(),
-                        const SizedBox(height: 16),
-                        _buildRecentQueriesCard(),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  // Right Column - Patients & Stats
-                  Expanded(
-                    flex: 2,
-                    child: Column(
-                      children: [
-                        _buildRecentPatientsCard(),
-                        const SizedBox(height: 16),
-                        _buildStatsCards(),
-                      ],
-                    ),
+                  // Welcome Section
+                  _buildWelcomeSection(),
+                  const SizedBox(height: 24),
+                  // Generative AI Widget
+                  _buildGenerativeAIWidget(),
+                  const SizedBox(height: 16),
+                  // Quick Access Features Row
+                  _buildQuickAccessRow(),
+                  // Main Content Grid
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Left Column - Chat & Queries
+                      Expanded(
+                        flex: 2,
+                        child: Column(
+                          children: [
+                            _buildRecentChatsCard(),
+                            const SizedBox(height: 16),
+                            _buildRecentQueriesCard(),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      // Right Column - Patients & Stats
+                      Expanded(
+                        flex: 2,
+                        child: Column(
+                          children: [
+                            _buildRecentPatientsCard(),
+                            const SizedBox(height: 16),
+                            _buildStatsCards(),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
-            ],
+            ),
           ),
         ),
-      ),
+        if (_showAIChatOverlay)
+          ElaraChatOverlay(
+            messages: _elaraMessages,
+            input: _elaraInput,
+            onInputChanged: (value) {
+              setState(() {
+                _elaraInput = value;
+              });
+            },
+            onSend: () {
+              if (_elaraInput.trim().isNotEmpty) {
+                setState(() {
+                  _elaraMessages.add(ElaraChatMessage(_elaraInput.trim(), true));
+                  _elaraInput = '';
+                });
+              }
+            },
+            onClose: () {
+              setState(() {
+                _showAIChatOverlay = false;
+                _elaraInput = '';
+                _elaraMessages = [
+                  ElaraChatMessage('Hello! How can I assist you today?', false),
+                ];
+              });
+            },
+          ),
+      ],
     );
   }
 
@@ -233,6 +272,14 @@ class _DashboardContentState extends State<DashboardContent> with TickerProvider
                   filled: true,
                   fillColor: Colors.white,
                 ),
+                onChanged: (value) {
+                  setState(() {
+                    _elaraInput = value;
+                    if (value.isNotEmpty && !_showAIChatOverlay) {
+                      _showAIChatOverlay = true;
+                    }
+                  });
+                },
                 onSubmitted: (value) {
                   // TODO: Connect to generative AI backend
                   ScaffoldMessenger.of(context).showSnackBar(

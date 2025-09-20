@@ -50,44 +50,73 @@ class CustomSidebar extends StatelessWidget {
             Container(
               height: 80,
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-              child: Row(
-                children: [
-                  Container(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      color: AppColors.primary,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: const Icon(
-                      Icons.medical_services_outlined,
-                      color: Colors.white,
-                      size: 24,
-                    ),
-                  ),
-                  if (!isCollapsed) ...[
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Text(
-                        'Medical AI',
-                        style: GoogleFonts.inter(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.textDark,
+              child: isCollapsed
+                  ? Center(
+                      child: Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: AppColors.primary,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: const Icon(
+                          Icons.medical_services_outlined,
+                          color: Colors.white,
+                          size: 24,
                         ),
                       ),
+                    )
+                  : Row(
+                      children: [
+                        Container(
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            color: AppColors.primary,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: const Icon(
+                            Icons.medical_services_outlined,
+                            color: Colors.white,
+                            size: 24,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Text(
+                            'Medical AI',
+                            style: GoogleFonts.inter(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.textDark,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        IconButton(
+                          onPressed: onToggleCollapse,
+                          icon: Icon(
+                            Icons.menu,
+                            color: AppColors.textMedium,
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                  IconButton(
-                    onPressed: onToggleCollapse,
-                    icon: Icon(
-                      isCollapsed ? Icons.menu_open : Icons.menu,
-                      color: AppColors.textMedium,
-                    ),
-                  ),
-                ],
-              ),
             ),
+
+            // Collapse/Expand button for collapsed state
+            if (isCollapsed)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: IconButton(
+                  onPressed: onToggleCollapse,
+                  icon: Icon(
+                    Icons.menu_open,
+                    color: AppColors.textMedium,
+                  ),
+                ),
+              ),
 
             // Navigation Items
             Expanded(
@@ -167,6 +196,7 @@ class CustomSidebar extends StatelessWidget {
                     fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
                     color: isSelected ? AppColors.primary : AppColors.textMedium,
                   ),
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
             ],
