@@ -124,16 +124,15 @@ class _LoginScreenState extends State<LoginScreen>
         children: [
           Positioned.fill(
             child: Image.asset(
-              'lib/assets/newborn.png',
+              'lib/assets/medical_bg.png', // Replace with the correct asset path if needed
               fit: BoxFit.cover,
             ),
           ),
           Positioned.fill(
             child: Container(
-              color: Colors.black.withOpacity(0.15), // subtle dark overlay for readability
+              color: Colors.white.withOpacity(0.7), // white overlay for readability
             ),
           ),
-          // Main login UI remains unchanged, just wrapped in the background
           SafeArea(
             child: Center(
               child: SingleChildScrollView(

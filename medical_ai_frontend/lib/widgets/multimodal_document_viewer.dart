@@ -22,12 +22,37 @@ class _MultimodalDocumentViewerState extends State<MultimodalDocumentViewer>
     with TickerProviderStateMixin {
   late TabController _tabController;
   late AnimationController _animationController;
-  
+
   bool _isFullscreen = false;
   double _zoomLevel = 1.0;
-  
+
   final List<DocumentAnnotation> _annotations = [];
   final TextEditingController _chatController = TextEditingController();
+
+  // Mock citation data for References tab
+  final List<Citation> _citations = [
+    Citation(
+      title: 'White Blood Cell Count and Infection Risk',
+      author: 'Dr. Emily Carter',
+      journal: 'Journal of Clinical Medicine',
+      year: 2022,
+      url: 'https://doi.org/10.1000/jcm.2022.12345',
+    ),
+    Citation(
+      title: 'Blood Sugar Levels in Adults',
+      author: 'Prof. John Smith',
+      journal: 'Diabetes Research & Care',
+      year: 2021,
+      url: 'https://doi.org/10.1000/drc.2021.54321',
+    ),
+    Citation(
+      title: 'Cholesterol and Cardiovascular Health',
+      author: 'Dr. Anna Lee',
+      journal: 'Cardiology Today',
+      year: 2020,
+      url: 'https://doi.org/10.1000/ct.2020.67890',
+    ),
+  ];
 
   @override
   void initState() {
@@ -899,7 +924,75 @@ class _MultimodalDocumentViewerState extends State<MultimodalDocumentViewer>
             ),
           ),
           const SizedBox(height: 16),
-          ..._annotations.map((annotation) => _buildAnnotationItem(annotation)),
+          ..._citations.map((citation) => _buildCitationCard(citation)),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCitationCard(Citation citation) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.grey.withOpacity(0.2)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            citation.title,
+            style: GoogleFonts.inter(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+              color: AppColors.primary,
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            'Author: ${citation.author}',
+            style: GoogleFonts.inter(
+              fontSize: 12,
+              color: AppColors.textDark,
+            ),
+          ),
+          Text(
+            'Journal: ${citation.journal}',
+            style: GoogleFonts.inter(
+              fontSize: 12,
+              color: AppColors.textMedium,
+            ),
+          ),
+          Text(
+            'Published: ${citation.year}',
+            style: GoogleFonts.inter(
+              fontSize: 12,
+              color: AppColors.textMedium,
+            ),
+          ),
+          const SizedBox(height: 6),
+          GestureDetector(
+            onTap: () {
+              // Open URL (for web, use url_launcher)
+            },
+            child: Text(
+              citation.url,
+              style: GoogleFonts.inter(
+                fontSize: 12,
+                color: Colors.blue,
+                decoration: TextDecoration.underline,
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -1190,6 +1283,22 @@ class _MultimodalDocumentViewerState extends State<MultimodalDocumentViewer>
 }
 
 // Data models
+
+class Citation {
+  final String title;
+  final String author;
+  final String journal;
+  final int year;
+  final String url;
+
+  Citation({
+    required this.title,
+    required this.author,
+    required this.journal,
+    required this.year,
+    required this.url,
+  });
+}
 class DocumentAnnotation {
   final String id;
   final AnnotationType type;
