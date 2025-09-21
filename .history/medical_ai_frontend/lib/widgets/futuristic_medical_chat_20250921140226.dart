@@ -4,9 +4,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:get/get.dart';
 
 import '../providers/auth_provider.dart' as auth;
-import '../providers/chat_provider_aws.dart';
+import '../providers/chat_provider.dart';
+import '../providers/app_provider.dart';
 import '../utils/app_colors.dart';
 
 class CleanChatInterface extends StatefulWidget {
@@ -353,7 +355,7 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
   void selectChatSession(String sessionId) {
     try {
       final chatProvider = context.read<ChatProvider>();
-      chatProvider.switchToSession(sessionId);
+      chatProvider.selectChatSession(sessionId);
       
       print('Selected chat session: $sessionId');
     } catch (e) {

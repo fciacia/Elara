@@ -29,7 +29,7 @@ class MedicalAIApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => AppProvider()),
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => DocumentProvider()),
-        ChangeNotifierProvider(create: (_) => aws.ChatProvider()),
+        ChangeNotifierProvider(create: (_) => ChatProvider()),
       ],
       child: Consumer<AppProvider>(
         builder: (context, appProvider, child) {

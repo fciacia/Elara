@@ -353,7 +353,7 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
   void selectChatSession(String sessionId) {
     try {
       final chatProvider = context.read<ChatProvider>();
-      chatProvider.switchToSession(sessionId);
+      chatProvider.selectChatSession(sessionId);
       
       print('Selected chat session: $sessionId');
     } catch (e) {
