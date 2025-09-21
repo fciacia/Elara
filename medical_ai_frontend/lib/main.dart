@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import 'providers/app_provider.dart';
 import 'providers/auth_provider.dart';
 import 'providers/document_provider.dart';
-import 'providers/chat_provider.dart';
+import 'providers/chat_provider_aws.dart';
 import 'screens/splash_screen.dart';
 import 'screens/auth/login_screen.dart';
 import 'screens/home/home_screen.dart';

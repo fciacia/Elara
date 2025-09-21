@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
+import 'package:file_picker/file_picker.dart';
 import 'dart:io';
+import 'dart:typed_data';
+import '../services/aws_api_service.dart';
 
 enum DocumentType { 
   labReport, 
@@ -72,30 +76,57 @@ class MedicalDocument {
 }
 
 class DocumentProvider extends ChangeNotifier {
-  // Web upload handler
+  // Web upload handler with AWS integration
   Future<bool> uploadDocumentsWeb(List<dynamic> files) async {
     // files: List<PlatformFile> from file_picker
     _setUploading(true);
     _clearError();
     try {
+      bool allSuccess = true;
       for (var file in files) {
-        // Simulate processing time
-        await Future.delayed(const Duration(seconds: 1));
-        final document = MedicalDocument(
-          id: DateTime.now().millisecondsSinceEpoch.toString(),
-          name: file.name,
-          fileName: file.name,
-          type: _inferDocumentType(file.name),
-          uploadDate: DateTime.now(),
-          filePath: '', // No path on web
-          fileSizeBytes: file.size,
-          processingStatus: ProcessingStatus.pending,
-        );
-        _documents.add(document);
-        _processDocument(document.id);
+        if (file.bytes != null) {
+          try {
+            // Upload to AWS
+            final response = await _awsApiService.uploadDocument(
+              fileBytes: file.bytes!,
+              fileName: file.name,
+              fileType: _getContentType(file.extension ?? ''),
+            );
+            
+            // Create local document record
+            final document = MedicalDocument(
+              id: response.documentId,
+              name: file.name,
+              fileName: file.name,
+              type: _inferDocumentType(file.name),
+              uploadDate: DateTime.now(),
+              filePath: response.url ?? '', // S3 URL
+              fileSizeBytes: file.size,
+              processingStatus: ProcessingStatus.completed,
+            );
+            _documents.add(document);
+            
+          } catch (e) {
+            print('Failed to upload ${file.name}: $e');
+            allSuccess = false;
+            
+            // Still add to local list but mark as failed
+            final document = MedicalDocument(
+              id: DateTime.now().millisecondsSinceEpoch.toString(),
+              name: file.name,
+              fileName: file.name,
+              type: _inferDocumentType(file.name),
+              uploadDate: DateTime.now(),
+              filePath: '',
+              fileSizeBytes: file.size,
+              processingStatus: ProcessingStatus.failed,
+            );
+            _documents.add(document);
+          }
+        }
       }
       _applyFilters();
-      return true;
+      return allSuccess;
     } catch (e) {
       _setError(e.toString());
       return false;
@@ -103,6 +134,10 @@ class DocumentProvider extends ChangeNotifier {
       _setUploading(false);
     }
   }
+  
+  // AWS API service for cloud uploads
+  final AWSApiService _awsApiService = AWSApiService();
+  
   List<MedicalDocument> _documents = [];
   List<MedicalDocument> _filteredDocuments = [];
   bool _isLoading = false;
@@ -404,5 +439,26 @@ class DocumentProvider extends ChangeNotifier {
     _selectedStatus = status;
     _applyFilters();
     notifyListeners();
+  }
+
+  // Get content type from file extension
+  String _getContentType(String extension) {
+    switch (extension.toLowerCase()) {
+      case 'pdf':
+        return 'application/pdf';
+      case 'doc':
+        return 'application/msword';
+      case 'docx':
+        return 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+      case 'txt':
+        return 'text/plain';
+      case 'jpg':
+      case 'jpeg':
+        return 'image/jpeg';
+      case 'png':
+        return 'image/png';
+      default:
+        return 'application/octet-stream';
+    }
   }
 }

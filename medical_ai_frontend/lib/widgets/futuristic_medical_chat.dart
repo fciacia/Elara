@@ -7,7 +7,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:get/get.dart';
 
 import '../providers/auth_provider.dart' as auth;
-import '../providers/chat_provider.dart';
+import '../providers/chat_provider_aws.dart';
 import '../utils/app_colors.dart';
 
 class CleanChatInterface extends StatefulWidget {

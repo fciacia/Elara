@@ -6,11 +6,9 @@ import '../providers/auth_provider.dart' as auth;
 import 'elara_chat_overlay.dart';
 import 'elara_chat_message.dart';
 import '../providers/document_provider.dart';
-import '../providers/chat_provider.dart';
-import '../providers/app_provider.dart';
+import '../providers/chat_provider_aws.dart';
 import '../utils/app_colors.dart';
-import 'background_layout.dart';
-
+import 'dart:ui';
 
 class DashboardContent extends StatefulWidget {
   const DashboardContent({super.key});
@@ -52,104 +50,93 @@ class _DashboardContentState extends State<DashboardContent> with TickerProvider
     _animationController.dispose();
     super.dispose();
   }
-
   @override
   Widget build(BuildContext context) {
-    return Consumer<AppProvider>(
-      builder: (context, appProvider, child) {
-        final isDarkMode = appProvider.isDarkMode;
-        
-        Widget sidebar = const SizedBox.shrink(); // No sidebar for dashboard
-        Widget homeContent = Stack(
-          children: [
-            FadeTransition(
-              opacity: _fadeAnimation,
-              child: SlideTransition(
-                position: _slideAnimation,
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.all(24),
-                  child: Column(
+    return Container(
+      color: Theme.of(context).colorScheme.background,
+      child: Stack(
+        children: [
+          FadeTransition(
+            opacity: _fadeAnimation,
+            child: SlideTransition(
+              position: _slideAnimation,
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Welcome Section
+                  _buildWelcomeSection(),
+                  const SizedBox(height: 24),
+                  // Generative AI Widget
+                  _buildGenerativeAIWidget(),
+                  const SizedBox(height: 16),
+                  // Quick Access Features Row
+                  _buildQuickAccessRow(),
+                  const SizedBox(height: 32), // Increased spacing for better separation
+                  // Main Content Grid
+                  Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Welcome Section
-                      _buildWelcomeSection(),
-                      const SizedBox(height: 24),
-                      // Generative AI Widget
-                      _buildGenerativeAIWidget(),
-                      const SizedBox(height: 16),
-                      // Quick Access Features Row
-                      _buildQuickAccessRow(),
-                      const SizedBox(height: 32),
-                      // Main Content Grid
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Left Column - Chat & Queries
-                          Expanded(
-                            flex: 2,
-                            child: Column(
-                              children: [
-                                _buildRecentChatsCard(),
-                                const SizedBox(height: 16),
-                                _buildRecentQueriesCard(),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(width: 16),
-                          // Right Column - Patients & Stats
-                          Expanded(
-                            flex: 2,
-                            child: Column(
-                              children: [
-                                _buildRecentPatientsCard(),
-                                const SizedBox(height: 16),
-                                _buildStatsCards(),
-                              ],
-                            ),
-                          ),
-                        ],
+                      // Left Column - Chat & Queries
+                      Expanded(
+                        flex: 2,
+                        child: Column(
+                          children: [
+                            _buildRecentChatsCard(),
+                            const SizedBox(height: 16),
+                            _buildRecentQueriesCard(),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      // Right Column - Patients & Stats
+                      Expanded(
+                        flex: 2,
+                        child: Column(
+                          children: [
+                            _buildRecentPatientsCard(),
+                            const SizedBox(height: 16),
+                            _buildStatsCards(),
+                          ],
+                        ),
                       ),
                     ],
                   ),
-                ),
+                ],
               ),
             ),
-            if (_showAIChatOverlay)
-              ElaraChatOverlay(
-                messages: _elaraMessages,
-                input: _elaraInput,
-                onInputChanged: (value) {
-                  setState(() {
-                    _elaraInput = value;
-                  });
-                },
-                onSend: () {
-                  if (_elaraInput.trim().isNotEmpty) {
-                    setState(() {
-                      _elaraMessages.add(ElaraChatMessage(_elaraInput.trim(), true));
-                      _elaraInput = '';
-                    });
-                  }
-                },
-                onClose: () {
-                  setState(() {
-                    _showAIChatOverlay = false;
-                    _elaraInput = '';
-                    _elaraMessages = [
-                      ElaraChatMessage('Hello! How can I assist you today?', false),
-                    ];
-                  });
-                },
-              ),
-          ],
-        );
-        
-        return BackgroundLayout(
-          sidebar: sidebar, 
-          homeContent: homeContent,
-          isDarkMode: isDarkMode,
-        );
-      },
+          ),
+        ),
+        if (_showAIChatOverlay)
+          ElaraChatOverlay(
+            messages: _elaraMessages,
+            input: _elaraInput,
+            onInputChanged: (value) {
+              setState(() {
+                _elaraInput = value;
+              });
+            },
+            onSend: () {
+              if (_elaraInput.trim().isNotEmpty) {
+                setState(() {
+                  _elaraMessages.add(ElaraChatMessage(_elaraInput.trim(), true));
+                  _elaraInput = '';
+                });
+              }
+            },
+            onClose: () {
+              setState(() {
+                _showAIChatOverlay = false;
+                _elaraInput = '';
+                _elaraMessages = [
+                  ElaraChatMessage('Hello! How can I assist you today?', false),
+                ];
+              });
+            },
+          ),
+      ],
+    ),
     );
   }
 
@@ -163,12 +150,18 @@ class _DashboardContentState extends State<DashboardContent> with TickerProvider
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeOut,
         width: double.infinity,
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 32),
         decoration: BoxDecoration(
-          color: _getCardBackgroundColor(context),
+          color: Colors.transparent, // Match the background color
           borderRadius: BorderRadius.circular(24),
-          border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
-          boxShadow: _getBoxShadow(context),
+          border: Border.all(color: Colors.grey.withOpacity(0.5)), // Grey border for glass effect
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.04),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
+            ),
+          ],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -191,21 +184,21 @@ class _DashboardContentState extends State<DashboardContent> with TickerProvider
                           gradient: RadialGradient(
                             colors: [
                               _isHoveringAI ? const Color(0xFF3B82F6) : const Color(0xFF6366F1),
-                              Colors.white.withValues(alpha: 0.1),
+                              Colors.white,
                             ],
                             center: Alignment.center,
                             radius: 0.8,
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: _isHoveringAI ? const Color(0xFF3B82F6).withValues(alpha: 0.25) : const Color(0xFF6366F1).withValues(alpha: 0.12),
+                              color: _isHoveringAI ? const Color(0xFF3B82F6).withOpacity(0.25) : const Color(0xFF6366F1).withOpacity(0.12),
                               blurRadius: _isHoveringAI ? 18 : 10,
                               spreadRadius: 1,
                             ),
                           ],
                         ),
                       ),
-                      Icon(Icons.auto_awesome, size: 28, color: Colors.white),
+                      Icon(Icons.auto_awesome, size: 28, color: _isHoveringAI ? const Color(0xFF3B82F6) : const Color(0xFF6366F1)),
                     ],
                   ),
                 ),
@@ -215,10 +208,10 @@ class _DashboardContentState extends State<DashboardContent> with TickerProvider
                     fontSize: 22,
                     fontWeight: FontWeight.w700,
                     letterSpacing: 2.2,
-                    color: Colors.white,
+                    color: _isHoveringAI ? const Color(0xFF3B82F6) : const Color(0xFF181F36),
                     shadows: [
                       Shadow(
-                        color: _isHoveringAI ? const Color(0xFF3B82F6).withValues(alpha: 0.3) : const Color(0xFF6366F1).withValues(alpha: 0.18),
+                        color: _isHoveringAI ? const Color(0xFF3B82F6).withOpacity(0.3) : const Color(0xFF6366F1).withOpacity(0.18),
                         blurRadius: 8,
                       ),
                     ],
@@ -231,7 +224,7 @@ class _DashboardContentState extends State<DashboardContent> with TickerProvider
               'Ask medical questions, generate summaries, or request AI-powered insights.',
               style: GoogleFonts.inter(
                 fontSize: 15,
-                color: Colors.white.withValues(alpha: 0.9),
+                color: _isHoveringAI ? const Color(0xFF3B82F6) : const Color(0xFF6366F1),
                 fontWeight: FontWeight.w500,
                 letterSpacing: 0.2,
               ),
@@ -243,24 +236,24 @@ class _DashboardContentState extends State<DashboardContent> with TickerProvider
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
-                    color: _isHoveringAI ? const Color(0xFF3B82F6).withValues(alpha: 0.18) : const Color(0xFF6366F1).withValues(alpha: 0.10),
+                    color: _isHoveringAI ? const Color(0xFF3B82F6).withOpacity(0.18) : const Color(0xFF6366F1).withOpacity(0.10),
                     blurRadius: _isHoveringAI ? 12 : 6,
                     spreadRadius: 1,
                   ),
                 ],
               ),
               child: TextField(
-                style: GoogleFonts.inter(fontSize: 16, color: Colors.white),
+                style: GoogleFonts.inter(fontSize: 16, color: const Color(0xFF181F36)),
                 decoration: InputDecoration(
                   hintText: 'Type your prompt for Elara...',
-                  hintStyle: GoogleFonts.inter(fontSize: 15, color: Colors.white.withValues(alpha: 0.6)),
+                  hintStyle: GoogleFonts.inter(fontSize: 15, color: const Color(0xFF6366F1)),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16),
-                    borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.3), width: 1.5),
+                    borderSide: BorderSide(color: _isHoveringAI ? const Color(0xFF3B82F6) : const Color(0xFF6366F1), width: _isHoveringAI ? 2.5 : 1.5),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16),
-                    borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.3), width: 1.5),
+                    borderSide: BorderSide(color: const Color(0xFF6366F1), width: 1.5),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16),
@@ -274,7 +267,7 @@ class _DashboardContentState extends State<DashboardContent> with TickerProvider
                       gradient: LinearGradient(
                         colors: _isHoveringAI
                             ? [const Color(0xFF3B82F6), const Color(0xFF6366F1)]
-                            : [const Color(0xFF6366F1), Colors.white.withValues(alpha: 0.1)],
+                            : [const Color(0xFF6366F1), Colors.white],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                       ),
@@ -282,7 +275,7 @@ class _DashboardContentState extends State<DashboardContent> with TickerProvider
                     child: Icon(Icons.send, color: Colors.white),
                   ),
                   filled: true,
-                  fillColor: Colors.white.withValues(alpha: 0.1),
+                  fillColor: Colors.white,
                 ),
                 onChanged: (value) {
                   setState(() {
@@ -293,6 +286,7 @@ class _DashboardContentState extends State<DashboardContent> with TickerProvider
                   });
                 },
                 onSubmitted: (value) {
+                  // TODO: Connect to generative AI backend
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text('AI response coming soon...', style: GoogleFonts.inter()),
@@ -327,12 +321,11 @@ class _DashboardContentState extends State<DashboardContent> with TickerProvider
           padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [Colors.transparent, Colors.transparent],
+              colors: [AppColors.primary, AppColors.primaryLight],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
             boxShadow: [
               BoxShadow(
                 color: AppColors.primary.withValues(alpha: 0.3),
@@ -404,6 +397,7 @@ class _DashboardContentState extends State<DashboardContent> with TickerProvider
             Icons.chat_bubble_outline,
             AppColors.primary,
             () {
+              // Switch to AI Chat tab
               Navigator.of(context).pushNamed('/chat');
             },
           ),
@@ -452,12 +446,12 @@ class _DashboardContentState extends State<DashboardContent> with TickerProvider
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.black.withValues(alpha: 0.4),
+          color: Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
+          border: Border.all(color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.2)),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.2),
+              color: Theme.of(context).shadowColor.withValues(alpha: 0.1),
               blurRadius: 10,
               offset: const Offset(0, 2),
             ),
@@ -468,7 +462,7 @@ class _DashboardContentState extends State<DashboardContent> with TickerProvider
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: color.withValues(alpha: 0.2),
+                color: color.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Icon(icon, color: color, size: 24),
@@ -479,7 +473,7 @@ class _DashboardContentState extends State<DashboardContent> with TickerProvider
               style: GoogleFonts.inter(
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
-                color: Colors.white,
+                color: AppColors.textDark,
               ),
               textAlign: TextAlign.center,
             ),
@@ -487,7 +481,7 @@ class _DashboardContentState extends State<DashboardContent> with TickerProvider
               subtitle,
               style: GoogleFonts.inter(
                 fontSize: 12,
-                color: Colors.white.withValues(alpha: 0.8),
+                color: AppColors.textMedium,
               ),
               textAlign: TextAlign.center,
               maxLines: 2,
@@ -506,12 +500,12 @@ class _DashboardContentState extends State<DashboardContent> with TickerProvider
         return Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-            color: Colors.black.withValues(alpha: 0.4),
+            color: Theme.of(context).colorScheme.surface,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
+            border: Border.all(color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.2)),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.2),
+                color: Theme.of(context).shadowColor.withValues(alpha: 0.1),
                 blurRadius: 10,
                 offset: const Offset(0, 2),
               ),
@@ -529,7 +523,7 @@ class _DashboardContentState extends State<DashboardContent> with TickerProvider
                     style: GoogleFonts.inter(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
-                      color: Colors.white,
+                      color: AppColors.textDark,
                     ),
                   ),
                   const Spacer(),
@@ -546,17 +540,17 @@ class _DashboardContentState extends State<DashboardContent> with TickerProvider
                 Container(
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.1),
+                    color: AppColors.surface,
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Row(
                     children: [
-                      Icon(Icons.info_outline, color: Colors.white.withValues(alpha: 0.8), size: 20),
+                      Icon(Icons.info_outline, color: AppColors.textMedium, size: 20),
                       const SizedBox(width: 12),
                       Text(
                         'No chat sessions yet. Start your first consultation!',
                         style: GoogleFonts.inter(
-                          color: Colors.white.withValues(alpha: 0.8),
+                          color: AppColors.textMedium,
                           fontSize: 14,
                         ),
                       ),
@@ -577,7 +571,7 @@ class _DashboardContentState extends State<DashboardContent> with TickerProvider
       margin: const EdgeInsets.only(bottom: 8),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.1),
+        color: AppColors.surface,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
@@ -585,7 +579,7 @@ class _DashboardContentState extends State<DashboardContent> with TickerProvider
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: AppColors.primary.withValues(alpha: 0.2),
+              color: AppColors.primary.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(6),
             ),
             child: Icon(Icons.chat, color: AppColors.primary, size: 16),
@@ -600,20 +594,20 @@ class _DashboardContentState extends State<DashboardContent> with TickerProvider
                   style: GoogleFonts.inter(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
-                    color: Colors.white,
+                    color: AppColors.textDark,
                   ),
                 ),
                 Text(
                   '${session.messages.length} messages • ${_formatTime(session.createdAt)}',
                   style: GoogleFonts.inter(
                     fontSize: 12,
-                    color: Colors.white.withValues(alpha: 0.8),
+                    color: AppColors.textMedium,
                   ),
                 ),
               ],
             ),
           ),
-          Icon(Icons.chevron_right, color: Colors.white.withValues(alpha: 0.6), size: 16),
+          Icon(Icons.chevron_right, color: AppColors.textMedium, size: 16),
         ],
       ),
     );
@@ -622,6 +616,7 @@ class _DashboardContentState extends State<DashboardContent> with TickerProvider
   Widget _buildRecentQueriesCard() {
     return Consumer<ChatProvider>(
       builder: (context, chatProvider, child) {
+        // Get recent queries from recent messages
         final recentQueries = chatProvider.chatSessions
             .expand((session) => session.messages)
             .where((message) => message.type == MessageType.user)
@@ -631,12 +626,12 @@ class _DashboardContentState extends State<DashboardContent> with TickerProvider
         return Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-            color: Colors.black.withValues(alpha: 0.4),
+            color: Theme.of(context).colorScheme.surface,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
+            border: Border.all(color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.2)),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.2),
+                color: Theme.of(context).shadowColor.withValues(alpha: 0.1),
                 blurRadius: 10,
                 offset: const Offset(0, 2),
               ),
@@ -654,7 +649,7 @@ class _DashboardContentState extends State<DashboardContent> with TickerProvider
                     style: GoogleFonts.inter(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
-                      color: Colors.white,
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                   ),
                 ],
@@ -664,17 +659,17 @@ class _DashboardContentState extends State<DashboardContent> with TickerProvider
                 Container(
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.1),
+                    color: AppColors.surface,
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Row(
                     children: [
-                      Icon(Icons.info_outline, color: Colors.white.withValues(alpha: 0.8), size: 20),
+                      Icon(Icons.info_outline, color: AppColors.textMedium, size: 20),
                       const SizedBox(width: 12),
                       Text(
                         'No queries yet. Ask me anything about medical care!',
                         style: GoogleFonts.inter(
-                          color: Colors.white.withValues(alpha: 0.8),
+                          color: AppColors.textMedium,
                           fontSize: 14,
                         ),
                       ),
@@ -682,7 +677,7 @@ class _DashboardContentState extends State<DashboardContent> with TickerProvider
                   ),
                 )
               else
-                ...recentQueries.map((query) => _buildQueryItem(query)),
+                                ...recentQueries.map((query) => _buildQueryItem(query)),
             ],
           ),
         );
@@ -695,7 +690,7 @@ class _DashboardContentState extends State<DashboardContent> with TickerProvider
       margin: const EdgeInsets.only(bottom: 8),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.1),
+        color: AppColors.surface,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
@@ -703,7 +698,7 @@ class _DashboardContentState extends State<DashboardContent> with TickerProvider
           Container(
             padding: const EdgeInsets.all(6),
             decoration: BoxDecoration(
-              color: AppColors.doctorRole.withValues(alpha: 0.2),
+              color: AppColors.doctorRole.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(4),
             ),
             child: Icon(Icons.question_answer, color: AppColors.doctorRole, size: 14),
@@ -720,14 +715,14 @@ class _DashboardContentState extends State<DashboardContent> with TickerProvider
                   style: GoogleFonts.inter(
                     fontSize: 13,
                     fontWeight: FontWeight.w500,
-                    color: Colors.white,
+                    color: AppColors.textDark,
                   ),
                 ),
                 Text(
                   _formatTime(query.timestamp),
                   style: GoogleFonts.inter(
                     fontSize: 11,
-                    color: Colors.white.withValues(alpha: 0.8),
+                    color: AppColors.textMedium,
                   ),
                 ),
               ],
@@ -742,12 +737,12 @@ class _DashboardContentState extends State<DashboardContent> with TickerProvider
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.black.withValues(alpha: 0.4),
+        color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
+        border: Border.all(color: AppColors.border),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.2),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
@@ -765,7 +760,7 @@ class _DashboardContentState extends State<DashboardContent> with TickerProvider
                 style: GoogleFonts.inter(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
-                  color: Colors.white,
+                  color: AppColors.textDark,
                 ),
               ),
               const Spacer(),
@@ -797,7 +792,7 @@ class _DashboardContentState extends State<DashboardContent> with TickerProvider
       margin: const EdgeInsets.only(bottom: 8),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: isActive ? AppColors.secondary.withValues(alpha: 0.2) : Colors.white.withValues(alpha: 0.1),
+        color: isActive ? AppColors.secondary.withValues(alpha: 0.1) : AppColors.surface,
         borderRadius: BorderRadius.circular(8),
         border: isActive ? Border.all(color: AppColors.secondary.withValues(alpha: 0.3)) : null,
       ),
@@ -805,7 +800,7 @@ class _DashboardContentState extends State<DashboardContent> with TickerProvider
         children: [
           CircleAvatar(
             radius: 16,
-            backgroundColor: isActive ? AppColors.secondary : Colors.white.withValues(alpha: 0.3),
+            backgroundColor: isActive ? AppColors.secondary : AppColors.textMedium,
             child: Text(
               name.substring(0, 1),
               style: GoogleFonts.inter(
@@ -825,14 +820,14 @@ class _DashboardContentState extends State<DashboardContent> with TickerProvider
                   style: GoogleFonts.inter(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
-                    color: Colors.white,
+                    color: AppColors.textDark,
                   ),
                 ),
                 Text(
                   condition,
                   style: GoogleFonts.inter(
                     fontSize: 12,
-                    color: Colors.white.withValues(alpha: 0.8),
+                    color: AppColors.textMedium,
                   ),
                 ),
               ],
@@ -855,7 +850,7 @@ class _DashboardContentState extends State<DashboardContent> with TickerProvider
               ),
             ),
           const SizedBox(width: 8),
-          Icon(Icons.chevron_right, color: Colors.white.withValues(alpha: 0.6), size: 16),
+          Icon(Icons.chevron_right, color: AppColors.textMedium, size: 16),
         ],
       ),
     );
@@ -893,12 +888,12 @@ class _DashboardContentState extends State<DashboardContent> with TickerProvider
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.black.withValues(alpha: 0.4),
+        color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
+        border: Border.all(color: AppColors.border),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.2),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
@@ -912,7 +907,7 @@ class _DashboardContentState extends State<DashboardContent> with TickerProvider
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: color.withValues(alpha: 0.2),
+                  color: color.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Icon(icon, color: color, size: 20),
@@ -927,14 +922,14 @@ class _DashboardContentState extends State<DashboardContent> with TickerProvider
             style: GoogleFonts.inter(
               fontSize: 32,
               fontWeight: FontWeight.bold,
-              color: Colors.white,
+              color: AppColors.textDark,
             ),
           ),
           Text(
             title,
             style: GoogleFonts.inter(
               fontSize: 14,
-              color: Colors.white.withValues(alpha: 0.8),
+              color: AppColors.textMedium,
             ),
           ),
         ],
@@ -968,22 +963,5 @@ class _DashboardContentState extends State<DashboardContent> with TickerProvider
       default:
         return 'Healthcare Professional';
     }
-  }
-
-  // Theme helper methods
-  Color _getCardBackgroundColor(BuildContext context) {
-    final isDarkMode = Provider.of<AppProvider>(context).isDarkMode;
-    return isDarkMode ? Colors.black.withValues(alpha: 0.4) : Colors.white.withValues(alpha: 0.9);
-  }
-
-  List<BoxShadow> _getBoxShadow(BuildContext context) {
-    final isDarkMode = Provider.of<AppProvider>(context).isDarkMode;
-    return [
-      BoxShadow(
-        color: isDarkMode ? Colors.black.withValues(alpha: 0.2) : Colors.grey.withValues(alpha: 0.15),
-        blurRadius: 15,
-        offset: const Offset(0, 5),
-      ),
-    ];
   }
 }
