@@ -1,5 +1,3 @@
-# 🏥 AI-Powered Medical Document Query System
-
 <div align="center">
    <img src="https://cdn.jsdelivr.net/gh/Templarian/MaterialDesign@master/svg/robot-outline.svg" width="48" alt="AI Chat Logo" />
    <br>
@@ -8,14 +6,8 @@
    
 </div>
 
-## 🎯 Overview
+<h2 align="center">AI-Powered Medical Document Query System</h2>
 
-Elara is a next-generation AI-powered medical document query system for Malaysian healthcare professionals and patients. Built with Flutter Web, it provides a multilingual, role-adaptive interface for processing and querying medical documents using advanced AI and OCR capabilities.
-
----
-
-
-## ✨ Key Features
 
 ### 🤖 AI-Powered Document Intelligence
 - Multimodal processing: text, charts, tables, handwriting, images
@@ -52,8 +44,8 @@ Elara is a next-generation AI-powered medical document query system for Malaysia
 
 1. [Overview](#-overview)
 2. [Recent Updates](#-recent-updates-september-2025)
-3. [Key Features](#-key-features)
-4. [Technical Architecture](#-technical-architecture)
+3. [Key Features](#-ai-powered-document-intelligence)
+4. [Technical Architecture](#--technical-architecture)
 5. [Project Structure](#-project-structure)
 6. [Module & File Reference](#-module--file-reference)
 7. [API & Service Integrations](#-api--service-integrations)
