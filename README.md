@@ -80,6 +80,35 @@ Healthcare professionals in Malaysia struggle to efficiently access critical inf
 - **Analytics Dashboard**: Insights and trends visualization
 - **Responsive Design**: Works on desktop, tablet, and mobile
 
+# Frontend Architecture
+
+## Flutter Web Application Features:
+- Responsive design for desktop and mobile browsers
+- Real-time chat interface with dynamic typing indicators and role-based context panels
+- Glassmorphism-inspired UI with smooth transitions and purple accent
+- Multi-language UI with right-to-left text support
+- Provider-based state management for scalable architecture
+- Secure authentication with SSO and two-factor support
+
+## User Experience Optimizations:
+- Fast loading and navigation for chat and analytics
+- Demo accounts for instant access and testing
+- Accessibility-first: audio playback controls, voice input, and keyboard navigation
+- Adaptive panels and overlays for enhanced workflow
+- Offline capability for cached chat and document responses
+
+## Advanced UI & Engineering
+- Glassmorphism-inspired interface with smooth transitions
+- Extensible custom widget library for chat, analytics, and document management
+- Role-based authentication and adaptive panels for secure, context-aware workflows
+- Modular, testable codebase leveraging Provider for centralized state
+- Accessibility-first design with audio, voice, and keyboard navigation
+
+## Performance & Reliability
+- Optimized for large datasets and rapid navigation
+- Robust offline support for mission-critical scenarios
+- Scalable architecture ready for future feature expansion
+
 ## 🔧 Technical Stack
 
 - **Framework**: Flutter Web
