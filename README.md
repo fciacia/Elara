@@ -8,8 +8,6 @@
    
 </div>
 
----
-
 ## 🎯 Overview
 
 Elara is a next-generation AI-powered medical document query system for Malaysian healthcare professionals and patients. Built with Flutter Web, it provides a multilingual, role-adaptive interface for processing and querying medical documents using advanced AI and OCR capabilities.
