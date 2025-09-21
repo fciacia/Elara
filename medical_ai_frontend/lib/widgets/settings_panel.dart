@@ -19,30 +19,37 @@ class _SettingsPanelState extends State<SettingsPanel> with TickerProviderStateM
   late Animation<Offset> _slideAnimation;
 
   @override
-  void initState() {
-    super.initState();
-    _animationController = AnimationController(
-      duration: const Duration(milliseconds: 1200),
-      vsync: this,
-    );
-    
-    // Initialize animations properly
-    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
-    );
-    
-    _slideAnimation = Tween<Offset>(
-      begin: const Offset(0, 0.3),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(parent: _animationController, curve: Curves.easeOutCubic));
+void initState() {
+  super.initState();
+  _animationController = AnimationController(
+    duration: const Duration(milliseconds: 1200), // Match the smooth one
+    vsync: this,
+  );
 
-    // Start animation after the widget is built
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) {
-        _animationController.forward();
-      }
-    });
-  }
+  _fadeAnimation = Tween<double>(
+    begin: 0.0,
+    end: 1.0,
+  ).animate(CurvedAnimation(
+    parent: _animationController,
+    curve: Curves.easeInOut, // Smoother curve
+  ));
+
+  _slideAnimation = Tween<Offset>(
+    begin: const Offset(0, 0.1),
+    end: Offset.zero,
+  ).animate(CurvedAnimation(
+    parent: _animationController,
+    curve: Curves.easeOutCubic, // Match the smooth one
+  ));
+
+  // Remove the immediate forward() call
+  // Only use post-frame callback
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    if (mounted) {
+      _animationController.forward();
+    }
+  });
+}
 
   @override
   void dispose() {

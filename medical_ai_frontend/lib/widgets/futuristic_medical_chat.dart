@@ -317,7 +317,7 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
 
     // Initialize panel animation controller
     _panelAnimationController = AnimationController(
-      duration: const Duration(milliseconds: 300),
+      duration: const Duration(milliseconds: 900), // ultra-smooth, longer
       vsync: this,
     );
     _panelAnimation = Tween<double>(
@@ -325,7 +325,7 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
       end: 1.0,
     ).animate(CurvedAnimation(
       parent: _panelAnimationController,
-      curve: Curves.easeInOut,
+      curve: Curves.fastOutSlowIn, // fluid, natural
     ));
     
     if (_showPatientContext) {
@@ -623,17 +623,14 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
                   AnimatedBuilder(
                     animation: _panelAnimation,
                     builder: (context, child) {
-                      // Hide right panel if nothing is selected
                       if ((!_showPatientContext || isMobile) || (selectedPatient == null && selectedChatSession == null)) {
                         return Container();
                       }
-                      // Responsive panel width - made narrower
                       final double panelWidth = isTablet ? 280 : 320;
-                      return Transform.translate(
-                        offset: Offset(
-                          (1 - _panelAnimation.value) * panelWidth,
-                          0,
-                        ),
+                      return AnimatedSlide(
+                        offset: Offset(1 - _panelAnimation.value, 0),
+                        duration: _panelAnimationController.duration ?? const Duration(milliseconds: 900),
+                        curve: Curves.fastOutSlowIn,
                         child: Container(
                           width: panelWidth,
                           height: double.infinity,
