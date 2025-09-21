@@ -5,7 +5,7 @@ enum SupportedLanguage { english, malay, mandarin, tamil }
 
 class AppProvider extends ChangeNotifier {
   // App Theme
-  bool _isDarkMode = false;
+  bool _isDarkMode = true;
   bool get isDarkMode => _isDarkMode;
 
   void toggleTheme() {

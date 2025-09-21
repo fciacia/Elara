@@ -445,4 +445,6 @@ class ChatProvider extends ChangeNotifier {
     _isTyping = typing;
     notifyListeners();
   }
+
+  void selectChatSession(String id) {}
 }
