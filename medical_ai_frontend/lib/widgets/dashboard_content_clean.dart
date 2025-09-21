@@ -6,7 +6,7 @@ import '../providers/auth_provider.dart' as auth;
 import 'elara_chat_overlay.dart';
 import 'elara_chat_message.dart';
 import '../providers/document_provider.dart';
-import '../providers/chat_provider.dart';
+import '../providers/chat_provider_aws.dart';
 import '../utils/app_colors.dart';
 import 'dart:ui';
 

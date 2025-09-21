@@ -5,7 +5,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 
 import '../../providers/auth_provider.dart' as auth;
 import '../../providers/document_provider.dart';
-import '../../providers/chat_provider.dart';
+import '../../providers/chat_provider_aws.dart';
 import '../../providers/app_provider.dart';
 import '../../utils/app_colors.dart';
 import '../../widgets/custom_sidebar.dart';
@@ -70,7 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _initializeProviders() {
     context.read<DocumentProvider>().initialize();
-    context.read<ChatProvider>().initialize();
+    // ChatProvider AWS doesn't require initialization
   }
 
   Widget _getSelectedContent() {
