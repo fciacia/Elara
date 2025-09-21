@@ -34,8 +34,8 @@ class ElaraChatOverlay extends StatelessWidget {
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 600),
                 curve: Curves.easeInOut,
-                width: MediaQuery.of(context).size.width * 0.7, // 70% of screen width
-                height: MediaQuery.of(context).size.height * 0.6, // 60% of screen height
+                width: 400,
+                height: 420,
                 decoration: BoxDecoration(
                   color: Colors.transparent, // Fully transparent box
                   borderRadius: BorderRadius.circular(32),

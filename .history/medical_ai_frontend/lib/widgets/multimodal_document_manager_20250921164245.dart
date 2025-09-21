@@ -251,7 +251,7 @@ class _MultimodalDocumentManagerState extends State<MultimodalDocumentManager>
       return Center(
         child: ConstrainedBox(
           constraints: BoxConstraints(
-            maxWidth: isLargeScreen ? 1900 : isMediumScreen ? 1000 : double.infinity,
+            maxWidth: isLargeScreen ? 1400 : isMediumScreen ? 1000 : double.infinity,
           ),
           child: SingleChildScrollView(
             padding: EdgeInsets.symmetric(
