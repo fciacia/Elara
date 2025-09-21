@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:ui';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:get/get.dart';
@@ -119,60 +120,47 @@ class _LoginScreenState extends State<LoginScreen>
     final isTablet = size.width > 600;
 
     return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            stops: const [0.0, 0.4, 1.0],
-            colors: [
-              AppColors.primary.withValues(alpha: 0.1),
-              AppColors.background,
-              AppColors.primary.withValues(alpha: 0.05),
-            ],
+      body: Stack(
+        children: [
+          Positioned.fill(
+            child: Image.asset(
+              'lib/assets/newborn.png',
+              fit: BoxFit.cover,
+            ),
           ),
-        ),
-        child: SafeArea(
-          child: Center(
-            child: SingleChildScrollView(
-              padding: EdgeInsets.symmetric(
-                horizontal: isTablet ? size.width * 0.25 : 24,
-                vertical: 24,
-              ),
-              child: FadeTransition(
-                opacity: _fadeAnimation,
-                child: SlideTransition(
-                  position: _slideAnimation,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      // Animated Header
-                      ScaleTransition(
-                        scale: _bounceAnimation,
-                        child: _buildHeader(),
-                      ),
-                      
-                      const SizedBox(height: 40),
-
-                      // Enhanced Login Form
-                      _buildLoginCard(),
-
-                      const SizedBox(height: 32),
-
-                      // Animated Features
-                      _buildFeatures(),
-
-                      const SizedBox(height: 24),
-
-                      // Footer
-                      _buildFooter(),
-                    ],
-                  ),
+          Positioned.fill(
+            child: Container(
+              color: Colors.black.withOpacity(0.15), // subtle dark overlay for readability
+            ),
+          ),
+          // Main login UI remains unchanged, just wrapped in the background
+          SafeArea(
+            child: Center(
+              child: SingleChildScrollView(
+                padding: EdgeInsets.symmetric(
+                  horizontal: isTablet ? size.width * 0.25 : 24,
+                  vertical: 24,
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // Animated Header
+                    _buildHeader(),
+                    const SizedBox(height: 40),
+                    // Enhanced Login Form
+                    _buildLoginCard(),
+                    const SizedBox(height: 32),
+                    // Animated Features
+                    _buildFeatures(),
+                    const SizedBox(height: 24),
+                    // Footer
+                    _buildFooter(),
+                  ],
                 ),
               ),
             ),
           ),
-        ),
+        ],
       ),
     );
   }
@@ -204,6 +192,7 @@ class _LoginScreenState extends State<LoginScreen>
                 color: Colors.white.withValues(alpha: 0.1),
                 blurRadius: 10,
                 offset: const Offset(-5, -5),
+                
               ),
             ],
           ),
@@ -219,7 +208,7 @@ class _LoginScreenState extends State<LoginScreen>
                   height: 20,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Colors.white.withValues(alpha: 0.2),
+                    color: Colors.white.withOpacity(0.2),
                   ),
                 ),
               ),
@@ -273,7 +262,7 @@ class _LoginScreenState extends State<LoginScreen>
           end: Alignment.bottomRight,
           colors: [
             Colors.white,
-            Colors.white.withValues(alpha: 0.95),
+            Colors.white,
           ],
         ),
         boxShadow: [
@@ -372,7 +361,7 @@ class _LoginScreenState extends State<LoginScreen>
                 'Nurse',
                 MdiIcons.heartPulse,
                 'Patient care &\nmonitoring',
-                Colors.pink,
+                _selectedRole == UserRole.nurse ? Colors.green : Colors.pink,
               ),
             ),
             const SizedBox(width: 12),
@@ -496,7 +485,7 @@ class _LoginScreenState extends State<LoginScreen>
         TextFormField(
           controller: _emailController,
           keyboardType: TextInputType.emailAddress,
-          style: GoogleFonts.inter(fontSize: 16),
+          style: GoogleFonts.inter(fontSize: 16, color: Colors.black),
           decoration: InputDecoration(
             hintText: 'Enter your email address',
             hintStyle: GoogleFonts.inter(
@@ -558,7 +547,7 @@ class _LoginScreenState extends State<LoginScreen>
         TextFormField(
           controller: _passwordController,
           obscureText: _obscurePassword,
-          style: GoogleFonts.inter(fontSize: 16),
+          style: GoogleFonts.inter(fontSize: 16, color: Colors.black),
           decoration: InputDecoration(
             hintText: 'Enter your password',
             hintStyle: GoogleFonts.inter(
