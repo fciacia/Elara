@@ -300,7 +300,14 @@ class _DashboardContentState extends State<DashboardContent> with TickerProvider
                     }
                   });
                 },
-                onSubmitted: (_) => _handlePromptSubmission(),
+                onSubmitted: (value) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('AI response coming soon...', style: GoogleFonts.inter()),
+                      backgroundColor: const Color(0xFF3B82F6),
+                    ),
+                  );
+                },
               ),
             ),
           ],

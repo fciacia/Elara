@@ -55,7 +55,6 @@ class _DashboardContentState extends State<DashboardContent> with TickerProvider
 
   @override
   void dispose() {
-    _promptController.dispose();
     _animationController.dispose();
     super.dispose();
   }
@@ -257,7 +256,6 @@ class _DashboardContentState extends State<DashboardContent> with TickerProvider
                 ],
               ),
               child: TextField(
-                controller: _promptController,
                 style: GoogleFonts.inter(fontSize: 16, color: Colors.white),
                 decoration: InputDecoration(
                   hintText: 'Type your prompt for Elara...',
@@ -300,37 +298,20 @@ class _DashboardContentState extends State<DashboardContent> with TickerProvider
                     }
                   });
                 },
-                onSubmitted: (_) => _handlePromptSubmission(),
+                onSubmitted: (value) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('AI response coming soon...', style: GoogleFonts.inter()),
+                      backgroundColor: const Color(0xFF3B82F6),
+                    ),
+                  );
+                },
               ),
             ),
           ],
         ),
       ),
     );
-  }
-
-  // Handle prompt submission from dashboard
-  void _handlePromptSubmission() {
-    final message = _promptController.text.trim();
-    if (message.isEmpty) return;
-
-    // Get providers
-    final authProvider = context.read<auth.AuthProvider>();
-    final chatProvider = context.read<aws.ChatProvider>();
-    
-    // Send message to chat provider
-    chatProvider.sendMessage(
-      message, 
-      authProvider.currentUser?.role ?? auth.UserRole.nurse
-    );
-    
-    // Clear the input
-    _promptController.clear();
-    
-    // Navigate to chat
-    if (widget.onNavigateToChat != null) {
-      widget.onNavigateToChat!();
-    }
   }
 
   Widget _buildWelcomeSection() {

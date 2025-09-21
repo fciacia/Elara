@@ -257,7 +257,6 @@ class _DashboardContentState extends State<DashboardContent> with TickerProvider
                 ],
               ),
               child: TextField(
-                controller: _promptController,
                 style: GoogleFonts.inter(fontSize: 16, color: Colors.white),
                 decoration: InputDecoration(
                   hintText: 'Type your prompt for Elara...',
@@ -300,7 +299,14 @@ class _DashboardContentState extends State<DashboardContent> with TickerProvider
                     }
                   });
                 },
-                onSubmitted: (_) => _handlePromptSubmission(),
+                onSubmitted: (value) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('AI response coming soon...', style: GoogleFonts.inter()),
+                      backgroundColor: const Color(0xFF3B82F6),
+                    ),
+                  );
+                },
               ),
             ),
           ],

@@ -13,9 +13,7 @@ import 'background_layout.dart';
 
 
 class DashboardContent extends StatefulWidget {
-  final VoidCallback? onNavigateToChat;
-  
-  const DashboardContent({super.key, this.onNavigateToChat});
+  const DashboardContent({super.key});
 
   @override
   State<DashboardContent> createState() => _DashboardContentState();
@@ -31,14 +29,10 @@ class _DashboardContentState extends State<DashboardContent> with TickerProvider
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
-  
-  // Controller for the dashboard prompt input
-  late TextEditingController _promptController;
 
   @override
   void initState() {
     super.initState();
-    _promptController = TextEditingController();
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 1200),
       vsync: this,
@@ -55,7 +49,6 @@ class _DashboardContentState extends State<DashboardContent> with TickerProvider
 
   @override
   void dispose() {
-    _promptController.dispose();
     _animationController.dispose();
     super.dispose();
   }
@@ -257,7 +250,6 @@ class _DashboardContentState extends State<DashboardContent> with TickerProvider
                 ],
               ),
               child: TextField(
-                controller: _promptController,
                 style: GoogleFonts.inter(fontSize: 16, color: Colors.white),
                 decoration: InputDecoration(
                   hintText: 'Type your prompt for Elara...',
@@ -300,37 +292,20 @@ class _DashboardContentState extends State<DashboardContent> with TickerProvider
                     }
                   });
                 },
-                onSubmitted: (_) => _handlePromptSubmission(),
+                onSubmitted: (value) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('AI response coming soon...', style: GoogleFonts.inter()),
+                      backgroundColor: const Color(0xFF3B82F6),
+                    ),
+                  );
+                },
               ),
             ),
           ],
         ),
       ),
     );
-  }
-
-  // Handle prompt submission from dashboard
-  void _handlePromptSubmission() {
-    final message = _promptController.text.trim();
-    if (message.isEmpty) return;
-
-    // Get providers
-    final authProvider = context.read<auth.AuthProvider>();
-    final chatProvider = context.read<aws.ChatProvider>();
-    
-    // Send message to chat provider
-    chatProvider.sendMessage(
-      message, 
-      authProvider.currentUser?.role ?? auth.UserRole.nurse
-    );
-    
-    // Clear the input
-    _promptController.clear();
-    
-    // Navigate to chat
-    if (widget.onNavigateToChat != null) {
-      widget.onNavigateToChat!();
-    }
   }
 
   Widget _buildWelcomeSection() {
@@ -524,7 +499,7 @@ class _DashboardContentState extends State<DashboardContent> with TickerProvider
   }
 
   Widget _buildRecentChatsCard() {
-    return Consumer<aws.ChatProvider>(
+    return Consumer<ChatProvider>(
       builder: (context, chatProvider, child) {
         final recentSessions = chatProvider.chatSessions.take(5).toList();
         
@@ -597,7 +572,7 @@ class _DashboardContentState extends State<DashboardContent> with TickerProvider
     );
   }
 
-  Widget _buildChatSessionItem(aws.ChatSession session) {
+  Widget _buildChatSessionItem(ChatSession session) {
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       padding: const EdgeInsets.all(12),
@@ -645,11 +620,11 @@ class _DashboardContentState extends State<DashboardContent> with TickerProvider
   }
 
   Widget _buildRecentQueriesCard() {
-    return Consumer<aws.ChatProvider>(
+    return Consumer<ChatProvider>(
       builder: (context, chatProvider, child) {
         final recentQueries = chatProvider.chatSessions
             .expand((session) => session.messages)
-            .where((message) => message.type == aws.MessageType.user)
+            .where((message) => message.type == MessageType.user)
             .take(5)
             .toList();
 
@@ -715,7 +690,7 @@ class _DashboardContentState extends State<DashboardContent> with TickerProvider
     );
   }
 
-  Widget _buildQueryItem(aws.ChatMessage query) {
+  Widget _buildQueryItem(ChatMessage query) {
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       padding: const EdgeInsets.all(12),
@@ -887,7 +862,7 @@ class _DashboardContentState extends State<DashboardContent> with TickerProvider
   }
 
   Widget _buildStatsCards() {
-    return Consumer2<DocumentProvider, aws.ChatProvider>(
+    return Consumer2<DocumentProvider, ChatProvider>(
       builder: (context, docProvider, chatProvider, child) {
         return Row(
           children: [
