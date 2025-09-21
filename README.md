@@ -1,33 +1,12 @@
-# 🏥 Elara - AI-Powered Medical Document Query System
+# 🏥 AI-Powered Medical Document Query System
 
 <div align="center">
    <img src="https://cdn.jsdelivr.net/gh/Templarian/MaterialDesign@master/svg/robot-outline.svg" width="48" alt="AI Chat Logo" />
    <br>
-   <strong>Intelligent medical document processing for Malaysian healthcare professionals</strong>
+   <strong>Elara</strong>
    <br>
-   <a href="#-getting-started">🚀 Live Demo</a> • <a href="#-features">📖 Documentation</a> • <a href="#-multilingual-support">🌍 Languages</a> • <a href="#-healthcare-features">⚕️ Healthcare Focus</a>
+   
 </div>
-
----
-
-## 📚 Table of Contents
-
-1. [Overview](#-overview)
-2. [Recent Updates](#-recent-updates-september-2025)
-3. [Key Features](#-key-features)
-4. [Technical Architecture](#-technical-architecture)
-5. [Project Structure](#-project-structure)
-6. [Module & File Reference](#-module--file-reference)
-7. [API & Service Integrations](#-api--service-integrations)
-8. [Multilingual Support](#-multilingual-support)
-9. [Healthcare Features](#-healthcare-features)
-10. [Testing & Coverage](#-testing--coverage)
-11. [Development Guide](#-development-guide)
-12. [Future Roadmap](#-future-roadmap)
-13. [Contributing](#-contributing)
-14. [License](#-license)
-15. [Acknowledgments](#-acknowledgments)
-16. [Support & Contact](#-support--contact)
 
 ---
 
@@ -68,6 +47,27 @@ Elara is a next-generation AI-powered medical document query system for Malaysia
 - End-to-end encryption
 - SSO & 2FA authentication
 - Audit trails
+
+---
+
+## 📚 Table of Contents
+
+1. [Overview](#-overview)
+2. [Recent Updates](#-recent-updates-september-2025)
+3. [Key Features](#-key-features)
+4. [Technical Architecture](#-technical-architecture)
+5. [Project Structure](#-project-structure)
+6. [Module & File Reference](#-module--file-reference)
+7. [API & Service Integrations](#-api--service-integrations)
+8. [Multilingual Support](#-multilingual-support)
+9. [Healthcare Features](#-healthcare-features)
+10. [Testing & Coverage](#-testing--coverage)
+11. [Development Guide](#-development-guide)
+12. [Future Roadmap](#-future-roadmap)
+13. [Contributing](#-contributing)
+14. [License](#-license)
+15. [Acknowledgments](#-acknowledgments)
+16. [Support & Contact](#-support--contact)
 
 ---
 
