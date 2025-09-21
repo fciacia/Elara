@@ -54,25 +54,29 @@ class _HoverableItemState extends State<_HoverableItem> {
 }
 
 class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProviderStateMixin {
+  // Animation controllers
   AnimationController? _animationController;
   Animation<double>? _fadeAnimation;
   Animation<Offset>? _slideAnimation;
-  // Animation logic from user snippet
   late AnimationController _logoAnimationController;
   late Animation<double> _logoFadeAnimation;
   late Animation<Offset> _logoSlideAnimation;
+  
+  // Controllers
   final TextEditingController _messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
+  
   // Selection state variables
   String? selectedPatient;
   String? selectedChatSession;
-  // Content type for right panel
   String _rightPanelContent = 'patient'; // 'patient' or 'chat'
+  
   // File upload state
   bool _isDragOver = false;
   final List<PlatformFile> _uploadedFiles = [];
   bool _isProcessing = false;
   String _processingStatus = '';
+  
   // Patient context panel state
   bool _showPatientContext = true;
   late AnimationController _panelAnimationController;
@@ -81,14 +85,14 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
 
   // Hardcoded patient data
   final Map<String, Map<String, dynamic>> _patientProfiles = {
-  'Emily Chen': {
-    'id': 'P001',
-    'ic': '123456-78-9012',
-    'age': 45,
-    'gender': 'Female',
-    'bloodType': 'O+',
-    'phone': '+60 12-345 6789',
-    'emergencyContact': 'Michael Chen (Husband)',
+    'Emily Chen': {
+      'id': 'P001',
+      'ic': '123456-78-9012',
+      'age': 45,
+      'gender': 'Female',
+      'bloodType': 'O+',
+      'phone': '+60 12-345 6789',
+      'emergencyContact': 'Michael Chen (Husband)',
       'allergies': 'None',
       'conditions': 'Diabetes Type 2',
       'surgeries': 'None',
@@ -123,14 +127,14 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
         },
       ],
     },
-  'Michael Tan': {
-    'id': 'P002',
-    'ic': '234567-89-0123',
-    'age': 29,
-    'gender': 'Male',
-    'bloodType': 'A+',
-    'phone': '+60 12-987 6543',
-    'emergencyContact': 'Emily Tan (Wife)',
+    'Michael Tan': {
+      'id': 'P002',
+      'ic': '234567-89-0123',
+      'age': 29,
+      'gender': 'Male',
+      'bloodType': 'A+',
+      'phone': '+60 12-987 6543',
+      'emergencyContact': 'Emily Tan (Wife)',
       'allergies': 'Penicillin',
       'conditions': 'Migraine',
       'surgeries': 'None',
@@ -159,7 +163,7 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
         },
       ],
     },
-  'Aisha Abdullah': {
+    'Aisha Abdullah': {
       'id': 'P003',
       'ic': '345678-90-1234',
       'age': 52,
@@ -600,21 +604,27 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
                       ),
                       child: _buildLeftSidebar(),
                     ),
-                  // Main Chat Area
+                  // Main Chat Area with fade+slide transition
                   Expanded(
                     flex: 2,
-                    child: Stack(
-                      children: [
-                        Column(
+                    child: FadeTransition(
+                      opacity: _fadeAnimation!,
+                      child: SlideTransition(
+                        position: _slideAnimation!,
+                        child: Stack(
                           children: [
-                            _buildChatHeader(),
-                            Expanded(child: _buildMessageListWithDragDrop()),
-                            _buildUploadedFilesPreview(),
-                            _buildMessageInput(),
+                            Column(
+                              children: [
+                                _buildChatHeader(),
+                                Expanded(child: _buildMessageListWithDragDrop()),
+                                _buildUploadedFilesPreview(),
+                                _buildMessageInput(),
+                              ],
+                            ),
+                            if (_isProcessing) _buildProcessingOverlay(),
                           ],
                         ),
-                        if (_isProcessing) _buildProcessingOverlay(),
-                      ],
+                      ),
                     ),
                   ),
                   // Right Panel - Animated Patient Context
