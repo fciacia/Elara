@@ -59,6 +59,10 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
   AnimationController? _animationController;
   Animation<double>? _fadeAnimation;
   Animation<Offset>? _slideAnimation;
+  // Animation logic from user snippet
+  late AnimationController _logoAnimationController;
+  late Animation<double> _logoFadeAnimation;
+  late Animation<Offset> _logoSlideAnimation;
   final TextEditingController _messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   // Selection state variables
@@ -331,6 +335,19 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
     // Initialize patient tab controller
     _patientTabController = TabController(length: 4, vsync: this);
     
+    // Animation logic from user snippet
+    _logoAnimationController = AnimationController(
+      duration: const Duration(milliseconds: 1200),
+      vsync: this,
+    );
+    _logoFadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _logoAnimationController, curve: Curves.easeInOut),
+    );
+    _logoSlideAnimation = Tween<Offset>(
+      begin: const Offset(0, 0.3),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(parent: _logoAnimationController, curve: Curves.easeOutCubic));
+    _logoAnimationController.forward();
     _animationController!.forward();
   }
 
@@ -425,12 +442,13 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
 
   @override
   void dispose() {
-    _animationController?.dispose();
-    _messageController.dispose();
-    _scrollController.dispose();
-    _panelAnimationController.dispose();
-    _patientTabController.dispose();
-    super.dispose();
+  _animationController?.dispose();
+  _logoAnimationController.dispose();
+  _messageController.dispose();
+  _scrollController.dispose();
+  _panelAnimationController.dispose();
+  _patientTabController.dispose();
+  super.dispose();
   }
 
   void _sendMessage() {
@@ -605,7 +623,10 @@ class _CleanChatInterfaceState extends State<CleanChatInterface> with TickerProv
                   AnimatedBuilder(
                     animation: _panelAnimation,
                     builder: (context, child) {
-                      if (!_showPatientContext || isMobile) return Container();
+                      // Hide right panel if nothing is selected
+                      if ((!_showPatientContext || isMobile) || (selectedPatient == null && selectedChatSession == null)) {
+                        return Container();
+                      }
                       // Responsive panel width - made narrower
                       final double panelWidth = isTablet ? 280 : 320;
                       return Transform.translate(
@@ -722,7 +743,16 @@ Widget _buildEnhancedChatSessionItem(String sessionId, bool isSelected) {
   if (session == null) return Container();
 
   return _HoverableItem(
-    onTap: () => _selectChatSession(sessionId),
+    onTap: () {
+      if (selectedChatSession == sessionId) {
+        setState(() {
+          selectedChatSession = null;
+          _rightPanelContent = 'patient';
+        });
+      } else {
+        _selectChatSession(sessionId);
+      }
+    },
     child: (isHovered) => Container(
       margin: const EdgeInsets.only(bottom: 6),
       padding: const EdgeInsets.all(12),
@@ -819,7 +849,16 @@ String _formatSessionTime(DateTime? createdAt) {
 
 Widget _buildPatientItem(String name, String ic, bool isSelected) {
   return _HoverableItem(
-    onTap: () => _selectPatient(name),
+    onTap: () {
+      if (selectedPatient == name) {
+        setState(() {
+          selectedPatient = null;
+          _rightPanelContent = 'chat';
+        });
+      } else {
+        _selectPatient(name);
+      }
+    },
     child: (isHovered) => Container(
       margin: const EdgeInsets.only(bottom: 6),
       padding: const EdgeInsets.all(8),
@@ -1023,7 +1062,6 @@ Widget _buildQueryItem(String query, String time) {
         }
 
         final messages = chatProvider.currentSession!.messages;
-        
         return Container(
           color: Colors.transparent,
           child: ListView.builder(
@@ -1050,30 +1088,30 @@ Widget _buildQueryItem(String query, String time) {
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: Colors.blue[50],
-                shape: BoxShape.circle,
+                color: Colors.transparent,
+                borderRadius: BorderRadius.circular(32),
               ),
               child: Icon(
                 MdiIcons.robotOutline,
                 size: 48,
-                color: Colors.blue[600],
+                color: AppColors.primary,
               ),
             ),
             const SizedBox(height: 16),
             Text(
               'Start a conversation',
               style: GoogleFonts.inter(
-                fontSize: 20,
+                fontSize: 25,
                 fontWeight: FontWeight.w600,
-                color: Colors.grey[800],
+                color: AppColors.primary,
               ),
             ),
             const SizedBox(height: 8),
-            Text( 
+            Text(
               'Ask me anything about your medical documents',
               style: GoogleFonts.inter(
-                fontSize: 14,
-                color: Colors.grey[600],
+                fontSize: 18,
+                color: const Color.fromARGB(255, 179, 145, 237).withOpacity(0.7),
               ),
             ),
             const SizedBox(height: 24),
@@ -1097,16 +1135,16 @@ Widget _buildQueryItem(String query, String time) {
       label: Text(
         text,
         style: GoogleFonts.inter(
-          fontSize: 12,
-          color: Colors.blue[600],
+          fontSize: 13,
+          color: const Color.fromARGB(255, 192, 176, 219),
         ),
       ),
       onPressed: () {
         _messageController.text = text;
         _sendMessage();
       },
-      backgroundColor: Colors.blue[50],
-      side: BorderSide(color: Colors.blue.withValues(alpha: 0.3)),
+      backgroundColor: Colors.transparent,
+      side: BorderSide(color: const Color.fromARGB(255, 206, 201, 213).withValues(alpha: 0.3)),
     );
   }
 
@@ -1177,7 +1215,7 @@ Widget _buildQueryItem(String query, String time) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
+        color: Colors.transparent,
         border: Border(
           top: BorderSide(color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.2), width: 1),
         ),
@@ -1189,7 +1227,7 @@ Widget _buildQueryItem(String query, String time) {
             // File upload button
             Container(
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                color: Colors.purple[700]?.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(20),
               ),
               child: IconButton(
@@ -1231,7 +1269,7 @@ Widget _buildQueryItem(String query, String time) {
                     ),
                     contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     filled: true,
-                    fillColor: _getInputFillColor(context),
+                    fillColor: Colors.transparent,
                     isDense: true,
                   ),
                   onSubmitted: (_) => _sendMessage(),
@@ -1241,7 +1279,7 @@ Widget _buildQueryItem(String query, String time) {
             const SizedBox(width: 8),
             Container(
               decoration: BoxDecoration(
-                color: AppColors.primary,
+                color: Colors.transparent,
                 borderRadius: BorderRadius.circular(20),
               ),
               child: IconButton(
@@ -1557,24 +1595,16 @@ Widget _buildQueryItem(String query, String time) {
   }
 
   Widget _buildDefaultChatView() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.chat_bubble_outline,
-            size: 64,
-            color: Colors.grey[400],
+    return Container(
+      color: Colors.transparent,
+      child: Center(
+        child: Text(
+          'No chat session selected',
+          style: GoogleFonts.inter(
+            fontSize: 16,
+            color: Colors.grey[600],
           ),
-          const SizedBox(height: 16),
-          Text(
-            'Select a chat session to view history',
-            style: GoogleFonts.inter(
-              fontSize: 16,
-              color: Colors.grey[600],
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -1736,12 +1766,12 @@ Widget _buildQueryItem(String query, String time) {
                   width: 32,
                   height: 32,
                   decoration: BoxDecoration(
-                    color: Colors.blue[50],
+                    color: Colors.transparent,
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
                     MdiIcons.robotOutline,
-                    color: Colors.blue[600],
+                    color: Colors.purple[600],
                     size: 16,
                   ),
                 ),
