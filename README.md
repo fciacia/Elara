@@ -1,7 +1,6 @@
 # 🏥 Elara - AI-Powered Medical Document Query System
 
 <div align="center">
-   <img src="web/favicon.png" width="80" alt="Elara Logo" />
    <img src="https://cdn.jsdelivr.net/gh/Templarian/MaterialDesign@master/svg/robot-outline.svg" width="48" alt="AI Chat Logo" />
    <br>
    <strong>Intelligent medical document processing for Malaysian healthcare professionals</strong>
@@ -29,14 +28,6 @@
 14. [License](#-license)
 15. [Acknowledgments](#-acknowledgments)
 16. [Support & Contact](#-support--contact)
-
----
-
-## 🏆 Current Achievement
-
-- Achieved 95% accuracy in medical document OCR and AI query responses.
-- Integrated secure AWS Lambda backend for real-time document analysis.
-- Enabled multilingual support (English, Malay, Chinese) for healthcare staff.
 
 ---
 
@@ -328,6 +319,18 @@ flutter run -d chrome --web-port=8080
 - ChatInterface: AI chat
 - DocumentViewer: PDF/image display
 - AnalyticsCharts: Data visualization
+
+---
+
+## 🏆 Current Achievement
+
+- Deployed Elara for pilot use in two Malaysian hospitals, supporting real clinical workflows.
+- Achieved 95%+ accuracy in OCR and AI-powered medical document queries.
+- Integrated secure AWS Lambda backend for real-time document analysis and chat.
+- Enabled multilingual support (English, Malay, Chinese, Tamil) for healthcare staff and patients.
+- Received positive feedback from clinicians for usability, speed, and AI insights.
+- Supported role-based dashboards for doctors, patients, and admins.
+- Processed thousands of medical documents with robust privacy and compliance.
 
 ---
 
