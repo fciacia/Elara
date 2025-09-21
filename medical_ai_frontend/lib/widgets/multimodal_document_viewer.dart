@@ -146,10 +146,7 @@ class _MultimodalDocumentViewerState extends State<MultimodalDocumentViewer>
       ),
       child: Row(
         children: [
-          IconButton(
-            onPressed: () => Navigator.pop(context),
-            icon: const Icon(Icons.arrow_back),
-          ),
+          // ...existing code...
           const SizedBox(width: 16),
           Expanded(
             child: Column(
@@ -278,7 +275,7 @@ class _MultimodalDocumentViewerState extends State<MultimodalDocumentViewer>
               ),
             ),
             // Annotations Overlay
-            ..._annotations.map((annotation) => _buildAnnotation(annotation)),
+            ..._annotations.map((annotation) => _buildReference(annotation)),
             // Zoom Controls
             Positioned(
               bottom: 16,
@@ -540,7 +537,7 @@ class _MultimodalDocumentViewerState extends State<MultimodalDocumentViewer>
     );
   }
 
-  Widget _buildAnnotation(DocumentAnnotation annotation) {
+  Widget _buildReference(DocumentAnnotation annotation) {
     return Positioned(
       left: annotation.position.dx,
       top: annotation.position.dy,
@@ -708,7 +705,7 @@ class _MultimodalDocumentViewerState extends State<MultimodalDocumentViewer>
         tabs: const [
           Tab(icon: Icon(Icons.data_object, size: 16), text: 'Data'),
           Tab(icon: Icon(Icons.psychology, size: 16), text: 'Analysis'),
-          Tab(icon: Icon(Icons.label, size: 16), text: 'Annotations'),
+          Tab(icon: Icon(Icons.label, size: 16), text: 'References'),
           Tab(icon: Icon(Icons.chat, size: 16), text: 'Chat'),
         ],
       ),
@@ -893,7 +890,7 @@ class _MultimodalDocumentViewerState extends State<MultimodalDocumentViewer>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Document Annotations',
+            'References',
             style: GoogleFonts.inter(
               fontSize: 16,
               fontWeight: FontWeight.w600,

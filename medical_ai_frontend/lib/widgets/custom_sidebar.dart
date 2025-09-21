@@ -123,7 +123,7 @@ class CustomSidebar extends StatelessWidget {
                           const SizedBox(width: 12),
                           Expanded(
                             child: Text(
-                              'Medical AI',
+                              'Elara',
                               style: GoogleFonts.inter(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
