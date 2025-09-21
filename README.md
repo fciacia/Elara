@@ -42,22 +42,20 @@
 
 ## 📚 Table of Contents
 
-1. [Overview](#-overview)
-2. [Recent Updates](#-recent-updates-september-2025)
-3. [Key Features](#-ai-powered-document-intelligence)
-4. [Technical Architecture](#--technical-architecture)
-5. [Project Structure](#-project-structure)
-6. [Module & File Reference](#-module--file-reference)
-7. [API & Service Integrations](#-api--service-integrations)
-8. [Multilingual Support](#-multilingual-support)
-9. [Healthcare Features](#-healthcare-features)
-10. [Testing & Coverage](#-testing--coverage)
-11. [Development Guide](#-development-guide)
-12. [Future Roadmap](#-future-roadmap)
-13. [Contributing](#-contributing)
-14. [License](#-license)
-15. [Acknowledgments](#-acknowledgments)
-16. [Support & Contact](#-support--contact)
+1. [Key Features](#-ai-powered-document-intelligence)
+2. [Technical Architecture](#-technical-architecture)
+3. [Project Structure](#-project-structure)
+4. [Module & File Reference](#-module--file-reference)
+5. [API & Service Integrations](#-api--service-integrations)
+6. [Multilingual Support](#-multilingual-support)
+7. [Healthcare Features](#-healthcare-features)
+8. [Testing & Coverage](#-testing--coverage)
+9. [Development Guide](#-development-guide)
+10. [Current Achievement](#-current-achievement)
+11. [Future Roadmap](#-future-roadmap)
+12. [Contributing](#-contributing)
+13. [Acknowledgments](#-acknowledgments)
+14. [Support & Contact](#-support--contact)
 
 ---
 
